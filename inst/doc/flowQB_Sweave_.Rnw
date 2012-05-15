@@ -1,0 +1,271 @@
+%\VignetteIndexEntry{flowQB package}
+%\VignetteKeywords{flow cytometry,High Throughput,Doublet,Mean Fluorescence Intensity (MFI),linear and quadratic regressions,Q (detector efficiency),B (background light level),Instrument Sensitivity,K-means,Molecules of Equivalent Soluble Fluorochrome (MESF),BD CS&T beads}
+
+
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amscd}
+\usepackage[tableposition=top]{caption}
+\usepackage{ifthen}
+\usepackage[utf8]{inputenc}
+
+\usepackage{Sweave}
+\begin{document}
+
+\title{flowQB Package for Instrument Sensitivity Assessment: \\
+An Automatic Q and B Calculation}
+
+%\titlerunning{Short form of title}        % if too long for running head
+\author{  Faysal  El Khettabi \\
+Terry Fox Laboratory \\
+British Columbia Cancer Agency \\
+Vancouver, BC, Canada\\
+$fkhettabi@bccrc.ca$ \\
+$faysal.el.khettabi@gmail.com$ }
+
+\maketitle
+
+\section{Licensing}
+Under the Artistic License, you are free to use and redistribute this software.
+
+\section{Background}
+\label{intro}
+Flow cytometer sensitivity has been well defined in the community and relates to two functions: (1) How well a dim staining
+population is resolved from an unstained population; (2) How well various dim staining populations can be distinguished from each other. 
+The most common terms for characterizing flow cytometer sensitivity are known as Q (detector efficiency) and B (background light level), which are calculated using beads acquired on a cytometer. Any routine method to measure Q and B must be rapid and sufficiently accurate to provide useful results, see the works in \cite{wj,HW,CH}. 
+
+Manually gating multi-peak bead data to generate the MFIs and SDs from the beads is an extremely time-consuming process. We showed the feasibility of an automated approach based on the clustering algorithm Kmeans to detect the bead sub-populations and to generate the MFIs and SDs in an easy and fully automatic rapid fashion. Furthermore, we extended the standard linear formulation, used to derive coefficients for Q and B calculation, with a quadratic term that is taking into account intrinsic variance from both the instrument and the bead product, see the work in \cite{f}. 
+
+Consequently we have developed a fully automated R Bioconductor package that we call flowQB. This document is intended to provide full access to the R implementation of the theoretical descriptions of Q and B calculation in our manuscript \cite{f} and to explain the generic functions that enable R as an informatics research platform for flow cytometer sensitivity: 
+\begin{itemize}
+\item To calculate automatically the detector efficiency (Q), optical background (B), and electronic noise. 
+\item To determine the optimal voltages for each fluorescence parameter when a series of voltages are applied to the photomultiplier tube (PMT) to setup the optimal separation and sensitivity, see the work in \cite{f}. 
+\end{itemize}
+
+\begin{itemize}
+\item {\bf Methods} We propose a collection of R generic functions for automatic Q and B calculation. We have implemented these functions in the Bioconductor package flowQB. We illustrate their use with a number of case studies.
+\item {\bf Results} We hope that these proposed R generic functions will become the base for the development of many tools for the Q and B calculation.
+\item {\bf keywords} Flow Cytometry, High Throughput, Doublet, Instrument Sensitivity, Kmeans, Mean Fluorescence Intensity (MFI),  Molecules of Equivalent Soluble Fluorochrome (MESF), linear and quadratic regressions, Q (detector efficiency) , B (background light level).
+\end{itemize}
+
+\section{R QB Generic Functions}
+
+We define generic functions for our automatic Q and B calculations. 
+A generic function is a standard R function with a special body to do an analytical calculation.
+We have four global generic functions to conduct an automatic Q and B calculation with the following utilities:
+
+\begin{itemize}
+\item Function ReadDD reads a given FCS file and remove doublet events for a given channel (ChanGiven), see section \ref{rd}. 
+\item Function KmeansMeanSD takes a given 2D array and generates a number of clusters and output their Means and SDs, see section \ref{kmean}. 
+\item Function MFI2MESF converts the MFI means to MESF means. For instance, the MFI output of KmeansMeanSD are converted to MESF values. The SDs are also corrected for Illumination-Correction, see section \ref{mesf}.
+\item Functions lrMESF and qrMESF use the Means and the variances $SD^{2}$ in terms of the MESF values to conduct a linear and quadratic regression, see section \ref{reg}. 
+
+\item Function DiscriminantExamination uses the values in the output of the function qrMESF to estimate the discriminant of the resulting quadratic equation and can be used as an additional interpretation tool to aid in understanding cytometer sensitivity, see section \ref{DELTA}. 
+
+\end{itemize}
+
+
+\section{Doublet Discrimination Function}\label{rd}
+
+The function ReadDD reads a given FCS file and remove doublet events for a given channel (ChanGiven). When spherical beads are run through the cytometer, sometimes two pass too close together which results in a doublet reading. 
+To exclude doublets from further analysis, a step of doublet discrimination is applied before moving onto the auto-gating step. A standard approach for doublet discrimination is taken here, see our manuscript \cite{f} for more information on doublet discrimination effects on Q and B calculations.
+
+Two channels Chan1DD and Chan2DD are used to detect the doublet events. For instance, the ratio of forward scatter height to forward scatter area is used $\left( \frac{\text{FSC.H}}{\text{FSC.A}} \right)$. The further this ratio is from 1, the more likely it is that the event considered is a doublet. 
+
+Let $P \in [50,100]$ be the percentage of the singlet events to keep; i.e,  only events with forward scattering between $\frac{P}{100} \leq  \frac{FS .H}{FS.A} \leq 2-\frac{P}{100}$ are extracted by the function ReadDD. The output is a 2D array $(ChanGiven,ChanCompanion)$ having the positive fluorescent intensities of channel of interest $ChanGiven$ and the companion channel $ChanCompanion$ which will be used to facilitate the 2D Kmeans clustering, for instance side scattering. 
+
+As the function ReadDD reads only a FCS file, we need to extract the FCS file from extdata folder:
+
+<<label=tab1,echo=TRUE,results=tex>>=
+rm(list=ls(all=TRUE))
+library(flowQB)
+File= system.file("extdata","NIH.fcs",package="flowQB")
+@
+
+The function ReadDD reads first the FCS file $NIH.fcs$, using the read.FCS function in flowCore package.
+Second, the Forward Scattering Area index 1 and Forward Scattering  Height index 2 are used to obtain singlet events with a Doublet Discrimination value equals to P=96. Finally, the processing returns a 2D singlet events for the channel  of interest index 5 (B515), with the companion channel Side Scattering, index 3 (SS).
+
+<<label=tab1,echo=TRUE,results=tex>>=
+P <- 96	
+MFI2D <- ReadDD(File,1,2,P,5,3)
+@
+
+Note that $MFI2D$ is now a 2D array.
+
+\section{Kmeans to Extract Means and SDs}\label{kmean}
+
+The function KmeansMeanSD takes a given 2D array, generates a number of clusters and outputs thr Means and SDs. 
+For instance, the output of ReadDD is used by KmeansMeanSD to generate the required statistics for Q \& B calcultaion. 
+
+K-means clustering in 2D is used as an automated gating procedure in order to measure the bead MFIs and SDs. K-means clustering is a method which partitions a set of data points (or events) into K clusters. Intuitively, each data point is assigned to the cluster whose mean value is closest to that of the data point in question. More formally, it aims to find the partition which minimizes the within-cluster sum of errors.
+
+
+Function KmeansMeanSD returns the MFI Means and SDs of the 8 clusters.
+<<label=tab1,echo=TRUE,results=tex>>=
+MFIMeansSDs=KmeansMeanSD(MFI2D,8,300,300,1)
+@
+
+Note that $MFIMeansSDs$ is now a 2D array having MFI Means and SDs.
+The first dimension is associated to the MFI Means:
+<<label=tab1,echo=TRUE,results=tex>>=
+MFIMeansSDs[,1]
+@
+
+The second dimension is associated to the MFI SDs:
+<<label=tab1,echo=TRUE,results=tex>>=
+MFIMeansSDs[,2]
+@
+
+\section{Mean Fluorescence Intensity (MFI) to Molecules of Equivalent Soluble Fluorochrome (MESF)}\label{mesf}
+
+The function MFI2MESF converts the MFI means to MESF means. For instance, the MFI output of KmeansMeanSD are converted to MESF values. The SDs are also corrected for Illumination-Correction.
+
+The MFI associated with each micro-sphere population (cluster) is a function of the assigned MESF value for that micro-sphere population. Since the cytometer is a linear device, the recorded intensity of the fluorescence pulses (and hence the MFIs) should be correlated linearly with the MESF values, which in turn are proportional to the number of fluorophores on the micro-sphere, and hence to the fluorescence signal, see our maniscript \cite{f}. This gives the relation $MESF = p \times MFI$, where $p$ is a constant. \\
+
+The Q \& B values will be defined in terms of the MESF values. \\
+
+For MESF calculation, the constant conversion between MFI and MESF is set to $p=\frac{357217.00}{7102}$.
+MFIs are converted to MESFs without correcting the SDs as we set $IllCorrCV=0$.
+
+<<label=tab1,echo=TRUE,results=tex>>=
+p <- 357217.00/7102
+MFI2MSEF=MFI2MESF(MFIMeansSDs,p,0)
+@
+
+
+Note that MESF: MESF Mean and MESFV: MESF Variance ($SD^{2}$ or $\sigma^{2}$) and $MFI2MSEF$ is now a 2D array having MESF Means and SDs.
+The first dimension is associated to the MESF Means:
+
+<<label=tab1,echo=TRUE,results=tex>>=
+MFI2MSEF[,1]
+@
+
+The second dimension is associated to the MESF Variances:
+<<label=tab1,echo=TRUE,results=tex>>=
+MFI2MSEF[,2]
+@
+
+
+\section{Linear and Quadratic Regressions}\label{reg}
+
+Let $(c_0,c_1,c_2) = (\sigma_{E}^{2},\frac{1}{K},\sigma^{2}_{S})$ where $\sigma^2_{E}$ summarizes electronic sources of noise, $K$ is the photon transfer constant for the PMTs and  $\sigma^{2}_S$ incorporates intrinsic variance from both the cytometer instrument and the bead product, and any source of noise in general that depends linearly on the light signal. 
+
+We need to estimate the coefficients $(c_0,c_1,c_2)$ in the following quadratic model:
+\begin{equation}
+\text{SD}_{\text{mesf}}^{2} =c_{2} \times \text{MESF}^{2}+ c_{1} \times \text{MESF}  +  c_{0}.
+\end{equation}
+
+The coefficients of this quadratic model form two quantities of interest: Q $= \frac{1}{c_{1}}$ (detection efficiency) and B $= \frac{c_{0}}{c_{1}}$  (optical background or background noise), see the work in \cite{f}.
+
+The R function for regression analysis {\it lm} is used to fit linear regression in the function lrMESF and the quadratic regression in the function qrMESF. 
+
+The functions lrMESF and qrMESF use the Means and $SD^{2}_{s}$ in terms of the MESF values to generate estimate $(c^{e}_0,c^{e}_1,c^{e}_2)$.
+ 
+The Q \& B are estimated as $Q=\frac{1}{c^{e}_{1}}$ and $B=\frac{c^{e}_{0}}{c^{e}_{1}}$\footnote{ If $c^{e}_1=0$, the functions will generate a stop(\it{"No linear term to calculate Q and B"})}.
+
+The MESF  Means and SDs values in $MFI2MSEF$ are used to compute the Q value using the two regression approaches:
+
+\begin{itemize}
+\item Linear Regression: Only bead categories Dim1 (Peak1), Dim2 (Peak2) and Dim3 (Peak3), their MESF Means and SDs values will be extracted from $MFI2MSEF$, are used to estimate Q \& B values. SDs in MFI2MSEF should be correct for illumination.
+
+\item Quadratic regression: the bead categories Dim1 (Peak1), Dim2 (Peak2), Dim3 (Peak3) and Dim4 (Peak4), their MESF Means and SDs values will be extracted from $MFI2MSEF$, are used to estimate Q \& B values. Note the Quadratic regression is processed without correcting the SDs.
+\end{itemize}
+
+For quadratic Q and B calculation, the peaks of the cluster  3 to  cluster 6 are extracted from $MFI2MSEF$ and used in the quadratic regression:
+
+<<label=tab1,echo=TRUE,results=tex>>=
+QQB <- qrMESF(MFI2MSEF,3,6)
+OV <- c(Q=as.real(QQB[1]), B=as.real(QQB[2]), Rsquared=as.real(round(QQB[3], 2)))
+OV[1]
+OV[2]
+OV[3]
+@
+
+Note that $c1 =\frac{1}{Q}$, $c0=\frac{B}{Q}$ and $c2=sigmaS2$. \\
+
+For linear Q and B calculation, the peaks of the cluster  3 to cluster 5 are extracted from $MFI2MSEF$ and  used to compute the linear regression coefficients. 
+As we need the illumination correction MFIs are converted to MESFs and SDs are corrected using the beads in cluster 8.
+
+<<label=tab1,echo=TRUE,results=tex>>=
+IllCorrCV <- MFIMeansSDs[8,2]/MFIMeansSDs[8,1]	
+MFI2MSEF <- MFI2MESF(MFIMeansSDs,p,IllCorrCV)
+LQB <- lrMESF(MFI2MSEF,3,5)
+OV <- c(Q=as.real(LQB[1]), B=as.real(LQB[2]), Rsquared=as.real(round(LQB[3], 2)))
+OV[1]
+OV[2]
+OV[3]
+
+@
+
+Note that $c1 =\frac{1}{Q}$, $c0=\frac{B}{Q}$.
+
+\section{Discriminant Examination}\label{DELTA}
+
+We examine the discriminant of the quadratic equation:
+\begin{equation}
+\text{SD}_{\text{mesf}}^{2} =c^{e}_{2} \times \text{MESF}^{2}+ c^{e}_{1} \times \text{MESF}  +  c^{e}_{0}.
+\end{equation}
+
+Let $\Delta =  (c^{e}_{1})^{2}-4c^{e}_{0}c^{e}_{2}$, there are two possible scenarios: $\Delta \geq 0$ and $\Delta < 0$.
+
+The calculation of $\Delta$ is implemented in the flowQB package, so that its estimate can be used as an additional interpretation tool to aid in understanding cytometer sensitivity:
+\begin{itemize}
+\item  If $\Delta \geq 0$, the larger the variation product of ($\sigma_{E}$) and ($\sigma_{S}$), the lower the upper bound on the detection efficiency Q.
+\item  If $\Delta < 0$, the lower the variation product of ($\sigma_{E}$) and ($\sigma_{S}$), the greater the upper bound on the detection efficiency Q. 
+\end{itemize}
+
+For more details about the physical interpretation of $\Delta$ values, see the work in \cite{f}. \\
+
+Discriminant of the Quadratic Equation:
+
+<<label=tab1,echo=TRUE,results=tex>>=
+Coefs <- DiscriminantExamination(as.real(QQB[1]),as.real(QQB[2]),as.real(QQB[4]))
+
+Coefs[1]
+Coefs[2]
+Coefs[3]
+Coefs[4]
+
+Delta <- Coefs[4]
+if(Delta >= 0) 
+{
+cat(paste("The sign of the discriminant is positive with the value", round(Delta,2), ". "))
+cat("The larger the variation product of (sigmaE2) and (sigmaS2), ")
+cat("the lower the upper bound on the detection efficiency Q. ")
+} 
+if(Delta < 0) 
+{
+cat(paste("The sign of the discriminant is negative with the value", round(Delta,2), ". "))
+cat("The lower the variation product of (sigmaE2) and (sigmaS2), ")
+cat("the greater the upper bound on the detection efficiency Q. ")
+}
+
+@
+
+
+\clearpage
+\bibliographystyle{abbrv}
+\begin{thebibliography}{}
+
+\bibitem{wj}
+J. Wood,
+{ \em Fundamental Flow Cytometer Properties Governing Sensitivity and Resolution}, 
+Cytometry 33, (1998), p.~ 260 - 6.
+\bibitem{HW}
+R. Hoffman and J. Wood,
+{\em  Characterization of Flow Cytometer Instrument Sensitivity},
+ Current Protocols in Cytometry, Chapter 1: Unit 1.20 (2007).
+ 
+ \bibitem{CH}
+E. Chase and R. Hoffman,
+{\em  Resolution of Dimly Fluorescent Particles: a Practical Measure of Fluorescence Sensitivity},
+Cytometry 33 (1998), p.~ 267-279.
+
+\bibitem{f}
+F. El Khettabi et al. 2012, 
+{\em Flow Cytometer Sensitivity: A Quadratic Model}, to be submitted. 
+
+\end{thebibliography}{}
+
+\end{document}
