@@ -98,12 +98,12 @@ MFI2MSEF
 # Usage of the function qrMESF
 QQB=qrMESF(MFI2MSEF,3,6)
 print("Quadratic Q & B")
-OV=c(Q=as.real(QQB[1]), B=as.real(QQB[2]), Rsquared=as.real(round(QQB[3], 2)), sigmaS2=as.real((QQB[4])))
+OV=c(Q=as.double(QQB[1]), B=as.double(QQB[2]), Rsquared=as.double(round(QQB[3], 2)), sigmaS2=as.double((QQB[4])))
 print(OV)
 # Note  c1 =1/Q, c0= B/Q and c2 = sigmaS2
 
 # Discriminant of the Quadratic Equation
-Coefs <- DiscriminantExamination(as.real(QQB[1]),as.real(QQB[2]),as.real(QQB[4]))
+Coefs <- DiscriminantExamination(as.double(QQB[1]),as.double(QQB[2]),as.double(QQB[4]))
 
 Delta=Coefs[4]
 

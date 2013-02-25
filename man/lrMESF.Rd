@@ -94,7 +94,7 @@ MFI2MSEF
 # Usage of the function lrMESF
 LQB=lrMESF(MFI2MSEF,3,5)
 print("Linear QB")
-OV=c(Q=as.real(LQB[1]), B=as.real(LQB[2]), Rsquared=as.real(round(LQB[3], 2)))
+OV=c(Q=as.double(LQB[1]), B=as.double(LQB[2]), Rsquared=as.double(round(LQB[3], 2)))
 print(OV)
 # Note  c1 =1/Q, c0= B/Q 
 
