@@ -67,7 +67,7 @@ if(nClusters >= 1)
   {
     Events <- which(cl$cluster==jc)
     vect <- transformed2Darray[Events, 1]
-    percentiles <- as.real(quantile(vect, probs))
+    percentiles <- as.double(quantile(vect, probs))
     te <- Events[which( percentiles[1] <= vect & vect <= percentiles[2])]
     if(length(te) > 0)  Means[jc] <- mean(exp(transformed2Darray[te, 1]))
     if(length(te) > 0)  SDs[jc] <- sd(exp(transformed2Darray[te, 1]))

@@ -176,7 +176,7 @@ For quadratic Q and B calculation, the peaks of the cluster  3 to  cluster 6 are
 
 <<label=tab1,echo=TRUE,results=tex>>=
 QQB <- qrMESF(MFI2MSEF,3,6)
-OV <- c(Q=as.real(QQB[1]), B=as.real(QQB[2]), Rsquared=as.real(round(QQB[3], 2)))
+OV <- c(Q=as.double(QQB[1]), B=as.double(QQB[2]), Rsquared=as.double(round(QQB[3], 2)))
 OV[1]
 OV[2]
 OV[3]
@@ -191,7 +191,7 @@ As we need the illumination correction MFIs are converted to MESFs and SDs are c
 IllCorrCV <- MFIMeansSDs[8,2]/MFIMeansSDs[8,1]	
 MFI2MSEF <- MFI2MESF(MFIMeansSDs,p,IllCorrCV)
 LQB <- lrMESF(MFI2MSEF,3,5)
-OV <- c(Q=as.real(LQB[1]), B=as.real(LQB[2]), Rsquared=as.real(round(LQB[3], 2)))
+OV <- c(Q=as.double(LQB[1]), B=as.double(LQB[2]), Rsquared=as.double(round(LQB[3], 2)))
 OV[1]
 OV[2]
 OV[3]
@@ -220,7 +220,7 @@ For more details about the physical interpretation of $\Delta$ values, see the w
 Discriminant of the Quadratic Equation:
 
 <<label=tab1,echo=TRUE,results=tex>>=
-Coefs <- DiscriminantExamination(as.real(QQB[1]),as.real(QQB[2]),as.real(QQB[4]))
+Coefs <- DiscriminantExamination(as.double(QQB[1]),as.double(QQB[2]),as.double(QQB[4]))
 
 Coefs[1]
 Coefs[2]
