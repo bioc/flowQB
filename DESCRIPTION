@@ -1,7 +1,7 @@
 Package: flowQB
 Type: Package
 Title: Flow cytometer sensitivity-Automatic Q and B Calculations.
-Version: 1.2.0
+Version: 1.3.0
 Date: 2011-11-15
 Author: Faysal El Khettabi
 Maintainer: Faysal El Khettabi <faysal.el.khettabi@gmail.com>
