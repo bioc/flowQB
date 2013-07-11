@@ -1,0 +1,456 @@
+%\VignetteIndexEntry{flowQB package}
+%\VignetteKeywords{flow cytometry,High Throughput,Doublet,Mean Fluorescence Intensity (MFI),linear and quadratic regressions,Q (detector efficiency),B (background light level),Instrument Sensitivity,K-means,Molecules of Equivalent Soluble Fluorochrome (MESF),BD CS&T beads}
+% /home/fkhettabi/R/x86_64-unknown-linux-gnu-library/R-2.15.0/bin/R CMD Sweave FEKflowQB.Rnw 
+% pdflatex FEKflowQB.tex
+
+
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amscd}
+\usepackage[tableposition=top]{caption}
+\usepackage{ifthen}
+\usepackage[utf8]{inputenc}
+
+\usepackage{Sweave}
+\begin{document}
+
+\title{% Flow Cytometer Sensitivity: A Quadratic Model
+% Automated Determination of Detection Efficiency (Q)  Using a Quadratic Model 
+Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity %-Part I: Modeling, Resolution and Implementation 
+\footnote{This project was supported by the Terry Fox Foundation and the Terry Fox Research Institute and by grant 700374 from
+the Canadian Cancer Society, Toronto.}  \\ (flowQB Package:Advanced Processing) 
+} 
+
+
+%\titlerunning{Short form of title}        % if too long for running head
+\author{  Faysal  El Khettabi \\
+Terry Fox Laboratory \\
+British Columbia Cancer Agency \\
+Vancouver, BC, Canada\\
+$fkhettabi@bccrc.ca$ \\
+$faysal.el.khettabi@gmail.com$ }
+
+\maketitle
+
+\section{Licensing}
+Under the Artistic License, you are free to use and redistribute this software.
+
+\section{Introduction}
+We developed an automated approach to determine a cytometer's detection efficiency (Q) and background illumination (B) independent of a pre-defined bead set, based on Kmeans clustering and quadratic regression methods. We used a quadratic formulation for modelling Q and B that offers more physical insight about cytometry sensitivity than its truncated linear version \cite{wj,CH,HW}, by considering the term $CV_{intrinsic}$ as part of the problem to solve. Using Kmeans
+ in place of manual gating enabled an automated analysis to calculate  Q, B and $CV_{intrinsic}$ quantities objectively and in a time-efficient manner. 
+We validated our approach on flow cytometry sensitivity datasets through comparison to Q, B and $CV_{intrinsic}$ values obtained by manual analysis. The fully automated results ensure adequate analysis for the flow cytometry sensitivity datasets. Our approach is implemented through the R/Bioconductor package \emph{flowQB}.
+
+\begin{itemize}
+\item {\bf Methods:} We propose a collection of R generic functions to calculate  Q, B and $CV_{intrinsic}$ quantities objectively and in a time-efficient manner. We have implemented these functions in the Bioconductor package flowQB. We illustrate their use in this draft.
+\item {\bf Results} We hope that these proposed R generic functions will become the base for the development of many tools to calculate  Q, B and $CV_{intrinsic}$.
+\item {\bf keywords} Flow Cytometry, High Throughput, Doublet, Instrument Sensitivity, Kmeans, Mean Fluorescence Intensity (MFI),  Molecules of Equivalent Soluble Fluorochrome (MESF), linear and quadratic regressions, Q (detector efficiency) , B (background light level).
+\end{itemize}
+
+
+\subsection*{\bf Auto-Gating of Bead Populations}\label{kmeanss}
+
+First read the data which is in a specific folder. Our data is in flowQB-extdata folder:
+<<label=tab1,echo=TRUE,results=tex>>=
+rm(list=ls(all=TRUE))
+library("flowQB")
+File= system.file("extdata","NIH3.fcs",package="flowQB")
+library(flowCore)
+Data=read.FCS(File)
+@
+
+We used the logicle transformation to transform the data as previously described in \cite{lt}. 
+Automatically, it estimates the logicle transformation parameters using Data and the Markers:
+
+<<label=tab1,echo=TRUE,results=tex>>=
+Markers=c("FSC-A","SSC-A","B710-A","B515-A","G780-A","G710-A","G660-A","G610-A" 
+,"G560-A", "R780-A","R710-A","R660-A","V800-A","V705-A","V655-A"
+,"V605-A","V585-A","V565-A","V545-A","V450-A")
+lgcl <- estimateLogicle(Data, channels = Markers)
+TransformedData <- transform(Data, lgcl)
+@
+
+Get the logicle  Transformed MFI  for each event:
+<<label=tab1,echo=TRUE,results=tex>>=
+TransformedMFI=data.frame(exprs(TransformedData))
+@
+Get the original MFI  for each event
+<<label=tab1,echo=TRUE,results=tex>>=
+OriginalMFI=data.frame(exprs(Data))
+@
+
+To identify bead singlets, we used the approach of gating on FSC \& SSC (see \cite{CH,HW} for more information on doublet discrimination effects on Q and B calculations). The parameters  $(a1,b1)$ gate on FSC and $(a2,b2)$ gate on SSC should be defined by the user. The side scattering index is 3 and the forward scattering index is 1. We set the $(a1,b1)$ gate on FSC and $(a2,b2)$ gate on SSC as:
+
+<<label=tab1,echo=TRUE,results=tex>>=
+a1=3.3
+b1=3.6
+a2=2.5
+b2=2.85
+SingletsIndices=which(TransformedMFI[,1]> a1 & TransformedMFI[,1] < b1 
+ & TransformedMFI[,3]> a2 & TransformedMFI[,3] < b2)
+@
+
+%  The results is in the Figure \ref{singlets}.
+%% <<echo=TRUE,fig=TRUE,width=4,height=4>>=
+%%
+%\begin{figure}[htbp]
+%\begin{center}
+%\setkeys{Gin}{width=0.5\textwidth}
+%<<echo=TRUE,fig=TRUE>>=
+%plot(TransformedMFI[,1],TransformedMFI[,3],xlab=Markers[1],ylab=Markers[2])
+%points(TransformedMFI[SingletsIndices,1],TransformedMFI[SingletsIndices,3],xlab=Markers[1],ylab=Markers[2],col="red")
+%@
+%\caption{Singlets oobtained by the approach of gating on FSC \& SSC.}
+%\label{singlets}
+%\end{center}
+%\end{figure}
+
+\subsection*{\bf Distribution Resolution Metric}\label{PS}
+The set of markers that infer the existence of the actual bead populations, 
+<<label=tab1,echo=TRUE,results=tex>>=
+nClusters=7
+@
+in the data are determined by using the distribution resolution metric \cite{wj,OR}, $R_{d}=\frac{\mu_{1}-\mu_{2}}{\sigma_{1}+\sigma_{2}}$, which is the difference in the means $\mu_{1}$ and $\mu_{2}$, of two populations divided by the sum of the standard deviations of the distributions, $\sigma_{1}$ and $\sigma_{2}$. The user can select only a set of markers for assessment, in this example, we selected all markers in Data and we get their MFI for each considered singlet event. To facilitate the identification of the bead sub-populations, we will perform  2D Kmeans auto-gating on the given marker and side scattering (SSC). The index 3 is associated to the SSC in the original Data.
+
+<<label=tab1,echo=TRUE,results=tex>>=
+MarkersForAssessment=c(3,4,5,6,7)
+TSSINGLETS=TransformedMFI[SingletsIndices,MarkersForAssessment]
+OSSINGLETS=data.frame(OriginalMFI[SingletsIndices,MarkersForAssessment])
+
+@
+
+The index 1 is now associated to the SSC in the new data TSSINGLETS and OSSINGLETS. Kmeans clustering method to define the actual bead populations using 2D gating, $(1,markerindex)$, for instance the marker B515 has now index 3 in the new data TSSINGLETS and OSSINGLETS. Gaussian distribution fitting  is used for peak statistics extraction, the fitting parameters means and standard deviations are the estimations of MFIs and SDs values. The function "gPS" in flowQB has the  Gaussian distribution fitting which uses R software "MASS" package \cite{mass}.
+<<label=tab1,echo=TRUE,results=tex>>=
+gps=gPS(TSSINGLETS[,c(1,3)],OSSINGLETS[,c(1,3)],7)
+
+@
+
+
+Estimations of MFIs and SDs values using Robust Statistics \cite{rs} is implemented in the function "rPS" in flowQB.
+<<label=tab1,echo=TRUE,results=tex>>=
+rps=rPS(TSSINGLETS[,c(1,3)],OSSINGLETS[,c(1,3)],7)
+
+@
+
+So now we are ready to turn the extracted peak statistics into Table  \ref{tab:one} for the marker B515, using
+
+<<label=tab1,echo=TRUE,results=tex>>=
+library(xtable)
+PSdataB515=data.frame(NE=gps[,1]
+,gMeans=gps[,2]
+,rMeans=rps[,2]
+,gSDs=gps[,3]
+,rSDs=rps[,3]
+,gRDs=gps[,4]
+,rRDs=rps[,4])
+row.names(PSdataB515)=paste("Peak",1:nClusters,sep="")
+print(xtable(PSdataB515, caption = 
+"Extracted Gaussian (g), Robust (r) peak statistics and associated RDs. 
+NE is the number of events.", label = "tab:one"))
+@
+
+
+\subsection*{\bf Multi-level Kmeans}\label{qr}
+
+
+Estimations of MFIs and SDs values using multi level Kmeans is implemented in the functions "MultilevelgPS" and "MultilevelrPS" in flowQB.
+The function "MultilevelrPS" uses robust statsitics and "MultilevelgPS" uses Gaussian distribution fitting R software "MASS" package  to extract the statistics for the peak found by multi-Kmeans.
+
+<<label=tab1,echo=TRUE,results=tex>>=
+mrps=MultilevelrPS(TSSINGLETS[,2:4],OSSINGLETS[,2:4],7)
+mgps=MultilevelgPS(TSSINGLETS[,2:4],OSSINGLETS[,2:4],7)
+library(xtable)
+print(xtable(mrps, caption = "Multi level Kmeans data with Robust (r) statistics  for  peaks. 
+NE is the number of events.", label = "tab:mr"))
+print(xtable(mgps, caption = 
+"Multi level Kmeans data with Gaussian (g) statistics  for  peaks. 
+NE is the number of events.", label = "tab:mg"))
+@
+
+\subsection*{\bf Model Fitting uses Weighted Regression Method}\label{qr}
+
+We implemented the weighted least squares regression by using the function (lm) in the R "utils" package \cite{r} in an iterative fashion to define the most probable weights, for more details about weights derivation see Supplemental Information. For the first iteration, the weights are, $(\omega_{i}=\frac{n_{i}-1}{2(MFI^{2}_{i})})_{1 \leq i \leq n}$, where $MFI_{i}$ is the mean fluorescent intensity associated to the cluster (Peak) $i$ and $n_{i}$ its number of events and $n$ is the number of the clusters used in the fitting model. The initial estimates of $(c_{j})_{j=0,1,2}$ from the quadratic equation $SD^{2}=c_{0}+ c_{1}*MFI+c_{2}*MFI^{2}$ are used to evaluate the weights, $(\omega_{i}=\frac{n_{i}-1}{2(c_{0}+c_{1}*MFI_{i}+c_{2}*MFI^{2}_{i})^2})_{1 \leq i \leq n}$, and to rerun this computation until it converges. 
+
+
+Peaks for model fitting:
+<<label=tab1,echo=TRUE,results=tex>>=
+pi=1
+pf=6
+@
+CVs are: 
+<<label=tab1,echo=TRUE,results=tex>>=
+rPSdataB515=data.frame(NE=rps[,1],rMeans=rps[,2]
+ ,rSDs=rps[,3])
+CVs=rPSdataB515[,3]/rPSdataB515[,2]
+@
+No calibration is set:
+<<label=tab1,echo=TRUE,results=tex>>=
+p=1
+Q2D=MFI2MESF(rPSdataB515[,2:3],p,0)
+@
+
+Ordinary quadratic regression is used to get the first coefficients and further 5 iterations using weighted quadratic regression are processed:
+<<label=tab1,echo=TRUE,results=tex>>=
+NE=rPSdataB515[pi:pf,1]
+S=Q2D[pi:pf,2]
+c0=0
+c1=1
+c2=0
+WWs=0.5*(NE-1)/((1+c2*S^2+c1*S+c0)^2)
+for( iter in 1:6)
+{
+QQBw=qrWEIGHTEDMESF(Q2D,pi,pf,WWs)
+COFS=c(c0,as.numeric(QQBw)[5],as.numeric(QQBw)[8],c1,as.numeric(QQBw)[6],as.numeric(QQBw)[9],100*c2,as.numeric(QQBw)[7],as.numeric(QQBw)[10])
+if(iter==2) COEFFS=COFS
+if(iter>2) COEFFS=rbind(COEFFS,COFS)
+c1=1/as.numeric(QQBw)[1]
+c2=as.numeric(QQBw)[4]
+c0=as.numeric(QQBw)[2]/as.numeric(QQBw)[1]
+WWs=0.5*(NE-1)/((1+c2*S^2+c1*S+c0)^2)
+}
+@
+
+The weights are 
+<<label=tab1,echo=TRUE,results=tex>>=
+print(WWs)
+
+@
+
+So now we are ready to turn the $COEFFS$ into Table \ref{tab:3}, using
+
+<<label=tab1,echo=TRUE,results=tex>>=
+COEFFS=data.frame(COEFFS)
+names(COEFFS)= c( "c0" , "Pc0" ,"StdErrorc0", "c1" , "Pc1","StdErrorc1","c2percent" , "Pc2","StdErrorc2" )
+row.names(COEFFS)=paste("Iter",1:5,sep="")
+print(xtable(COEFFS, caption = "Computed coefficients $(c_{0},c_{1},c_{2})$ 
+using weighted quadratic regression where $Pc_{i}$ is the pvalue associated to $c_{i}$ and $StdErrorc_{i}$ is Std. Error of $c_{i}$.", label = "tab:3"))
+@
+
+The $Q=\frac{1}{c_{1}}$ , $B=\frac{c_{0}}{c_{1}}$ and $CV_{intrinsic}=\sqrt{c_{2}}$ quantities are, 
+<<label=tab1,echo=TRUE,results=tex>>=
+Q=1/c1
+B=c0/c1
+CVintrinsic=sqrt(c2)
+print(paste("Detection efficiency-Q=",round(Q,4)))
+print(paste("Background illumination-B=",round(B,4)))
+print(paste("Intrinsic CV of the beads-CVintrinsic=",round(CVintrinsic,4)))
+@
+
+The discriminant $\Delta$ and the roots are:
+<<label=tab1,echo=TRUE,results=tex>>=
+delta=c1^2-c0*c2*4
+R1=-c1-sqrt(delta)
+R1=R1/(2*c2)
+R2=-c1+sqrt(delta)
+R2=R2/(2*c2)
+print(paste("Discriminant Delta=",round(delta,4)))
+print(paste("Root1=",round(R1,4)))
+print(paste("Root2=",round(R2,4)))
+@
+
+
+
+\subsection*{\bf Robust statistics from Multi-level Kmeans and $Q$ , $B$ and $CV_{intrinsic}$ calculation}\label{qr2}
+
+CVs are: 
+<<label=tab1,echo=TRUE,results=tex>>=
+mrPSdataB515=data.frame(NE=mrps[,1],rMeans=mrps[,3]
+ ,rSDs=mrps[,6])
+CVs=mrPSdataB515[,3]/mrPSdataB515[,2]
+@
+No calibration is set:
+<<label=tab1,echo=TRUE,results=tex>>=
+p=1
+Q2D=MFI2MESF(mrPSdataB515[,2:3],p,0)
+@
+
+Ordinary quadratic regression is used to get the first coefficients and further 5 iterations using weighted quadratic regression are processed:
+<<label=tab1,echo=TRUE,results=tex>>=
+NE=mrPSdataB515[pi:pf,1]
+S=Q2D[pi:pf,2]
+c0=0
+c1=1
+c2=0
+WWs=0.5*(NE-1)/((1+c2*S^2+c1*S+c0)^2)
+for( iter in 1:6)
+{
+QQBw=qrWEIGHTEDMESF(Q2D,pi,pf,WWs)
+COFS=c(c0,as.numeric(QQBw)[5],as.numeric(QQBw)[8],c1,as.numeric(QQBw)[6],as.numeric(QQBw)[9],100*c2,as.numeric(QQBw)[7],as.numeric(QQBw)[10])
+if(iter==2) COEFFS=COFS
+if(iter>2) COEFFS=rbind(COEFFS,COFS)
+c1=1/as.numeric(QQBw)[1]
+c2=as.numeric(QQBw)[4]
+c0=as.numeric(QQBw)[2]/as.numeric(QQBw)[1]
+WWs=0.5*(NE-1)/((1+c2*S^2+c1*S+c0)^2)
+}
+@
+
+The weights are 
+<<label=tab1,echo=TRUE,results=tex>>=
+print(WWs)
+
+@
+
+So now we are ready to turn the $COEFFS$ into Table \ref{tab:mrq}, using
+
+<<label=tab1,echo=TRUE,results=tex>>=
+COEFFS=data.frame(COEFFS)
+names(COEFFS)= c( "c0" , "Pc0" ,"StdErrorc0", "c1" , "Pc1","StdErrorc1","c2percent" , "Pc2","StdErrorc2" )
+row.names(COEFFS)=paste("Iter",1:5,sep="")
+print(xtable(COEFFS, caption = "Multi-level Kmeans-Robust: Computed coefficients $(c_{0},c_{1},c_{2})$ 
+using weighted quadratic regression where $Pc_{i}$ is the pvalue associated to $c_{i}$ and $StdErrorc_{i}$ is Std. Error of $c_{i}$.", label = "tab:mrq"))
+@
+
+For multi-level Kmeans-Robust, the $Q=\frac{1}{c_{1}}$ , $B=\frac{c_{0}}{c_{1}}$ and $CV_{intrinsic}=\sqrt{c_{2}}$ quantities are, 
+<<label=tab1,echo=TRUE,results=tex>>=
+Q=1/c1
+B=c0/c1
+CVintrinsic=sqrt(c2)
+print(paste("Detection efficiency-Q=",round(Q,4)))
+print(paste("Background illumination-B=",round(B,4)))
+print(paste("Intrinsic CV of the beads-CVintrinsic=",round(CVintrinsic,4)))
+@
+
+And the discriminant $\Delta$ and the roots are:
+<<label=tab1,echo=TRUE,results=tex>>=
+delta=c1^2-c0*c2*4
+R1=-c1-sqrt(delta)
+R1=R1/(2*c2)
+R2=-c1+sqrt(delta)
+R2=R2/(2*c2)
+print(paste("Discriminant Delta=",round(delta,4)))
+print(paste("Root1=",round(R1,4)))
+print(paste("Root2=",round(R2,4)))
+@
+
+
+
+\subsection*{\bf Gaussian statistics from Multi-level Kmeans and $Q$ , $B$ and $CV_{intrinsic}$ calculation}\label{qr2}
+
+CVs are: 
+<<label=tab1,echo=TRUE,results=tex>>=
+mgPSdataB515=data.frame(NE=mgps[,1],rMeans=mgps[,3]
+ ,rSDs=mgps[,6])
+CVs=mgPSdataB515[,3]/mgPSdataB515[,2]
+@
+No calibration is set:
+<<label=tab1,echo=TRUE,results=tex>>=
+p=1
+Q2D=MFI2MESF(mgPSdataB515[,2:3],p,0)
+@
+
+Ordinary quadratic regression is used to get the first coefficients and further 5 iterations using weighted quadratic regression are processed:
+<<label=tab1,echo=TRUE,results=tex>>=
+NE=mgPSdataB515[pi:pf,1]
+S=Q2D[pi:pf,2]
+c0=0
+c1=1
+c2=0
+WWs=0.5*(NE-1)/((1+c2*S^2+c1*S+c0)^2)
+for( iter in 1:6)
+{
+QQBw=qrWEIGHTEDMESF(Q2D,pi,pf,WWs)
+COFS=c(c0,as.numeric(QQBw)[5],as.numeric(QQBw)[8],c1,as.numeric(QQBw)[6],as.numeric(QQBw)[9],100*c2,as.numeric(QQBw)[7],as.numeric(QQBw)[10])
+if(iter==2) COEFFS=COFS
+if(iter>2) COEFFS=rbind(COEFFS,COFS)
+c1=1/as.numeric(QQBw)[1]
+c2=as.numeric(QQBw)[4]
+c0=as.numeric(QQBw)[2]/as.numeric(QQBw)[1]
+WWs=0.5*(NE-1)/((1+c2*S^2+c1*S+c0)^2)
+}
+@
+
+The weights are 
+<<label=tab1,echo=TRUE,results=tex>>=
+print(WWs)
+
+@
+
+So now we are ready to turn the $COEFFS$ into Table \ref{tab:mrq}, using
+
+<<label=tab1,echo=TRUE,results=tex>>=
+COEFFS=data.frame(COEFFS)
+names(COEFFS)= c( "c0" , "Pc0" ,"StdErrorc0", "c1" , "Pc1","StdErrorc1","c2percent" , "Pc2","StdErrorc2" )
+row.names(COEFFS)=paste("Iter",1:5,sep="")
+print(xtable(COEFFS, caption = "Multi-level Kmeans-Gaussian: Computed coefficients $(c_{0},c_{1},c_{2})$ 
+using weighted quadratic regression where $Pc_{i}$ is the pvalue associated to $c_{i}$ and $StdErrorc_{i}$ is Std. Error of $c_{i}$.", label = "tab:mgq"))
+@
+
+For multi-level Kmeans-Gaussian, the $Q=\frac{1}{c_{1}}$ , $B=\frac{c_{0}}{c_{1}}$ and $CV_{intrinsic}=\sqrt{c_{2}}$ quantities are, 
+<<label=tab1,echo=TRUE,results=tex>>=
+Q=1/c1
+B=c0/c1
+CVintrinsic=sqrt(c2)
+print(paste("Detection efficiency-Q=",round(Q,4)))
+print(paste("Background illumination-B=",round(B,4)))
+print(paste("Intrinsic CV of the beads-CVintrinsic=",round(CVintrinsic,4)))
+@
+
+And the  discriminant $\Delta$ and the roots are:
+<<label=tab1,echo=TRUE,results=tex>>=
+delta=c1^2-c0*c2*4
+R1=-c1-sqrt(delta)
+R1=R1/(2*c2)
+R2=-c1+sqrt(delta)
+R2=R2/(2*c2)
+print(paste("Discriminant Delta=",round(delta,4)))
+print(paste("Root1=",round(R1,4)))
+print(paste("Root2=",round(R2,4)))
+@
+
+
+
+
+
+\clearpage
+\bibliographystyle{abbrv}
+\begin{thebibliography}{}
+
+\bibitem{wj}
+J. Wood,
+{ \em Fundamental Flow Cytometer Properties Governing Sensitivity and Resolution}, 
+Cytometry 33, (1998), p.~ 260 - 6.
+\bibitem{HW}
+R. Hoffman and J. Wood,
+{\em  Characterization of Flow Cytometer Instrument Sensitivity},
+ Current Protocols in Cytometry, Chapter 1: Unit 1.20 (2007).
+ 
+ \bibitem{CH}
+E. Chase and R. Hoffman,
+{\em  Resolution of Dimly Fluorescent Particles: a Practical Measure of Fluorescence Sensitivity},
+Cytometry 33 (1998), p.~ 267-279.
+
+\bibitem{lt}
+D. R. Parks, m. Roederer, W. A. Moore,
+{\em A new "Logicle" display method avoids deceptive effects of logarithmic scaling for low signals and compensated data.}  Cytometry Part  (A), (2006), 96(6), p.~541-51.
+
+\bibitem{OR}
+A. Ortyn, E. Hall, C. George, K. Frost, A. Basiji, J. Perry, A. Zimmerman,
+D. Coder, P. Morrissey,
+{\em  Sensitivity measurement and compensation in spectral imaging},  Cytometry 69, (2006), p.~ 852 - 862.
+
+\bibitem{rs}
+{\em  Robust Statistics in BD FACSDivaTM 6.0 Software}, BD Tech Note $\# 23-9609-00$. (2007).
+
+
+\bibitem{r}
+R Development Core Team, 
+{\em R: A Language and Environment for Statistical Computing}, R Foundation for Statistical Computing, Vienna, Austria, (2011),
+
+\bibitem{BC}
+R. Ihaka  and R. Gentleman R. 
+{\em  A Language for Data Analysis and Graphics}, Journal of Computational and Graphical Statistics, vol. 5, No. 3, (1996), p.~299-314.
+
+
+\bibitem{mass}
+W. N. Venables and B. D. Ripley,
+{ \em Modern Applied Statistics with S}, Springer, Fourth Edition, New York, (2002).
+
+\bibitem{f}
+F. El Khettabi et al. 2013, 
+{\em Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivit}, to be submitted. 
+
+
+\end{thebibliography}{}
+
+\end{document}
