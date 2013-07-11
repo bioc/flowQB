@@ -46,5 +46,5 @@ This function is a 2D processing of selected marker with SSC. A general function
 See MultilevelgPS function
 }
 \examples{
-# see the  vignette flowQB_Sweave_NIH2_.Rnw for a detailed example.
+# The vignettes $AdvancedflowQBNIH2.Rnw$ and $AdvancedflowQBNIH3.Rnw$ have a detailed illustration how to use this function.
 }

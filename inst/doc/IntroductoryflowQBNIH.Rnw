@@ -16,7 +16,7 @@
 \title{
 Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity %-Part I: Modeling, Resolution and Implementation 
 \footnote{This project was supported by the Terry Fox Foundation and the Terry Fox Research Institute and by grant 700374 from
-the Canadian Cancer Society, Toronto.}  \\ (flowQB Package: Introductory Processing) 
+the Canadian Cancer Society, Toronto.}  \\ (flowQB Package: Introductory Processing Using Data NIH)) 
 } 
 \maketitle
 

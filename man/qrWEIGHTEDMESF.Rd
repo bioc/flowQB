@@ -54,6 +54,8 @@ lrMESF function.
 }
 \examples{
 
+#  The vignettes $AdvancedflowQBNIH2.Rnw$ and $AdvancedflowQBNIH3.Rnw$ have a detailed illustration how to use this function. Here a simple example.
+
 rm(list=ls(all=TRUE))
 rm(list=ls(all=TRUE))
 library("flowQB")

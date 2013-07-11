@@ -2,14 +2,10 @@
 \alias{flowQB-package}
 \alias{flowQB}
 \docType{package}
-\title{ Automatic Q and B Calculations}
+\title{ Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity }
 \description{
 
-We implemented  a set of generic functions for an automatic Q and B calculations:
-To estimate automatically the detector efficiency (Q), optical background (B), and electronic noise and to determine the optimal voltages for each fluorescence parameter when a series of voltages are applied to the photomultiplier tube (PMT) to setup the optimal separation and sensitivity. 
-
-The flowQB package is a R implementation of the theoretical description of Q and B calculation in our manuscript "Flow Cytometer Sensitivity: A Quadratic Model".
-
+We developed an automated approach to determine a cytometer's detection efficiency (Q) and background illumination (B) independent of a pre-defined bead set, based on Kmeans clustering and quadratic regression methods. We used a quadratic formulation for modelling Q and B that offers more physical insight about cytometry sensitivity than its truncated linear version, by considering the term CVintrinsic as part of the problem to solve. Using Kmeans in place of manual gating enabled an automated analysis to calculate  Q, B and CVintrinsic quantities objectively and in a time-efficient manner. This flowQB package is a R implementation of the theoretical description of Q, B and CVintrinsic calculations in our manuscript "Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity".
 }
 
 \details{
@@ -23,7 +19,8 @@ LazyLoad: \tab yes\cr
 }
 
 
-Six generic functions are used to conduct an automatic Q and B calculation with the following utilities:
+A number of generic functions are used to conduct an automatic Q, B and CVintrinsic calculations, the following functions are considered as introductory:
+
 
 Function ReadDD reads the given FCS file and removes doublet events in the channel of interest(Chang). The ReadDD function returns a 2D array having the mean flourescent intensities(MFI) of the singlet events, first column is for the channel of interest and the second column  is for the  companion channel to be used to facilitate the identification of the bead sub-populations.
 
@@ -35,13 +32,17 @@ Functions lrMESF and qrMESF are the linear and quadratic regressions which use t
 
 Function DiscriminantExamination uses the values in the output of the function qrMESF to estimate the discriminant of the resulting quadratic equation and can be used as an additional interpretation tool to aid in understanding cytometer sensitivity.
 
-Illustrative scripts are provided in examples.
+
+An advanced processing uses logicle transformation to transform the data. To identify bead singlets, it used the approach of gating on FSC-SSC. It performed Kmeans clustering as an automated gating procedure in order to measure the bead MFIs and SDs. Two strategies are used: (1) 2D Kmeans processing, the selected marker with SSC or  (2) Multi-level gating of a set of selected channels. The functions "gPS" and "rPS" are for 2D Kmeans processing. "gPS" function output Gaussian distribution fitting for peak statistics extraction, the fitting parameters means and standard deviations are the estimations of MFIs and SDs values. Estimations of MFIs and SDs values using Robust Statistics is implemented in the function "rPS" in flowQB. Estimations of MFIs and SDs values using multi level Kmeans is implemented in the functions ”MultilevelgPS” and ”MultilevelrPS” in flowQB. The function ”MultilevelrPS” uses robust statsitics and ”MultilevelgPS” uses Gaussian distribution fitting R software ”MASS” package to extract the statistics for the peak found by multi-Kmeans gating. We implemented the weighted least squares regression by using the function "qrWEIGHTEDMESF".
+
+The vignettes AdvancedflowQBNIH2 and AdvancedflowQBNIH3  have a detailed illustration how to use these functions:  "gPS", "rPS" ”MultilevelgPS” , ”MultilevelrPS” and "qrWEIGHTEDMESF".
+
+For the introductory processing, examples are provided here and in the vignette IntroductoryflowQBNIH.
 
 }
 \author{
 Faysal El Khettabi
 }
-
 \references{ 
 Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted. }
 \keyword{ package}

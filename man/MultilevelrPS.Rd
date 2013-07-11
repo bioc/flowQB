@@ -47,5 +47,5 @@ This function is a multi-level processing as the function rPS without using the 
 See rPS function
 }
 \examples{
-# see the  vignette flowQB_Sweave_NIH2_.Rnw for a detailed example.
+#  The vignettes $AdvancedflowQBNIH2.Rnw$ and $AdvancedflowQBNIH3.Rnw$ have a detailed illustration how to use this function.
 }
