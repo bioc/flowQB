@@ -2,7 +2,7 @@
 \alias{flowQB-package}
 \alias{flowQB}
 \docType{package}
-\title{ Automatic Q and B Calculation}
+\title{ Automatic Q and B Calculations}
 \description{
 
 We implemented  a set of generic functions for an automatic Q and B calculations:
@@ -43,7 +43,7 @@ Faysal El Khettabi
 }
 
 \references{ 
-F. El Khettabi et al. 2012, Flow Cytometer Sensitivity: A Quadratic Model to be submitted.}
+Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted. }
 \keyword{ package}
 \seealso{ 
 J. Wood, Fundamental Flow Cytometer Properties Governing Sensitivity and Resolution, 

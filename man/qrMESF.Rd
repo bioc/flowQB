@@ -40,7 +40,7 @@ E-mail: fkhettabi@bccrc.ca
 }
 
 \references{ 
-Faysal El Khettabi et al. 2012, Flow Cytometer Sensitivity: A Quadratic Model, to be submitted. 
+Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted. 
 }
 \keyword{ package}
 \seealso{ 
@@ -89,7 +89,7 @@ MFI2MSEF
 # Usage of the function qrMESF
 QQB=qrMESF(MFI2MSEF,3,6)
 print("Quadratic Q & B")
-OV=c(Q=as.double(QQB[1]), B=as.double(QQB[2]), Rsquared=as.double(round(QQB[3], 2)), sigmaS2=as.double((QQB[4])))
+OV=c(Q=as.numeric(QQB[1]), B=as.numeric(QQB[2]), Rsquared=as.numeric(round(QQB[3], 2)), sigmaS2=as.numeric((QQB[4])))
 print(OV)
 # Note  c1 =1/Q, c0= B/Q and c2 = sigmaS2
 

@@ -51,7 +51,7 @@ The returned 2D array will be clustered using the function KmeansMeanSD.
 
 \references{
 %% ~put references to the literature/web site here ~
-Faysal El Khettabi et al. 2012, Flow Cytometer Sensitivity: A Quadratic Model, to be submitted.
+Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted.
 }
 \author{Faysal El Khettabi \\
 Terry Fox Laboratory \\

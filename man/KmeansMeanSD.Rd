@@ -37,15 +37,8 @@ These MFI Means and SDs will be first converted to MESF Means and SDs using the 
 \value{
 Output for each cluster the statistics: MFI Mean and standard deviation (SD).
 }
-\references{
-%% ~put references to the literature/web site here ~
-Faysal El Khettabi et al. 2012, Flow Cytometer Sensitivity: A Quadratic Model, to be submitted.
-}
-\author{Faysal El Khettabi \\
-Terry Fox Laboratory \\
-British Columbia Cancer Agency \\
-Vancouver, BC, Canada \\
-E-mail: fkhettabi@bccrc.ca 
+\references{ 
+Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted.
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 

@@ -39,7 +39,7 @@ Output for each cluster the robust statistics: Medians and robust standard devia
 }
 \references{
 %% ~put references to the literature/web site here ~
- F. El Khettabi, E. Ramadan and R. Brinkman, Flow Cytometer Sensitivity: a Quadratic Approach, to be submitted.
+Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted. 
 }
 \author{Faysal El Khettabi \\
 Terry Fox Laboratory \\

@@ -40,7 +40,7 @@ E-mail: fkhettabi@bccrc.ca
 }
 
 \references{ 
-Faysal El Khettabi et al. 2012, Flow Cytometer Sensitivity: A Quadratic Model, to be submitted. }
+Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted. }
 \keyword{ package}
 \seealso{ 
 J. Wood, Fundamental Flow Cytometer Properties Governing Sensitivity and Resolution, 
@@ -94,7 +94,7 @@ MFI2MSEF
 # Usage of the function lrMESF
 LQB=lrMESF(MFI2MSEF,3,5)
 print("Linear QB")
-OV=c(Q=as.double(LQB[1]), B=as.double(LQB[2]), Rsquared=as.double(round(LQB[3], 2)))
+OV=c(Q=as.numeric(LQB[1]), B=as.numeric(LQB[2]), Rsquared=as.numeric(round(LQB[3], 2)))
 print(OV)
 # Note  c1 =1/Q, c0= B/Q 
 

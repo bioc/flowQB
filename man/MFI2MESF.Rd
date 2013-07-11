@@ -30,7 +30,7 @@ The output will be used as input in the functions lrMESF or qrMESF to calculate 
 Convert MFI to MSEF, the output is a 2D array having the MESF Means (MESF) and the associated MESF Variances (MESFV).
 }
 \references{
-Faysal El Khettabi et al. 2012, Flow Cytometer Sensitivity: A Quadratic Model, to be submitted. 
+Faysal El Khettabi et al. 2013, Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity, to be submitted.
 
 A. Gaigalas and L. Wang, Approaches to Quantitation in Flow Cytometry, in Standardization and Quality Assurance in Fluorescence Measurements II Springer Series on Fluorescence (2008), Volume 6, Part D, 371-398.
 }
