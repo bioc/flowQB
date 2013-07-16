@@ -1,9 +1,12 @@
 export(ReadDD,KmeansMeanSD,KmeansMedianrSD,MFI2MESF,lrMESF,qrMESF,DiscriminantExamination,gPS,MultilevelgPS,MultilevelrPS,qrWEIGHTEDMESF,rPS);
 importClassesFrom(methods, list, numeric, vector)
 importClassesFrom(flowCore, flowFrame)
-importMethodsFrom(Biobase,exprs,MASS,xtable)
+importMethodsFrom(Biobase,exprs)
+importMethodsFrom(MASS,fitdistr)
 importMethodsFrom(methods, show)
 importFrom(graphics, abline, axis, par, title)
 importFrom(flowCore, filter)
 importFrom(flowCore, Subset)
 importFrom(stats, kmeans)
+
+
