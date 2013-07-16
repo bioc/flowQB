@@ -13,7 +13,7 @@ We developed an automated approach to determine a cytometer's detection efficien
 \tabular{ll}{
 Package: \tab flowQB\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 1.2.3\cr
 Date: \tab 2011-11-15\cr
 License: \tab  \cr
 LazyLoad: \tab yes\cr
