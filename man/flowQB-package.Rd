@@ -2,7 +2,7 @@
 \alias{flowQB-package}
 \alias{flowQB}
 \docType{package}
-\title{ Automatic Q and B Calculations}
+\title{Automatic Q, B and CVintrinsic calculations}
 \description{
 
 We developed an automated approach to determine a cytometer's detection efficiency (Q) and background illumination (B) independent of a pre-defined bead set, based on Kmeans clustering and quadratic regression methods. We used a quadratic formulation for modelling Q and B that offers more physical insight about cytometry sensitivity than its truncated linear version, by considering the term CVintrinsic as part of the problem to solve. Using Kmeans in place of manual gating enabled an automated analysis to calculate  Q, B and CVintrinsic quantities objectively and in a time-efficient manner. This flowQB package is a R implementation of the theoretical description of Q, B and CVintrinsic calculations in our manuscript "Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity".
@@ -13,7 +13,7 @@ We developed an automated approach to determine a cytometer's detection efficien
 \tabular{ll}{
 Package: \tab flowQB\cr
 Type: \tab Package\cr
-Version: \tab 1.2.3\cr
+Version: \tab  1.3.3\cr
 Date: \tab 2011-11-15\cr
 License: \tab  \cr
 LazyLoad: \tab yes\cr
