@@ -1,0 +1,10 @@
+export(BEADflowQBCalculation,find_peak,scatter_gate,LEDflowQBCalculation);
+importClassesFrom(methods, list, numeric, vector)
+importClassesFrom(flowCore, flowFrame)
+importMethodsFrom(Biobase,exprs)
+importMethodsFrom(methods, show)
+importFrom(graphics, abline, axis, par, title)
+importFrom(flowCore, filter)
+importFrom(flowCore, Subset)
+importFrom(stats, kmeans)
+

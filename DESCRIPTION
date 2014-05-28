@@ -1,0 +1,15 @@
+Package: flowQB
+Type: Package
+Title: Automated Quadratic Characterization of Flow Cytometer
+        Instrument Sensitivity: Q, B and CVinstrinsic calculations.
+Version: 1.8.0
+Date: 2011-11-15
+Author: Faysal El Khettabi
+Maintainer: Faysal El Khettabi <faysal.el.khettabi@gmail.com>
+Description: flowQB is a fully automated R Bioconductor package to calculate automatically the detector efficiency (Q), optical background (B) and intrinsic CV of the beads. 
+Imports: Biobase, graphics,methods, flowCore,stats,MASS
+License: Artistic-2.0
+Suggests: MASS, flowCore
+biocViews: FlowCytometry
+LazyLoad: yes
+Packaged: 2014-05-26 14:45:47 UTC; fkhettabi
