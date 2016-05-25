@@ -1,9 +1,9 @@
 ###############################################################################
-## Copyright (c) 2016 
+## Copyright (c) 2016
 ## Josef Spidlen, Faysal El Khettabi, Wayne Moore, David Parks, Ryan Brinkman
 ##
 ## License
-## The software is distributed under the terms of the 
+## The software is distributed under the terms of the
 ## Artistic License 2.0
 ## http://www.r-project.org/Licenses/Artistic-2.0
 ## 
@@ -18,12 +18,10 @@
 ## services; loss of use, data or profits; or business interruption)
 ## however caused and on any theory of liability, whether in contract,
 ## strict liability, or tort arising in any way out of the use of this
-## software.    
+## software.
 ###############################################################################
 
-find_peak <- function(data,
-                      width = .5,
-                      fraction = .1)
+find_peak <- function(data, width = .5, fraction = .1)
 {
     x <- sort(data)
     N <- length(data)

@@ -6,7 +6,7 @@
 }
 
 \description{
-    The determination of the peak uses the densest fraction of events, 
+    The determination of the peak uses the densest fraction of events,
     the lower bound and the upper bound.
 }
 \usage{
@@ -18,7 +18,7 @@
         FCS file.
     }
     \item{width}{
-        Parameter used to find the lower bound (default width at half maximum) 
+        Parameter used to find the lower bound (default width at half maximum)
         and the upper bound (default .5).
     }
     \item{fraction}{
@@ -35,8 +35,8 @@
 }
 
 \references{
-    Wayne Moore et al. 2014, Automated Quadratic Characterization of Flow 
-    Cytometer Instrument Sensitivity, to be submitted. 
+    Wayne Moore et al. 2014, Automated Quadratic Characterization of Flow
+    Cytometer Instrument Sensitivity, to be submitted.
 }
 
 \author{
@@ -49,5 +49,3 @@
 
 \keyword{functions}
 \keyword{helper functions}
-
-
