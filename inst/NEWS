@@ -1,0 +1,14 @@
+CHANGES IN VERSION 1.20.1
+-------------------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o This is the beginning of major refactoring. 
+      The existing functions have been removed and the 
+      functionality will be re-implemented. The current
+      version is not useful to any users, sorry.
+
+NEW FEATURES
+
+    o None, all old features removed for now.
+

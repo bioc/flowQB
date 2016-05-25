@@ -1,3 +1,11 @@
+% NOTE -- ONLY EDIT THE .Rnw FILE!
+% The .tex file will be overwritten.
+%
+%\VignetteIndexEntry{flowQB package}
+%\VignetteDepends{flowCore}
+%\VignetteKeywords{flowQB}
+%\VignettePackage{flowQB}
+
 \documentclass{article}
 
 \usepackage{amsmath}
