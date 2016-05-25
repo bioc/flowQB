@@ -9,7 +9,7 @@ Description: flowQB is a fully automated R Bioconductor package to calculate aut
 Imports:     Biobase, graphics, methods, flowCore (>= 1.32.0), stats
 License:     Artistic-2.0
 Suggests:    FlowRepositoryR, MASS
-biocViews:   FlowCytometry
+biocViews:   FlowCytometry, Regression, PeakDetection, QualityControl
 LazyLoad:    yes
 Collate:     flowQBCOMPACTEDFUNCTIONS_R.R
              helperFunctions.R

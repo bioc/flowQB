@@ -1,8 +1,8 @@
-###########################################################################################
+###############################################################################
 #### Josef Spidlen, May 25, 2016:
-#### This is Faysal's original code for reference purposes. 
-#### We are keeping the idea, but heavily refactoring the implementation of the algorithms.
-###########################################################################################
+#### This is Faysal's original code for reference purposes. We are keeping the 
+#### idea, but heavily refactoring the implementation of the algorithms.
+###############################################################################
 ####
 ####  BEADflowQBCalculation <- function(file,R,width,fraction,numberoftotalepeaks,scatters,CHANNELTOBEPROCESSED,pi,pf,Viz,output)
 ####  {

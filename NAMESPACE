@@ -1,8 +1,8 @@
-###########################################################################################
+###############################################################################
 #### Josef Spidlen, May 25, 2016:
-#### This is Faysal's original code for reference purposes. 
-#### We are keeping the idea, but heavily refactoring the implementation of the algorithms.
-###########################################################################################
+#### This is Faysal's original code for reference purposes. We are keeping the 
+#### idea, but heavily refactoring the implementation of the algorithms.
+###############################################################################
 
 #export(BEADflowQBCalculation,find_peak,scatter_gate,LEDflowQBCalculation);
 #importClassesFrom(methods, list, numeric, vector)
@@ -14,3 +14,5 @@
 #mportFrom(flowCore, Subset)
 #importFrom(stats, kmeans)
 
+#### New code starts here
+export(find_peak)

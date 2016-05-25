@@ -54,7 +54,6 @@ A. Gaigalas and L. Wang, Approaches to Quantitation in Flow Cytometry, in Standa
 if(1==0)
 {
 rm(list=ls(all=TRUE))
-library("flowQB")
 library(flowCore)
 # TO READ FCS FILE, the flowcore library is needed
 # Where is the file and its name? 
@@ -93,7 +92,6 @@ RESULTS=BEADflowQBCalculation(file,R,width,fraction,numberoftotalepeaks,scatters
 if( 1==0)
 {
 rm(list=ls(all=TRUE))
-library("flowQB")
 NAMEOFTHEFILES=c("935295.fcs","935297.fcs","935299.fcs","935301.fcs","935303.fcs","935305.fcs")
 # GET THE FILES WITH THEIR PATHS
 # bulid "input"
