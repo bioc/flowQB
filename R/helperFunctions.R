@@ -100,6 +100,9 @@ find_peak <- function(data, width = 0.5, fraction = 0.1)
 ## This is applicable to any channels provided as arguments
 ## to this function, so it has been renamed, but the rest of the code still
 ## needs to be refactored accordingly
+##
+## Fit an ellipse (or ellipsoid) gate on the most dense region 
+## of the selected channels of a flowFrame object.
 fitted_ellipse_gate <- function(myFlowFrame, channels, R=1)
 {
     ## Sanity checks
@@ -134,3 +137,5 @@ fitted_ellipse_gate <- function(myFlowFrame, channels, R=1)
     description(myFlowFrame)$`$TOT` <- as.character(nrow(myFlowFrame))
     myFlowFrame
 }
+
+

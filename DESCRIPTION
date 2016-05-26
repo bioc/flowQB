@@ -16,4 +16,5 @@ Suggests:   FlowRepositoryR, MASS, RUnit, BiocGenerics
 biocViews:  FlowCytometry, Regression, PeakDetection, QualityControl
 LazyLoad:   yes
 Collate:    helperFunctions.R
+            methods.R
 

@@ -15,7 +15,11 @@
 #importFrom(stats, kmeans)
 
 #### New code starts here
-export(find_peak)
-export(fitted_ellipse_gate)
+export("find_peak")
+export("fitted_ellipse_gate")
+
+exportMethods(
+    "split_in_two"
+)
 
 importMethodsFrom("flowCore", "exprs", "description", "description<-")
