@@ -123,5 +123,8 @@ fitted_ellipse_gate <- function(myFlowFrame, channels, R=1)
     }
 
     ## Final gate can be stretched/shrunk by specifying R different from 1
-    myFlowFrame[R2 <= R^2]
+    myFlowFrame <- myFlowFrame[R2 <= R^2]
+    ## This does not fix the TOT keyword, so we will take care of that manually
+    description(myFlowFrame)$`$TOT` <- as.character(nrow(myFlowFrame))
+    myFlowFrame
 }

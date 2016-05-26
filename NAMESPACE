@@ -18,4 +18,4 @@
 export(find_peak)
 export(fitted_ellipse_gate)
 
-importMethodsFrom(flowCore,exprs)
+importMethodsFrom("flowCore", "exprs", "description", "description<-")

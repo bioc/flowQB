@@ -29,9 +29,20 @@ A new FCS file with only singlets.
 }
 
 \author{
-Wayne Moore
+    Wayne Moore, Faysal El Khettabi, Josef Spidlen
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+
+\seealso{
+    \code{\link{find_peak}}
+}
+
+\examples{
+    library('flowCore')
+    fcsFilePath <- system.file("extdata", "935289.fcs", package="flowQB")
+    myFlowFrame <- read.FCS(fcsFilePath)
+    gatedFlowFrame <- fitted_ellipse_gate(myFlowFrame, c('FSC-H', 'SSC-H'))
+}
+
+\keyword{functions}
+\keyword{helper functions}
+
