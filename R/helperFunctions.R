@@ -102,6 +102,12 @@ find_peak <- function(data, width = 0.5, fraction = 0.1)
 ## needs to be refactored accordingly
 fitted_ellipse_gate <- function(myFlowFrame, channels, R=1)
 {
+    ## Sanity checks
+    if ((as.character(class(myFlowFrame)) != "flowFrame") ||
+        ((attributes(class(myFlowFrame)))$package != "flowCore"))
+        stop(paste("The myFlowFrameh argument shall be flowFrame object",
+            "from the flowCore library."))
+
     ## Remove events with negative values in the selected channels 
     ## so that the log transform later doesn't fail
     for (channel in channels)
