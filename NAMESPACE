@@ -16,3 +16,6 @@
 
 #### New code starts here
 export(find_peak)
+export(fitted_ellipse_gate)
+
+importMethodsFrom(flowCore,exprs)
