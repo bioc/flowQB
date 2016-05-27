@@ -19,7 +19,7 @@ export("find_peak")
 export("fitted_ellipse_gate")
 
 exportMethods(
-    "split_in_two"
+    "split_in_two", "peak_gate"
 )
 
 importMethodsFrom("flowCore", "exprs", "description", "description<-")

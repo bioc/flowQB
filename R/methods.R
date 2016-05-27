@@ -33,7 +33,7 @@ setGeneric(
 
 setMethod(
     "split_in_two",
-    signature=signature(object="numeric"),
+    signature=signature(object="matrix"),
     definition=function(object, ...)
     {
         x <- sort(object)
@@ -85,13 +85,13 @@ setMethod(
     signature=signature(object="flowFrame"),
     definition=function(object, channel, R=1, ...)
     {
-        peak_gate(exprs(object[,channel]), R)
+        peak_gate(exprs(object[,channel]), R=R)
     }
 )
 
 setMethod(
     "peak_gate",
-    signature=signature(object="numeric"),
+    signature=signature(object="matrix"),
     definition=function(object, R=1, ...)
     {
         fwhm <- find_peak( object )
