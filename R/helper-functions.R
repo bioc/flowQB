@@ -96,45 +96,4 @@ find_peak <- function(data, width = 0.5, fraction = 0.1)
     list(lo = x[lo + M2], hi = x[hi + M2])
 }
 
-## TODO: originally called scatter_gate
-## This is applicable to any channels provided as arguments
-## to this function, so it has been renamed, but the rest of the code still
-## needs to be refactored accordingly
-##
-## Fit an ellipse (or ellipsoid) gate on the most dense region 
-## of the selected channels of a flowFrame object.
-fitted_ellipse_gate <- function(myFlowFrame, channels, R=1)
-{
-    ## Sanity checks
-    if ((as.character(class(myFlowFrame)) != "flowFrame") ||
-        ((attributes(class(myFlowFrame)))$package != "flowCore"))
-        stop(paste("The myFlowFrameh argument shall be flowFrame object",
-            "from the flowCore library."))
-
-    ## Remove events with negative values in the selected channels 
-    ## so that the log transform later doesn't fail
-    for (channel in channels)
-    {
-        values <- exprs(myFlowFrame[,channel])
-        myFlowFrame <- myFlowFrame[values>0]
-    }
-    
-    ## Gate by an ellipse (ellipseoid) on the log transformed
-    ## values of selected channels
-    R2 <- vector(mode="double", nrow(myFlowFrame))
-    for (channel in channels)
-    {
-        values <- log(exprs(myFlowFrame[,channel]))
-        fwhm <- find_peak(values)
-        center <- (fwhm$hi + fwhm$lo)/2
-        radius <- (fwhm$hi - fwhm$lo)/2
-        R2 = R2 + ((values - center)/radius)^2
-    }
-
-    ## Final gate can be stretched/shrunk by specifying R different from 1
-    myFlowFrame <- myFlowFrame[R2 <= R^2]
-    ## This does not fix the TOT keyword, so we will take care of that manually
-    description(myFlowFrame)$`$TOT` <- as.character(nrow(myFlowFrame))
-    myFlowFrame
-}
 

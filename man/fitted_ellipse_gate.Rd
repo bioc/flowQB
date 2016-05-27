@@ -1,5 +1,8 @@
 \name{fitted_ellipse_gate}
 \alias{fitted_ellipse_gate}
+\alias{fitted_ellipse_gate,flowFrame,fitted_ellipse_gate-method}
+\alias{fitted_ellipse_gate,flowFrame,ANY-method}
+\alias{fitted_ellipse_gate,flowFrame-method}
 
 \title{Fit and apply an ellipse gate}
 \description{
@@ -8,11 +11,11 @@
 }
 
 \usage{
-    fitted_ellipse_gate(myFlowFrame, channels, R=1)
+    fitted_ellipse_gate(object, channels, R=1)
 }
 
 \arguments{
-    \item{myFlowFrame}{
+    \item{object}{
         A flowFrame object that will be gated by an automatically fitted
         ellipse (or ellipsoid) gate.
     }

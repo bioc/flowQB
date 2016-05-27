@@ -16,11 +16,17 @@
 
 #### New code starts here
 export("find_peak")
-export("fitted_ellipse_gate")
 
 exportMethods(
-    "split_in_two", "peak_gate", "pick_parameters"
+    "split_in_two", 
+    "peak_gate", 
+    "pick_parameters",
+    "fitted_ellipse_gate"
 )
 
-importMethodsFrom("flowCore", "exprs", "description", "description<-", 
-    "colnames")
+importMethodsFrom("flowCore", 
+    "exprs",
+    "description",
+    "description<-",
+    "colnames"
+)
