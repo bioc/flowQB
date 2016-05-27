@@ -21,6 +21,10 @@
 ## software.
 ###############################################################################
 
+###############################################################################
+## split_in_two
+###############################################################################
+
 setGeneric(
     "split_in_two",
     def=function(object, ...) standardGeneric("split_in_two"),
@@ -70,6 +74,10 @@ setMethod(
     }
 )
 
+###############################################################################
+## peak_gate
+###############################################################################
+
 setGeneric(
     "peak_gate",
     def=function(object, ...) standardGeneric("peak_gate"),
@@ -99,5 +107,45 @@ setMethod(
         radius <- (fwhm$hi - fwhm$lo)/2
         abs(object - center) <= R * radius
         
+    }
+)
+
+###############################################################################
+## pick_parameters
+###############################################################################
+
+setGeneric(
+    "pick_parameters",
+    def=function(object, ignore) standardGeneric("pick_parameters"),
+    useAsDefault=function(object, ignore)
+    {
+        stop(paste(
+            "The pick_parameters method is not supported on object type:",
+            class(object)))
+    }
+)
+
+## TODO: originally called get_fluorescences
+## This is applicable to picking any channels from a flowFrame, so it has been
+## renamed, but the rest of the code still## needs to be refactored accordingly
+setMethod(
+    "pick_parameters",
+    signature=signature(object="flowFrame"),
+    definition=function(object, ignore)
+    {
+        ## Bellow is the original code, which I am replacing with a setdiff
+        # pars <- colnames(object);
+        # picked <- vector(mode='logical', length=length(pars))
+        # for (j in 1:length(pars))
+        # {
+        #     picked[j] <- TRUE
+        #     for (k in 1:length(ignore)) {
+        #         if (pars[j] == ignore[k]) picked[j] <- FALSE
+        #     }
+        # }
+        # pars[picked]
+        
+        ## New code:
+        setdiff(colnames(object),ignore)
     }
 )

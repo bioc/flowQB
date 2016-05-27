@@ -138,4 +138,3 @@ fitted_ellipse_gate <- function(myFlowFrame, channels, R=1)
     myFlowFrame
 }
 
-
