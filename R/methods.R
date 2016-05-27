@@ -27,13 +27,13 @@ setGeneric(
     useAsDefault=function(object, ...)
     {
         stop(paste("The split_in_two method is not supported on object type:",
-                    class(object)))
+            class(object)))
     }
 )
 
 setMethod(
     "split_in_two",
-    signature=signature(object="matrix"),
+    signature=signature(object="numeric"),
     definition=function(object, ...)
     {
         x <- sort(object)
@@ -67,5 +67,37 @@ setMethod(
     definition=function(object, channel, ...)
     {
         split_in_two(exprs(object[,channel]))
+    }
+)
+
+setGeneric(
+    "peak_gate",
+    def=function(object, ...) standardGeneric("peak_gate"),
+    useAsDefault=function(object, ...)
+    {
+        stop(paste("The peak_gate method is not supported on object type:",
+            class(object)))
+    }
+)
+
+setMethod(
+    "peak_gate",
+    signature=signature(object="flowFrame"),
+    definition=function(object, channel, R=1, ...)
+    {
+        peak_gate(exprs(object[,channel]), R)
+    }
+)
+
+setMethod(
+    "peak_gate",
+    signature=signature(object="numeric"),
+    definition=function(object, R=1, ...)
+    {
+        fwhm <- find_peak( object )
+        center <- (fwhm$hi + fwhm$lo)/2
+        radius <- (fwhm$hi - fwhm$lo)/2
+        abs(object - center) <= R * radius
+        
     }
 )
