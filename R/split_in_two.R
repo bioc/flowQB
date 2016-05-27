@@ -27,7 +27,7 @@ setGeneric(
     useAsDefault=function(object, ...)
     {
         stop(paste("The split_in_two method is not supported on object type:",
-                   class(object)))
+            class(object)))
     }
 )
 

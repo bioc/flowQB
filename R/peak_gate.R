@@ -27,7 +27,7 @@ setGeneric(
     useAsDefault=function(object, ...)
     {
         stop(paste("The peak_gate method is not supported on object type:",
-                   class(object)))
+            class(object)))
     }
 )
 
