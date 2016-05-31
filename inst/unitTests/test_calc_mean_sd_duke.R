@@ -1,12 +1,7 @@
-is_close_enough <- function(x) {
-    if (abs(x[[1]] - x[[2]]) < x[[3]]) return(TRUE)
-    FALSE
-}
-
 test_calc_mean_sd_duke <- function() {
     library(flowCore)
     library(xlsx)
-    
+
     inst_xlsx_path <- system.file("extdata", "example1", 
         "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQB")
     xlsx <- read.xlsx(inst_xlsx_path, 1, headers=FALSE, stringsAsFactors=FALSE)
@@ -58,8 +53,6 @@ test_calc_mean_sd_duke <- function() {
     
     checkTrue(all(results['total',] == 20000))
     
-    results['scatter gated',]
-    
     expected_scatter_gated <- c(13609, 13612, 13609, 13612, 13610, 2198, 13604, 
         2351, 13605, 2128, 13610, 1700, 13593, 13605, 13609, 1795, 13609, 1937, 
         13608, 2179, 13607, 13608, 13613, 1709, 13606, 13128, 13611, 2295, 
@@ -83,7 +76,9 @@ test_calc_mean_sd_duke <- function() {
     )
 
     checkTrue(all(apply(cbind(as.numeric(results['mean',]), 
-        expected_mean, 1e-8), 1, is_close_enough)))
+        expected_mean, 1e-8), 1, function(x) {
+            if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+        })))
     
     expected_sd <- c(
         15.018831382611, 13.3293735563702, 13.3468954509309, 
@@ -101,6 +96,8 @@ test_calc_mean_sd_duke <- function() {
     )
     
     checkTrue(all(apply(cbind(as.numeric(results['sd',]), 
-        expected_sd, 1e-8), 1, is_close_enough)))
+        expected_sd, 1e-8), 1, function(x) {
+            if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+        })))
 
 }

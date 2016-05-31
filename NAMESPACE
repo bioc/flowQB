@@ -18,6 +18,8 @@
 export("find_peak")
 export("get_results_for_dyes")
 export("calc_mean_sd_duke")
+export("calc_mean_sd_capture")
+export("calc_mean_sd_capture_all")
 
 exportMethods(
     "split_in_two", 

@@ -10,11 +10,11 @@
 }
 
 \usage{
-    calc_mean_sd_duke(fcsFilePath, scatter_channels, ignore_channels)
+    calc_mean_sd_duke(fcs_file_path, scatter_channels, ignore_channels)
 }
 
 \arguments{
-    \item{fcsFilePath}{
+    \item{fcs_file_path}{
         TODO.
     }
     \item{scatter_channels}{
@@ -76,4 +76,3 @@
 }
 
 \keyword{functions}
-\keyword{helper functions}
