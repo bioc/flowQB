@@ -11,11 +11,13 @@
 #importMethodsFrom(methods, show)
 #importFrom(graphics, abline, axis, par, title)
 #importFrom(flowCore, filter)
-#mportFrom(flowCore, Subset)
+#importFrom(flowCore, Subset)
 #importFrom(stats, kmeans)
 
 #### New code starts here
 export("find_peak")
+export("get_results_for_dyes")
+export("calc_mean_sd_duke")
 
 exportMethods(
     "split_in_two", 
@@ -24,9 +26,13 @@ exportMethods(
     "fitted_ellipse_gate"
 )
 
-importMethodsFrom("flowCore", 
+importMethodsFrom("flowCore",
     "exprs",
     "description",
     "description<-",
     "colnames"
 )
+
+importFrom("extremevalues", "getOutliers")
+
+importFrom("flowCore", "read.FCS")

@@ -92,21 +92,20 @@ find_peak <- function(data, width = 0.5, fraction = 0.1)
             break
         }
     }
-    
+
     list(lo = x[lo + M2], hi = x[hi + M2])
 }
 
-get_results_for_dyes <- function(xlsx, results)
+get_results_for_dyes <- function(dyes, detectors, results)
 {
     dye.results <- data.frame(row.names=row.names(results))
-    for (i in 1:10)
+    for (i in 1:min(length(dyes),length(detectors))) 
     {
-        dye <- xlsx[[i+2]][[11]]
-        detector <- xlsx[[i+2]][[13]]
+        dye <- dyes[i]
+        detector <- detectors[i]
         if (is.na(detector)) {
             dye.results[[dye]] <- vector(mode='numeric', nrow(results))
-        }
-        else {
+        } else {
             dye.results[[dye]] <- results[[detector]]
         }
     }
