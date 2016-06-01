@@ -1,4 +1,4 @@
-test_fitted_ellipse_gatek <- function() {
+test_split_in_two <- function() {
     library('flowCore')
     fcsFilePath <- system.file("extdata", "935289.fcs", package="flowQB")
     myFlowFrame <- read.FCS(fcsFilePath)
@@ -9,4 +9,17 @@ test_fitted_ellipse_gatek <- function() {
     checkTrue(nrow(myFlowFrame[r1 == FALSE]) == 14794)
     checkTrue(nrow(myFlowFrame[r2 == TRUE]) == 13752)
     checkTrue(nrow(myFlowFrame[r2 == FALSE]) == 6248)
+}
+
+test_split_in_two2 <- function() {
+    expected <- "expected"
+    tmp <- tryCatch(
+        {
+            split_in_two("foo", 'FSC-H');
+        },
+        error = function(ex) {
+            expected;
+        }
+    )
+    checkTrue(tmp == expected)
 }

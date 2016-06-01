@@ -45,3 +45,16 @@ test_pick_parameters <- function() {
 
     checkTrue(all(ignore %in% fluorescences == rep(FALSE, length(ignore))))
 }
+
+test_pick_parameters2 <- function() {
+    expected <- "expected"
+    tmp <- tryCatch(
+        {
+            pick_parameters("foo");
+        },
+        error = function(ex) {
+            expected;
+        }
+    )
+    checkTrue(tmp == expected)
+}

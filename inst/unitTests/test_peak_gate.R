@@ -11,3 +11,16 @@ test_peak_gate <- function() {
     checkTrue(nrow(myFlowFrame[r2 == TRUE]) == 19034)
     checkTrue(nrow(myFlowFrame[r2 == FALSE]) == 966)
 }
+
+test_peak_gate2 <- function() {
+    expected <- "expected"
+    tmp <- tryCatch(
+        {
+            peak_gate("foo", 'FSC-H');
+        },
+        error = function(ex) {
+            expected;
+        }
+    )
+    checkTrue(tmp == expected)
+}
