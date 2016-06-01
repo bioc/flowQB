@@ -21,22 +21,61 @@
 ## software.
 ###############################################################################
 
-calc_mean_sd_duke <- function(fcs_file_path, scatter_channels, ignore_channels)
+calc_mean_sd_197 <- function(fcs_file_path, scatter_channels, ignore_channels)
 {
     if (!file.exists(fcs_file_path)) return()
-    result <- data.frame(row.names=c("total", "scatter gated", "mean", "sd"))
+    result <- data.frame(
+        row.names=c("total", "scatter gated", "peak gated", "mean", "sd"))
     fcs <- read.FCS(fcs_file_path)
-    scatter.gated <- fitted_ellipse_gate(fcs, scatter_channels, 2)
 
+    ## The fitted_ellipse_gate does that already, so the only effect this has
+    ## is on the result total number of cells, which are eiher all cells, or
+    ## just those cells with positive scatter values. 
+    ## All cells is better I think.
+    # for (scatter in scatter_channels)
+    # {
+    #     data <- exprs(fcs[,scatter])
+    #     fcs <- fcs[data>0]
+    # }
+    scatter.gated <- fitted_ellipse_gate(fcs, scatter_channels, 2)
     fluorescences <- pick_parameters(fcs, ignore_channels)
+    
     for (fl in fluorescences)
     {
         peak.gated <- scatter.gated[peak_gate(scatter.gated, fl, 4)]
         out <- getOutliers(as.vector(exprs(peak.gated[, fl])), 
             distribution="normal")
-        result[[fl]] <- c(nrow(fcs), nrow(peak.gated), out$mu, out$sigma)
+        result[[fl]] <- c(nrow(fcs), nrow(scatter.gated), 
+            nrow(peak.gated), out$mu, out$sigma)
     }
     result
+}
+
+calc_mean_sd_duke <- function(fcs_file_path, scatter_channels, ignore_channels)
+{
+    ## The original calculation for duke and 197 beads is the same except that
+    ## the 197 calculation putputs "total", "scatter gated", "peak gated", 
+    ## "mean", and "sd" while the duke calculation outputs only "total", 
+    ## "scatter gated", "mean", and "sd", and duke's "scatter gated" is actually
+    ## "peak gated" in 197, which is more appropriate since it is created by a
+    ## peak gate applied on the scatter gate. So we will drop the original
+    ## duke calculation and use the 197 calculation instead.
+    calc_mean_sd_197(fcs_file_path, scatter_channels, ignore_channels)
+
+    # if (!file.exists(fcs_file_path)) return()
+    # result <- data.frame(row.names=c("total", "scatter gated", "mean", "sd"))
+    # fcs <- read.FCS(fcs_file_path)
+    # scatter.gated <- fitted_ellipse_gate(fcs, scatter_channels, 2)
+    # 
+    # fluorescences <- pick_parameters(fcs, ignore_channels)
+    # for (fl in fluorescences)
+    # {
+    #     peak.gated <- scatter.gated[peak_gate(scatter.gated, fl, 4)]
+    #     out <- getOutliers(as.vector(exprs(peak.gated[, fl])), 
+    #         distribution="normal")
+    #     result[[fl]] <- c(nrow(fcs), nrow(peak.gated), out$mu, out$sigma)
+    # }
+    # result
 }
 
 calc_mean_sd_capture <- function(fcs_file_path, scatter_channels, detector, dye)
