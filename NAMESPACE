@@ -21,6 +21,7 @@ export("calc_mean_sd_197")
 export("calc_mean_sd_duke")
 export("calc_mean_sd_capture")
 export("calc_mean_sd_capture_all")
+export("calc_mean_sd_background")
 
 exportMethods(
     "split_in_two", 

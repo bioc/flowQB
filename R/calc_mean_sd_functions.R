@@ -114,3 +114,18 @@ calc_mean_sd_capture_all <- function(fcs_file_path_list, scatter_channels_list,
     colnames(ret) <- dye_list
     ret
 }
+
+calc_mean_sd_background <- function(fcs_file_path, ignore_channels)
+{
+    if (!file.exists(fcs_file_path)) return()
+    result <- data.frame(row.names=c("total", "mean", "sd"))
+    fcs <- read.FCS(fcs_file_path)
+    fluorescences <- pick_parameters(fcs, ignore_channels)
+
+    for (fl in fluorescences)
+    {
+        out <- getOutliers(as.vector(exprs(fcs[, fl])), distribution="normal")
+        result[[fl]] <- c(nrow(fcs), out$mu, out$sigma)
+    }
+    result
+}
