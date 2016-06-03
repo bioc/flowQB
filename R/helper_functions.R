@@ -111,3 +111,92 @@ get_results_for_dyes <- function(dyes, detectors, results)
     }
     dye.results
 }
+
+# TODO 
+# peak.list => flowFrame_list
+# peak.names => file_names
+# maximum.cv.area => maximum_cv_area
+# maximum.cv.height => maximum_cv_height
+get_peak_statistics <- function(peak.list, peak.names = NULL, parameters, 
+    bounds, is.height = FALSE, is.accuri = FALSE,
+    maximum.cv.area = .65, maximum.cv.height = .65)
+{
+    if (is.null(peak.names)) {
+        for (i in 1:length(peak.list)) 
+            peak.names <- c(peak.names, peak.list[[i]]@description['$FIL'])
+    }
+
+    results.list <- list()
+    for (fluorescence in parameters)
+        results.list[[fluorescence]] <- data.frame(row.names=peak.names)
+    
+    for (i in 1:length(peak.list))
+    {
+        peak <- peak.list[[i]]
+        for (fluorescence in parameters)
+        {
+            data <- exprs(peak[,fluorescence])
+            results.list[[fluorescence]]$N[[i]] <- N <- nrow(data)
+            out <- getOutliers(as.vector(data), distribution="normal")
+            results.list[[fluorescence]]$M[[i]] <- M <- out$mu
+            results.list[[fluorescence]]$SD[[i]] <- SD <- out$sigma
+            results.list[[fluorescence]]$V[[i]] <- V <- SD^2
+            results.list[[fluorescence]]$W[[i]] <- (N - 1)/(2 * V^2)
+            results.list[[fluorescence]]$Omit[[i]] <- FALSE
+        }
+    }
+    
+    for (fluorescence in parameters)
+    {
+        results <- results.list[[fluorescence]]
+        results.list[[fluorescence]] <- results[order(results$M),]
+    }
+    
+    for (fluorescence in parameters)
+    {
+        results <- results.list[[fluorescence]]
+        ## TODO
+        ## Seems like the next 2 if statements could be combined to 
+        ## something like
+        ## if (is.height || length(grep("-H", fluorescence, fixed=TRUE)) > 0 ||
+        ## is.accuri)
+        if ((!is.height && length(grep("-H", fluorescence, fixed=TRUE)) > 0) 
+            || is.accuri)
+        {
+            lowest.mean <- results$M[[1]]
+            for (i in 1:nrow(results))
+            {
+                this.mean <- results$M[[i]]
+                if (this.mean < 10 * lowest.mean) results$Omit[[i]] <- TRUE
+            }
+        }
+        if (is.height)
+        {
+            lowest.mean <- results$M[[1]]
+            for (i in 1:nrow(results))
+            {
+                this.mean <- results$M[[i]]
+                if (this.mean < 10 * lowest.mean) results$Omit[[i]] <- TRUE
+            }
+        }
+        for (i in 1:nrow(results))
+        {
+            if (is.height) 
+                maximum.cv <- maximum.cv.height 
+            else 
+                maximum.cv <- maximum.cv.area
+            omit <- results$Omit[[i]]
+            if (!omit && (results$M[[i]] > bounds$maximum || 
+                results$SD[[i]] == 0)) omit <- TRUE
+            if (!omit && results$M[[i]] < bounds$minimum) 
+                omit <- TRUE else CV <- results$SD[[i]]/results$M[[i]]
+            if (!omit && (is.height || is.accuri || 
+                length(grep("-H", fluorescence, fixed=TRUE)) > 0) && 
+                CV > maximum.cv) omit <- TRUE
+            if (omit) results$Omit[[i]] <- TRUE
+        }
+        results.list[[fluorescence]] <- results
+    }
+    
+    results.list
+}

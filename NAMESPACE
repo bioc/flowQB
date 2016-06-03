@@ -5,8 +5,6 @@
 ###############################################################################
 
 #export(BEADflowQBCalculation,find_peak,scatter_gate,LEDflowQBCalculation);
-#importClassesFrom(methods, list, numeric, vector)
-#importClassesFrom(flowCore, flowFrame)
 #importMethodsFrom(Biobase,exprs)
 #importMethodsFrom(methods, show)
 #importFrom(graphics, abline, axis, par, title)
@@ -22,6 +20,7 @@ export("calc_mean_sd_duke")
 export("calc_mean_sd_capture")
 export("calc_mean_sd_capture_all")
 export("calc_mean_sd_background")
+export("fit_led")
 
 exportMethods(
     "split_in_two", 
@@ -38,5 +37,8 @@ importMethodsFrom("flowCore",
 )
 
 importFrom("extremevalues", "getOutliers")
-
 importFrom("flowCore", "read.FCS")
+
+importClassesFrom("methods", "list", "numeric", "vector")
+importClassesFrom("flowCore", "flowFrame")
+
