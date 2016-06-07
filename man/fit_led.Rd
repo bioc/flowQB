@@ -124,7 +124,7 @@
     dyes <- as.character(xlsx[dye_row,channel_cols])
     detectors <- as.character(xlsx[detector_row,channel_cols])
 
-    led_results2 <- fit_led(fcs_file_path_list, ignore_channels, dyes,
+    led_results <- fit_led(fcs_file_path_list, ignore_channels, dyes,
         detectors, bounds, signal_type, instrument_name, 
         minimum_rows = 3, max_iterations = 10)
 }
