@@ -10,8 +10,9 @@
 }
 
 \usage{
-    fit_led(fcs_file_path_list, 
-        ignore_channels, bounds, signal_type, instrument_name)
+    fit_led(fcs_file_path_list, ignore_channels, dyes, detectors, 
+        bounds, signal_type, instrument_name, minimum_rows = 3, 
+        max_iterations = 10, ...)
 }
 
 \arguments{
@@ -21,6 +22,12 @@
     \item{ignore_channels}{
         TODO.
     }
+    \item{dyes}{
+        TODO.
+    }
+    \item{detectors}{
+        TODO.
+    }
     \item{bounds}{
         TODO.
     }
@@ -28,6 +35,15 @@
         TODO.
     }
     \item{instrument_name}{
+        TODO.
+    }
+    \item{minimum_rows}{
+        TODO.
+    }
+    \item{max_iterations}{
+        TODO.
+    }
+    \item{\ldots}{
         TODO.
     }
     
@@ -102,8 +118,15 @@
     instrument_name_row <- 5
     instrument_name <- xlsx[[instrument_name_col]][[instrument_name_row]]
 
-    led_results <- fit_led(fcs_file_path_list, ignore_channels, 
-        bounds, signal_type, instrument_name)
+    channel_cols <- 3:12
+    dye_row <- 11
+    detector_row <- 13
+    dyes <- as.character(xlsx[dye_row,channel_cols])
+    detectors <- as.character(xlsx[detector_row,channel_cols])
+
+    led_results2 <- fit_led(fcs_file_path_list, ignore_channels, dyes,
+        detectors, bounds, signal_type, instrument_name, 
+        minimum_rows = 3, max_iterations = 10)
 }
 
 \keyword{functions}

@@ -21,9 +21,13 @@
 ## software.
 ###############################################################################
 
-fit_led <- function(fcs_file_path_list, ignore_channels, bounds, signal_type, 
-    instrument_name)
+fit_led <- function(fcs_file_path_list, ignore_channels, dyes, detectors, 
+    bounds, signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+    ...)
 {
+    signal_type <- tolower(signal_type)
+    instrument_name <- tolower(instrument_name)
+    
     # TODO Rename peak.list to flowFrame_list
     peak.list <- list()
     # TODO Rename parameters to fluorescences
@@ -39,8 +43,181 @@ fit_led <- function(fcs_file_path_list, ignore_channels, bounds, signal_type,
     
     results.list <- get_peak_statistics(peak.list, 
         basename(fcs_file_path_list), parameters, bounds, 
-        signal_type == "Height", instrument_name == "BD Accuri")
+        signal_type == "height", instrument_name == "bd accuri", ...)
+    results2.list <- list()
+    results3.list <- list()
     
+    bg.result <- data.frame(row.names=c("total", "mean", "sd"))
+    for (fluorescence in parameters)
+    {
+        peak.results <- results.list[[fluorescence]]
+        bg.result[[fluorescence]] <- c(
+            peak.results$N[[1]], peak.results$M[[1]], peak.results$SD[[1]])
+    }
+    dye.bg.result <- get_results_for_dyes(dyes, detectors, bg.result)
+
+    censored.list <- censor_peak_statistics(
+        results.list, parameters)
     
+    fits <- data.frame(row.names=c(
+        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
+        "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
+    for (fluorescence in parameters)
+    {
+        results <- results.list[[fluorescence]]
+        censored <- censored.list[[fluorescence]]
+        Q.R <- vector(mode='double', length=nrow(results))
+        L.R <- vector(mode='double', length=nrow(results))
+        
+        if (usable_rows(censored) >= minimum_rows)
+        {
+            ## This is not really needed, but just so that 
+            ## R CMD check does not complain about undefined variable
+            W <- censored$W
+
+            quadratic.model <- lm(formula = V ~ 1 + M + I(M^2), 
+                data = censored, weights = W)
+            linear.model <- lm(formula = V ~ 1 + M, 
+                data = censored, weights = W)
+            q.coef <- coefficients(summary(quadratic.model))
+            l.coef <- coefficients(summary(linear.model))
+            fits[[fluorescence]] <- c(
+                q.coef[1,1], q.coef[1,2], q.coef[1,4], 
+                q.coef[2,1], q.coef[2,2], q.coef[2,4], 
+                q.coef[3,1], q.coef[3,2], q.coef[3,4],
+                l.coef[1,1], l.coef[1,2], l.coef[1,4], 
+                l.coef[2,1], l.coef[2,2], l.coef[2,4])
+
+            r <- residuals(quadratic.model)
+            for (i in 1:nrow(censored)) 
+                if 
+                    (censored$Omit[[i]]) Q.R[[i]] <- NA_real_
+                else 
+                    Q.R[[i]] <- r[[row.names(censored)[[i]]]] * 
+                        sqrt(censored$W[[i]])
+            
+            r <- residuals(linear.model)
+            for (i in 1:nrow(censored))
+                if (censored$Omit[[i]])
+                    L.R[[i]] <- NA_real_
+                else
+                    L.R[[i]] <- r[[row.names(censored)[[i]]]] * 
+                        sqrt(results$W[[i]])
+        }
+        else
+        {
+            fits[[fluorescence]][1:nrow(fits)] <- NA_real_
+            Q.R[1:length(Q.R)] <- NA_real_
+            L.R[1:length(L.R)] <- NA_real_
+        }
+        
+        results$QR <- Q.R
+        results$LR <- L.R
+        results.list[[fluorescence]] <- results
+    }
     
+    dye_fits <- get_results_for_dyes(dyes, detectors, fits)
+
+    # Iterated
+    iterated_fits <- data.frame(row.names=c(
+        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
+        "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
+    for (fluorescence in parameters)
+    {
+        results <- results.list[[fluorescence]]
+        censored <- censored.list[[fluorescence]]
+        Q.R <- vector(mode='double', length=nrow(results))
+        L.R <- vector(mode='double', length=nrow(results))
+        
+        if (usable_rows(censored) >= minimum_rows)
+        {
+            ## This is not really needed, but just so that 
+            ## R CMD check does not complain about undefined variable
+            W <- censored$W
+
+            quadratic.model <- lm(formula = V ~ 1 + M + I(M^2), 
+                data = censored, weights = W)
+            q.coef <- coefficients(summary(quadratic.model))
+            linear.model <- lm(formula = V ~ 1 + M, 
+                data = censored, weights = W)
+            l.coef <- coefficients(summary(linear.model))
+
+            for (iteration in 1:max_iterations)
+            {
+                for (i in 1:nrow(censored))
+                {
+                    V <- q.coef[1,1] + q.coef[2,1] * censored$M[[i]] + 
+                        q.coef[3,1] * censored$M[[i]]^2
+                    censored$W[[i]] <- (censored$N[[i]] - 1)/(2 * V^2)
+                    results$W[[i]] <- censored$W[[i]]
+                }
+                quadratic.model <- lm(formula = V ~ 1 + M + I(M^2), 
+                    data = censored, weights = W)
+                qnew.coef <- coefficients(summary(quadratic.model))
+                change <- max(abs((qnew.coef[,1] - q.coef[,1])/q.coef[,1]))
+                q.coef <- qnew.coef
+                if (change < 5E-5) break
+            }
+            
+            for (iteration in 1:max_iterations)
+            {
+                for (i in 1:nrow(censored))
+                {
+                    V <- l.coef[1,1] + l.coef[2,1] * censored$M[[i]]
+                    censored$W[[i]] <- (censored$N[[i]] - 1)/(2 * V^2)
+                    results$W[[i]] <- censored$W[[i]]
+                }
+                linear.model <- lm(formula = V ~ 1 + M, data = censored, 
+                    weights = W)
+                lnew.coef <- coefficients(summary(linear.model))
+                change <- max(abs((lnew.coef[,1] - l.coef[,1])/l.coef[,1]))
+                l.coef <- lnew.coef
+                if (change < 5E-5) break
+            }
+
+            iterated_fits[[fluorescence]] <- c(
+                q.coef[1,1], q.coef[1,2], q.coef[1,4], 
+                q.coef[2,1], q.coef[2,2], q.coef[2,4], 
+                q.coef[3,1], q.coef[3,2], q.coef[3,4],
+                l.coef[1,1], l.coef[1,2], l.coef[1,4], 
+                l.coef[2,1], l.coef[2,2], l.coef[2,4])
+
+            r <- residuals(quadratic.model)
+            for (i in 1:nrow(censored))
+                if (censored$Omit[[i]])
+                    Q.R[[i]] <- NA_real_
+            else
+                Q.R[[i]] <- r[[row.names(censored)[[i]]]] * 
+                    sqrt(censored$W[[i]])
+
+            r <- residuals(linear.model)
+            for (i in 1:nrow(censored))
+                if (censored$Omit[[i]])
+                    L.R[[i]] <- NA_real_
+            else
+                L.R[[i]] <- r[[row.names(censored)[[i]]]] * 
+                    sqrt(results$W[[i]])
+        }
+        else
+        {
+            iterated_fits[[fluorescence]][1:nrow(fits)] <- NA_real_
+            Q.R[1:length(Q.R)] <- NA_real_
+            L.R[1:length(L.R)] <- NA_real_
+        }
+        
+        results['QR-I'] <- Q.R
+        results['LR-I'] <- L.R
+        results.list[[fluorescence]] <- results
+    }
+    iterated_dye_fits <- get_results_for_dyes(dyes, detectors, iterated_fits)
+
+    list(
+        peak_stats = results.list,
+        bg_stats = bg.result,
+        dye_bg_stats = dye.bg.result,
+        fits = fits,
+        dye_fits = dye_fits,
+        iterated_fits = iterated_fits,
+        iterated_dye_fits = iterated_dye_fits
+    )
 }

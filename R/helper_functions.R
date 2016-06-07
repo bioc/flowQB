@@ -200,3 +200,27 @@ get_peak_statistics <- function(peak.list, peak.names = NULL, parameters,
     
     results.list
 }
+
+censor_peak_statistics <- function(results.list, parameters)
+{
+    censored.list <- list()
+    for (fluorescence in parameters)
+    {
+        results <- results.list[[fluorescence]]
+        censored <- data.frame(results, check.rows=FALSE, check.names=FALSE)
+        for (i in 1:nrow(censored))
+        {
+            if(censored$Omit[[i]]) censored$M[[i]] <- censored$SD[[i]] <- 
+                censored$V[[i]] <- censored$W[[i]] <- NA_real_
+        }
+        censored.list[[fluorescence]] <- censored
+    }
+    censored.list
+}
+
+usable_rows <- function(results)
+{
+    count <- 0
+    for (i in 1:nrow(results)) if (!is.na(results$M[[i]])) count <- count + 1
+    count
+}

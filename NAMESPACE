@@ -38,6 +38,7 @@ importMethodsFrom("flowCore",
 
 importFrom("extremevalues", "getOutliers")
 importFrom("flowCore", "read.FCS")
+importFrom("stats", "lm", "coefficients", "residuals")
 
 importClassesFrom("methods", "list", "numeric", "vector")
 importClassesFrom("flowCore", "flowFrame")
