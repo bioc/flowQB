@@ -221,3 +221,34 @@ fit_led <- function(fcs_file_path_list, ignore_channels, dyes, detectors,
         iterated_dye_fits = iterated_dye_fits
     )
 }
+
+fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels, 
+    dyes, detectors,
+    bounds, signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+    logicle_width = 0.5, ...)
+{
+    if (!file.exists(fcs_file_path)) return()
+
+    signal_type <- tolower(signal_type)
+    instrument_name <- tolower(instrument_name)
+    
+    fcs <- read.FCS(fcs_file_path)
+    scatter.gated <- fitted_ellipse_gate(fcs, scatter_channels, 2)
+    
+    #parameters <- get_fluorescences(fcs, ignore)
+    fluorescences <- pick_parameters(fcs, ignore_channels)
+
+    fluorescence.data <- scatter.gated[,fluorescences]
+    logicle = logicleTransform(
+        t=parameters(fluorescence.data)$range[[1]],
+        w=logicle_width)
+    
+    x <- exprs(fluorescence.data)
+    y <- matrix(logicle(x), nrow=nrow(x), ncol=ncol(x),
+        dimnames=list(rownames(x),colnames(x)))
+    logicle.data <- new('flowFrame', y, 
+        parameters=parameters(fluorescence.data), 
+        description=description(fluorescence.data))
+
+}
+

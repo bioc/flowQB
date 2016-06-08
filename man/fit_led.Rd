@@ -62,11 +62,7 @@
 }
 
 \seealso{
-    \code{\link{calc_mean_sd_197}},
-    \code{\link{calc_mean_sd_duke}},
-    \code{\link{calc_mean_sd_capture}},
-    \code{\link{calc_mean_sd_capture_all}},
-    \code{\link{calc_mean_sd_background}}
+    \code{\link{fit_multipeak}}
 }
 
 \examples{
