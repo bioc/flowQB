@@ -336,6 +336,142 @@ test_fit_led <- function() {
     
     ## The rest of the results will be checked as well, but not to such
     ## a great extent since one error would likely impact many things
-    ## TODO
 
+    checkTrue(
+        apply(cbind(
+            sum(led_results$iterated_fits), 10803.2138769121, 1e-5), 
+            1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[1]], na.rm=TRUE), 864726.388688922,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[2]], na.rm=TRUE), 1490652.93776911,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[3]], na.rm=TRUE), 1367286.40570405,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[4]], na.rm=TRUE), 3130343.22627266,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[5]], na.rm=TRUE), 1299395.27243239,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[6]], na.rm=TRUE), 1339254.85078651,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[7]], na.rm=TRUE), 1948997.47201088,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[8]], na.rm=TRUE), 1627006.06382322,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[9]], na.rm=TRUE), 2375530.948295,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    checkTrue(
+        apply(cbind(
+            sum(led_results$peak_stats[[10]], na.rm=TRUE), 2738814.36380929,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    x <- 0
+    for(i in 1:length(led_results$peak_stats)) {
+        x = x + sum(led_results$peak_stats[[i]], na.rm=TRUE)    
+    }
+    checkTrue(
+        apply(cbind(x, 65654034.6531254, 1e-5), 1, function(x) {
+            if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+        }))
+    
+    checkTrue(
+        apply(cbind(
+            sum(led_results$bg_stats), 720874.07164,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+
+    checkTrue(
+        apply(cbind(
+            sum(led_results$dye_bg_stats), 200093.951503735,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    checkTrue(
+        apply(cbind(
+            sum(led_results$dye_fits), 2460.56810222963,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+
+    checkTrue(
+        apply(cbind(
+            sum(led_results$fits), 10788.6161991899,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+
+    checkTrue(
+        apply(cbind(
+            sum(led_results$iterated_fits), 10803.2138769121,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    checkTrue(
+        apply(cbind(
+            sum(led_results$iterated_dye_fits), 2463.01996306341,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+        
 }
