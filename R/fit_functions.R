@@ -222,9 +222,9 @@ fit_led <- function(fcs_file_path_list, ignore_channels, dyes, detectors,
     )
 }
 
-fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels, 
-    dyes, detectors,
-    bounds, signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
+    N.peaks, dyes, detectors, bounds,
+    signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
     logicle_width = 0.5, ...)
 {
     if (!file.exists(fcs_file_path)) return()
@@ -234,8 +234,6 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
     
     fcs <- read.FCS(fcs_file_path)
     scatter.gated <- fitted_ellipse_gate(fcs, scatter_channels, 2)
-    
-    #parameters <- get_fluorescences(fcs, ignore)
     fluorescences <- pick_parameters(fcs, ignore_channels)
 
     fluorescence.data <- scatter.gated[,fluorescences]
@@ -249,6 +247,26 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
     logicle.data <- new('flowFrame', y, 
         parameters=parameters(fluorescence.data), 
         description=description(fluorescence.data))
+    
+    peak.list <- list()
+    # TODO: 500, 500 could be user-defined parameters?
+    ## This seems to result in some warnings that
+    ## "Quick-TRANSfer stage steps exceeded maximum (= 3762700)"
+    ## but the results seem OK. 
+    km <- kmeans(data.frame(y), N.peaks, 500, 500)
+    ## I tried rounding up the data a bit as suggested in the kmeans
+    ## documentation, but it does not seem to help.
+    # km <- kmeans(data.frame(round(y, digits = 3)), N.peaks, 500, 500)
+    ## I also tried a different implementation ("Lloyd"), but that comes
+    ## with it's own problems and seems to take 5 times as long
+    # km <- kmeans(data.frame(y), N.peaks, 500, 500, algorithm="Lloyd")
+    for (i in 1:N.peaks)
+    {
+        peak.list[[i]] <- peak <- fluorescence.data[km$cluster==i]
+    }
+    
+    list(peak.list=peak.list, km=km, logicle.data=logicle.data)
+    
 
 }
 

@@ -10,9 +10,9 @@
 }
 
 \usage{
-    fit_multipeak(fcs_file_path, scatter_channels, ignore_channels, 
-    dyes, detectors,
-    bounds, signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+    fit_multipeak(fcs_file_path, scatter_channels, ignore_channels,
+    N.peaks, dyes, detectors, bounds,
+    signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
     logicle_width = 0.5, ...)
 }
 
@@ -24,6 +24,9 @@
         TODO.
     }
     \item{ignore_channels}{
+        TODO.
+    }
+    \item{N.peaks}{
         TODO.
     }
     \item{dyes}{
@@ -131,11 +134,20 @@
     detector_row <- 13
     dyes <- as.character(xlsx[dye_row,channel_cols])
     detectors <- as.character(xlsx[detector_row,channel_cols])
+    
+    N.peaks <- 8
 
-    fit_multipeak(fcs_file_path, scatter_channels, ignore_channels, 
-    dyes, detectors,
-    bounds, signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-    logicle_width = 0.5)
+    multipeak_fit <- fit_multipeak(fcs_file_path, scatter_channels, 
+        ignore_channels, N.peaks, dyes, detectors, bounds, 
+        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+        logicle_width = 0.5)
+
+    plot(
+        exprs(multipeak_fit$logicle.data[,"FITC-A"]),
+        exprs(multipeak_fit$logicle.data[,"Pacific Blue-A"]),
+        col=multipeak_fit$km$cluster, pch='.')
+
+
 }
 
 \keyword{functions}
