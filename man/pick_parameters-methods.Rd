@@ -17,7 +17,6 @@
 \arguments{
     \item{object}{Object of class \code{\linkS4class{flowFrame}} or a matrix.}
     \item{ignore}{TODO.}
-    %\item{\dots}{Additional options, see the details section.}
 }
 
 \details{
@@ -41,7 +40,9 @@
 
 \examples{
     library('flowCore')
-    fcsFilePath <- system.file("extdata", "935289.fcs", package="flowQB")
+    library('flowQBData')
+    fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
+        "933745.fcs", package="flowQBData")
     myFlowFrame <- read.FCS(fcsFilePath)
     ignore <- c("Time", "FSC-H", "FSC-A", "FSC-W", "SSC-H", "SSC-A", "SSC-W")
     fluorescences <- pick_parameters(myFlowFrame, ignore)

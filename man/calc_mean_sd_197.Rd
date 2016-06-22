@@ -44,9 +44,10 @@
 \examples{
     library(flowCore)
     library(xlsx)
+    library(flowQBData)
 
-    inst_xlsx_path <- system.file("extdata", "example1", 
-        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQB")
+    inst_xlsx_path <- system.file("extdata", 
+        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQBData")
     xlsx <- read.xlsx(inst_xlsx_path, 1, headers=FALSE, stringsAsFactors=FALSE)
     
     ignore_channels_row <- 9
@@ -69,15 +70,15 @@
         xlsx[[test_column]][[test_row+2]], 
         xlsx[[test_column]][[test_row+3]])
 
-    fcs_path <- system.file("extdata", "example1", 
-        instrument_folder, folder, beads_file_name, package="flowQB")
+    fcs_path <- system.file("extdata", instrument_folder, 
+        folder, beads_file_name, package="flowQBData")
 
     results <- calc_mean_sd_197(fcs_path, scatter_channels, ignore_channels)
 
     ## Same thing as above with providing the arguments directly without
     ## parsing it from the spreadsheet.
-    fcs_path <- system.file("extdata", "example1", "SSFF_LSRII", 
-        "Other_Tests", "933743.fcs")
+    fcs_path <- system.file("extdata", "SSFF_LSRII", "Other_Tests", 
+        "933743.fcs", package="flowQBData")
     scatter_channels <- c("FSC-A", "SSC-A")
     ignore_channels <- c(
         "Time", "FSC-A", "FSC-W", "FSC-H", "SSC-A", "SSC-W", "SSC-H")

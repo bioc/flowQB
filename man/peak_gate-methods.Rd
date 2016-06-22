@@ -43,7 +43,11 @@
 
 \examples{
     library('flowCore')
-    fcsFilePath <- system.file("extdata", "935289.fcs", package="flowQB")
+    library('flowQBData')
+    
+    fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
+        "933745.fcs", package="flowQBData")
+
     myFlowFrame <- read.FCS(fcsFilePath)
     r1 <- peak_gate(myFlowFrame, 'FSC-H')
     r2 <- peak_gate(exprs(myFlowFrame[,'SSC-H']))

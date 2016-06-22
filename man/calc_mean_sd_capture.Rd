@@ -46,9 +46,10 @@
 
 \examples{
     library(flowCore)
+    library(flowQBData)
 
-    fcs_file_path <- system.file("extdata", "example1", "SSFF_LSRII", "SU_2B",
-        "933723.fcs", package="flowQB")
+    fcs_file_path <- system.file("extdata", "SSFF_LSRII", "SU_2B",
+        "933723.fcs", package="flowQBData")
 
     scatter_channels <- c("FSC-A", "SSC-A")
     detector <- "APC-A"

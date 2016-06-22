@@ -78,9 +78,10 @@
 \examples{
     library(flowCore)
     library(xlsx)
+    library(flowQBData)
 
-    inst_xlsx_path <- system.file("extdata", "example1", 
-        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQB")
+    inst_xlsx_path <- system.file("extdata", 
+        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQBData")
     xlsx <- read.xlsx(inst_xlsx_path, 1, headers=FALSE, stringsAsFactors=FALSE)
     
     ignore_channels_row <- 9
@@ -103,8 +104,8 @@
         xlsx[[folder_column]][[folder_row+2]], 
         xlsx[[folder_column]][[folder_row+3]])
         
-    fcs_file_path <- system.file("extdata", "example1",
-        instrument_folder, folder, filename, package="flowQB")
+    fcs_file_path <- system.file("extdata", instrument_folder, folder, 
+        filename, package="flowQBData")
 
     bounds_min_col <- 6
     bounds_min_row <- 7
@@ -146,7 +147,6 @@
         exprs(multipeak_fit$logicle.data[,"FITC-A"]),
         exprs(multipeak_fit$logicle.data[,"Pacific Blue-A"]),
         col=multipeak_fit$km$cluster, pch='.')
-
 
 }
 

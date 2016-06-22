@@ -68,9 +68,10 @@
 \examples{
     library(flowCore)
     library(xlsx)
+    library(flowQBData)
 
-    inst_xlsx_path <- system.file("extdata", "example1", 
-        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQB")
+    inst_xlsx_path <- system.file("extdata", 
+        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQBData")
     xlsx <- read.xlsx(inst_xlsx_path, 1, headers=FALSE, stringsAsFactors=FALSE)
     
     ignore_channels_row <- 9
@@ -87,8 +88,8 @@
     folder_column <- 18
     folder_row <- 14
     folder <- xlsx[[folder_column]][[folder_row]]
-    fcs_directory <- system.file("extdata", "example1",
-        instrument_folder, folder, package="flowQB")
+    fcs_directory <- system.file("extdata", instrument_folder, 
+        folder, package="flowQBData")
     fcs_file_path_list <- list.files(fcs_directory, "*.fcs", full.names= TRUE)
 
     bounds_min_col <- 6

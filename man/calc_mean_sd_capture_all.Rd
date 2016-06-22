@@ -47,9 +47,10 @@
 
 \examples{
     library(flowCore)
+    library(flowQBData)
 
-    file_directory <- system.file("extdata", "example1", 
-        "SSFF_LSRII", "SU_2B", package="flowQB")
+    file_directory <- system.file("extdata", "SSFF_LSRII", "SU_2B", 
+        package="flowQBData")
     fcs_file_path_list <- as.list(file.path(
         file_directory, c("933723.fcs","933725.fcs")))
     scatter_channels_list <- list(c("FSC-A", "SSC-A"), c("FSC-A", "SSC-A"))
@@ -66,8 +67,8 @@
     ## Now the same thing again, but we will show how to extract information
     ## from the spreadsheet and run the appropriate calculations
     library(xlsx)
-    xls_path <- system.file("extdata", "example1", 
-        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQB")
+    xls_path <- system.file("extdata", "140126_InstEval_Stanford_LSRIIA2.xlsx",
+        package="flowQBData")
     xls <- read.xlsx(xls_path, 1, headers=FALSE, stringsAsFactors=FALSE)
     insfolder <- instrument.folder <- xls[[2]][[9]]
 
@@ -82,8 +83,8 @@
         filename <- xls[[i+2]][[15]]
 
         if (is.na(filename)) next
-        filepath <- system.file("extdata", "example1", insfolder, 
-            folder, filename, package="flowQB")
+        filepath <- system.file("extdata", insfolder, folder, filename, 
+            package="flowQBData")
         ## Spreadsheet may describe additional FCS files not included
         ## with the library, so skip if file doesn't exist
         if (nchar(filepath) == 0) next
