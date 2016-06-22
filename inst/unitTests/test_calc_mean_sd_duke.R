@@ -1,9 +1,10 @@
 test_calc_mean_sd_duke <- function() {
     library(flowCore)
     library(xlsx)
+    library(flowQBData)
 
-    inst_xlsx_path <- system.file("extdata", "example1", 
-        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQB")
+    inst_xlsx_path <- system.file("extdata", 
+        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQBData")
     xlsx <- read.xlsx(inst_xlsx_path, 1, headers=FALSE, stringsAsFactors=FALSE)
     
     ignore_channels_row <- 9
@@ -26,8 +27,8 @@ test_calc_mean_sd_duke <- function() {
         xlsx[[test_column]][[test_row+2]], 
         xlsx[[test_column]][[test_row+3]])
     
-    fcs_path <- system.file("extdata", "example1", 
-        instrument_folder, folder, beads_file_name, package="flowQB")
+    fcs_path <- system.file("extdata",
+        instrument_folder, folder, beads_file_name, package="flowQBData")
     
     results <- calc_mean_sd_duke(fcs_path, scatter_channels, ignore_channels)
     

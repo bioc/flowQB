@@ -1,8 +1,9 @@
 test_calc_mean_sd_capture_all <- function() {
     library(flowCore)
+    library(flowQBData)
 
-    file_directory <- system.file("extdata", "example1", 
-        "SSFF_LSRII", "SU_2B", package="flowQB")
+    file_directory <- system.file("extdata", "SSFF_LSRII", 
+        "SU_2B", package="flowQBData")
     fcs_file_path_list <- as.list(file.path(
         file_directory, c("933723.fcs","933725.fcs")))
     scatter_channels_list <- list(c("FSC-A", "SSC-A"), c("FSC-A", "SSC-A"))
@@ -70,9 +71,10 @@ test_calc_mean_sd_capture_all <- function() {
 
 test_calc_mean_sd_capture <- function() {
     library(flowCore)
+    library(flowQBData)
 
-    fcs_file_path <- system.file("extdata", "example1", "SSFF_LSRII", "SU_2B",
-        "933723.fcs", package="flowQB")
+    fcs_file_path <- system.file("extdata", "SSFF_LSRII", "SU_2B",
+        "933723.fcs", package="flowQBData")
 
     scatter_channels <- c("FSC-A", "SSC-A")
     detector <- "APC-A"

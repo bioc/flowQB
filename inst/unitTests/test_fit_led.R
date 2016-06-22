@@ -1,7 +1,8 @@
 test_fit_led <- function() {
     library(flowCore)
-    fcs_directory <- system.file("extdata", "example1", "SSFF_LSRII", 
-        "LED_Series", package="flowQB")
+    library(flowQBData)
+    fcs_directory <- system.file("extdata", "SSFF_LSRII", 
+        "LED_Series", package="flowQBData")
     fcs_file_path_list <- list.files(fcs_directory, "*.fcs", full.names= TRUE)
     
     ignore_channels <- c("Time", "FSC-A", "FSC-W", "FSC-H", 

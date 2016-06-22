@@ -1,3 +1,16 @@
+CHANGES IN VERSION 1.21.0
+-------------------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Example files and data have been moved to
+      the flowQBData package.
+
+NEW FEATURES
+
+    o Work in progress on functionality that
+      allows users to calculate Q and B of an instrument.
+
 CHANGES IN VERSION 1.20.1
 -------------------------
 

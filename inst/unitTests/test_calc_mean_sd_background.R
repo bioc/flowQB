@@ -1,9 +1,10 @@
 calc_mean_sd_background <- function() {
     library(flowCore)
     library(xlsx)
+    library(flowQBData)
 
-    inst_xlsx_path <- system.file("extdata", "example1", 
-        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQB")
+    inst_xlsx_path <- system.file("extdata",
+        "140126_InstEval_Stanford_LSRIIA2.xlsx", package="flowQBData")
     xlsx <- read.xlsx(inst_xlsx_path, 1, headers=FALSE, stringsAsFactors=FALSE)
     
     ignore_channels_row <- 9
@@ -23,8 +24,8 @@ calc_mean_sd_background <- function() {
     folder <- xlsx[[test_column]][[test_row]]
     file_name <- xlsx[[test_column]][[test_row+1]]
 
-    fcs_path <- system.file("extdata", "example1", 
-        instrument_folder, folder, file_name, package="flowQB")
+    fcs_path <- system.file("extdata",
+        instrument_folder, folder, file_name, package="flowQBData")
     
     results <- calc_mean_sd_background(fcs_path, ignore_channels)
     

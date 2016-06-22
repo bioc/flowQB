@@ -1,6 +1,7 @@
 test_pick_parameters <- function() {
     library('flowCore')
-    fcsFilePath <- system.file("extdata", "935289.fcs", package="flowQB")
+    fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
+        "933745.fcs", package="flowQBData")
     myFlowFrame <- read.FCS(fcsFilePath)
     ignore <- c("Time", "FSC-H", "FSC-A", "FSC-W", "SSC-H", "SSC-A", "SSC-W",
         "foo", "doo")
