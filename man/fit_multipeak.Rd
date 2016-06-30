@@ -173,7 +173,7 @@
     fcs_file_path <- system.file("extdata", instrument_folder, folder, 
         filename, package="flowQBData")
 
-    multipeak_results2 <- fit_thermo_fischer(fcs_file_path, scatter_channels, 
+    multipeak_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels, 
         ignore_channels, dyes, detectors, bounds, 
         signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
         logicle_width = 0.5)
