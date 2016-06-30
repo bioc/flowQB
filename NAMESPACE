@@ -21,14 +21,6 @@
 ## software.
 ###############################################################################
 
-#export(BEADflowQBCalculation,find_peak,scatter_gate,LEDflowQBCalculation);
-#importMethodsFrom(Biobase,exprs)
-#importMethodsFrom(methods, show)
-#importFrom(graphics, abline, axis, par, title)
-#importFrom(flowCore, filter)
-#importFrom(flowCore, Subset)
-
-#### New code starts here
 export("find_peak")
 export("get_results_for_dyes")
 export("calc_mean_sd_197")
