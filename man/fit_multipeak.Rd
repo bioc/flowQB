@@ -144,9 +144,9 @@
         logicle_width = 0.5)
 
     plot(
-        exprs(multipeak_fit$logicle.data[,"FITC-A"]),
-        exprs(multipeak_fit$logicle.data[,"Pacific Blue-A"]),
-        col=multipeak_fit$km$cluster, pch='.')
+        exprs(multipeak_fit$transformed_data[,"FITC-A"]),
+        exprs(multipeak_fit$transformed_data[,"Pacific Blue-A"]),
+        col=multipeak_fit$peak_clusters$cluster, pch='.')
 
 }
 
