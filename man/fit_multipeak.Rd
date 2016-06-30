@@ -1,5 +1,7 @@
 \name{fit_multipeak}
 \alias{fit_multipeak}
+\alias{fit_spherotech}
+\alias{fit_thermo_fischer}
 
 \title{ 
     TODO
@@ -11,9 +13,19 @@
 
 \usage{
     fit_multipeak(fcs_file_path, scatter_channels, ignore_channels,
-    N.peaks, dyes, detectors, bounds,
-    signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-    logicle_width = 0.5, ...)
+        N.peaks, dyes, detectors, bounds,
+        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+        logicle_width = 0.5, ...)
+    
+    fit_spherotech(fcs_file_path, scatter_channels, ignore_channels,
+        dyes, detectors, bounds,
+        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+        logicle_width = 0.5, ...)
+
+    fit_thermo_fischer(fcs_file_path, scatter_channels, ignore_channels,
+        dyes, detectors, bounds,
+        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+        logicle_width = 0.5, ...)
 }
 
 \arguments{
@@ -138,15 +150,15 @@
     
     N.peaks <- 8
 
-    multipeak_fit <- fit_multipeak(fcs_file_path, scatter_channels, 
+    multipeak_results <- fit_multipeak(fcs_file_path, scatter_channels, 
         ignore_channels, N.peaks, dyes, detectors, bounds, 
         signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
         logicle_width = 0.5)
 
     plot(
-        exprs(multipeak_fit$transformed_data[,"FITC-A"]),
-        exprs(multipeak_fit$transformed_data[,"Pacific Blue-A"]),
-        col=multipeak_fit$peak_clusters$cluster, pch='.')
+        exprs(multipeak_results$transformed_data[,"FITC-A"]),
+        exprs(multipeak_results$transformed_data[,"Pacific Blue-A"]),
+        col=multipeak_results$peak_clusters$cluster, pch='.')
 
 }
 

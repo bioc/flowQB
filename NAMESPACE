@@ -30,6 +30,8 @@ export("calc_mean_sd_capture_all")
 export("calc_mean_sd_background")
 export("fit_led")
 export("fit_multipeak")
+export("fit_spherotech")
+export("fit_thermo_fischer")
 
 exportMethods(
     "split_in_two", 
