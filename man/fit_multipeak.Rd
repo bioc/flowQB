@@ -147,18 +147,48 @@
     detector_row <- 13
     dyes <- as.character(xlsx[dye_row,channel_cols])
     detectors <- as.character(xlsx[detector_row,channel_cols])
-    
-    N.peaks <- 8
 
-    multipeak_results <- fit_multipeak(fcs_file_path, scatter_channels, 
-        ignore_channels, N.peaks, dyes, detectors, bounds, 
+    multipeak_results <- fit_spherotech(fcs_file_path, scatter_channels, 
+        ignore_channels, dyes, detectors, bounds, 
         signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
         logicle_width = 0.5)
+
+    ## The above is the same as this:
+    ## N.peaks <- 8
+    ## multipeak_results <- fit_multipeak(fcs_file_path, scatter_channels, 
+    ##     ignore_channels, N.peaks, dyes, detectors, bounds, 
+    ##     signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+    ##     logicle_width = 0.5)
 
     plot(
         exprs(multipeak_results$transformed_data[,"FITC-A"]),
         exprs(multipeak_results$transformed_data[,"Pacific Blue-A"]),
         col=multipeak_results$peak_clusters$cluster, pch='.')
+        
+    ## Thermo-Fisher Example:
+    folder_column <- 17
+    folder <- xlsx[[folder_column]][[folder_row]]
+    filename <- xlsx[[folder_column]][[folder_row+1]]
+
+    fcs_file_path <- system.file("extdata", instrument_folder, folder, 
+        filename, package="flowQBData")
+
+    multipeak_results2 <- fit_thermo_fischer(fcs_file_path, scatter_channels, 
+        ignore_channels, dyes, detectors, bounds, 
+        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+        logicle_width = 0.5)
+        
+    ## The above is the same as this:
+    ## N.peaks <- 6
+    ## multipeak_results_tf <- fit_multipeak(fcs_file_path, scatter_channels, 
+    ##     ignore_channels, N.peaks, dyes, detectors, bounds, 
+    ##     signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
+    ##     logicle_width = 0.5)
+    
+    plot(
+        exprs(multipeak_results_tf$transformed_data[,"FITC-A"]),
+        exprs(multipeak_results_tf$transformed_data[,"Pacific Blue-A"]),
+        col=multipeak_results_tf$peak_clusters$cluster, pch='.')
 
 }
 
