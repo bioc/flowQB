@@ -25,83 +25,83 @@
 }
 
 \author{
-    Faysal El Khettabi \\
+    Josef Spidlen, Faysal El Khettabi, Wayne Moore, \\
+    David Parks, Ryan Brinkman
     Terry Fox Laboratory \\
     British Columbia Cancer Agency \\
-    Vancouver, BC, Canada\\
-    $fkhettabi@bccrc.ca$ \\
-    $faysal.el.khettabi@gmail.com$
+    Vancouver, BC, Canada
 }
 
 \maketitle
 
 \section{Introduction}
+
 We developed an automated approach to determine a cytometer's detection
 efficiency (Q) and background illumination (B) independent of a pre-defined
-bead set, based on Kmeans clustering and quadratic regression methods.
+bead set, based on K-means clustering and quadratic regression methods.
 We used a quadratic formulation for modelling Q and B that offers more
 physical insight about cytometry sensitivity than its truncated linear 
-version 
-\cite{wj,CH,HW}, by considering the term $CV_{intrinsic}$ as part of the
-problem to solve. Using Kmeans in place of manual gating enabled an automated
-analysis to calculate  Q, B and $CV_{intrinsic}$ quantities objectively and 
-in a time-efficient manner. We validated our approach on flow cytometry
-sensitivity datasets through comparison to Q, B and $CV_{intrinsic}$ values
-obtained by manual analysis. The fully automated results ensure adequate
-analysis for the flow cytometry sensitivity datasets. Our approach is 
-implemented through the R/Bioconductor package \emph{flowQB}.
+version \cite{wj,CH,HW}.
 
-\begin{itemize}
-\item {\bf Methods:} We propose a collection of R generic functions to 
-calculate Q, B and $CV_{intrinsic}$ quantities objectively and in a 
-time-efficient manner. We have implemented these functions in the 
-Bioconductor package flowQB. We illustrate their use in this draft.
-\item {\bf Results} We hope that these proposed R generic functions
-will become the base for the development of many tools to calculate
-Q, B and $CV_{intrinsic}$.
-\item {\bf keywords} Flow Cytometry, High Throughput, Doublet,
-Instrument Sensitivity, Kmeans, Mean Fluorescence Intensity (MFI),
-Molecules of Equivalent Soluble Fluorochrome (MESF),
-linear and quadratic regressions, Q (detector efficiency),
-B (background light level).
-\end{itemize}
+The code is already workingn and useable, but we don't have a proper
+vignette yet, and the documentation is still a work-in-progress. We expect to
+have this polished by the end of summer 2016.
+In the mean time, please refer to the executable examples in the
+reference manual or the unit tests included with this package.
 
-\subsection*{\bf Illustration }
-
-First read the data which is in a specific folder. Our data is in
-flowQB-extdata folder:
-
-
-
-\subsection*{\bf RESULTS is a list }
-
-The function BEADflowQBCalculation is used for the bead FCS file to
-determine the singlet events. These singlet events are clustered for the
-channels of interest to determine the raw statitics for the regression and
-the generation of the regression's coefficients, Q and B values.
-This function  generates the results as a list, the first element of the
-list is for Raw Statistics and the second element of the list is for the
-coefficients, Q and B values.
-
-Raw Statistics uses 3 approaches, Robust Statistics, 
-Density estimation assuming a Gaussian distribution (MASS package)
-and the second 'extremevalues' package used to determine the raw
-statistics without outliers:
-
-\begin{itemize}
-\item {\bf NE:} Number of events in each peak.
-\item {\bf mfiRS:} MFI associated to Robust Statistics.
-\item {\bf mfiGS:} MFI associated to Gauss estimation using MASS.
-\item {\bf mfino:} MFI associated to Gauss estimation using 'extremevalues'.
-\item {\bf mfirSD:} Standard deviation associated to Robust Statistics.
-\item {\bf mfiGS:} Standard deviation associated to Gauss estimation using MASS.
-\item {\bf mfiSDno:} Standard deviation associated to Gauss estimation using
-'extremevalues'.
-\item {\bf Nesno.ORD:} Number of events in each peak without outliers.
-\end{itemize}
-
-For each approach (StatsProcedure) and channel (MARKER), the coefficients
-(c0,c1,c2) and (Q,B) are listed with their associated (Pvalue, Std-Error).
+% 
+% 
+% \begin{itemize}
+% \item {\bf Methods:} We propose a collection of R generic functions to 
+% calculate Q, B and $CV_{intrinsic}$ quantities objectively and in a 
+% time-efficient manner. We have implemented these functions in the 
+% Bioconductor package flowQB. We illustrate their use in this draft.
+% \item {\bf Results} We hope that these proposed R generic functions
+% will become the base for the development of many tools to calculate
+% Q, B and $CV_{intrinsic}$.
+% \item {\bf keywords} Flow Cytometry, High Throughput, Doublet,
+% Instrument Sensitivity, Kmeans, Mean Fluorescence Intensity (MFI),
+% Molecules of Equivalent Soluble Fluorochrome (MESF),
+% linear and quadratic regressions, Q (detector efficiency),
+% B (background light level).
+% \end{itemize}
+% 
+% \subsection*{\bf Illustration }
+% 
+% First read the data which is in a specific folder. Our data is in
+% flowQB-extdata folder:
+% 
+% 
+% 
+% \subsection*{\bf RESULTS is a list }
+% 
+% The function BEADflowQBCalculation is used for the bead FCS file to
+% determine the singlet events. These singlet events are clustered for the
+% channels of interest to determine the raw statitics for the regression and
+% the generation of the regression's coefficients, Q and B values.
+% This function  generates the results as a list, the first element of the
+% list is for Raw Statistics and the second element of the list is for the
+% coefficients, Q and B values.
+% 
+% Raw Statistics uses 3 approaches, Robust Statistics, 
+% Density estimation assuming a Gaussian distribution (MASS package)
+% and the second 'extremevalues' package used to determine the raw
+% statistics without outliers:
+% 
+% \begin{itemize}
+% \item {\bf NE:} Number of events in each peak.
+% \item {\bf mfiRS:} MFI associated to Robust Statistics.
+% \item {\bf mfiGS:} MFI associated to Gauss estimation using MASS.
+% \item {\bf mfino:} MFI associated to Gauss estimation using 'extremevalues'.
+% \item {\bf mfirSD:} Standard deviation associated to Robust Statistics.
+% \item {\bf mfiGS:} Standard deviation associated to Gauss estimation using MASS.
+% \item {\bf mfiSDno:} Standard deviation associated to Gauss estimation using
+% 'extremevalues'.
+% \item {\bf Nesno.ORD:} Number of events in each peak without outliers.
+% \end{itemize}
+% 
+% For each approach (StatsProcedure) and channel (MARKER), the coefficients
+% (c0,c1,c2) and (Q,B) are listed with their associated (Pvalue, Std-Error).
 
 \clearpage
 \bibliographystyle{abbrv}
