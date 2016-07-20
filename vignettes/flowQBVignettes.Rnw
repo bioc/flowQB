@@ -6,48 +6,240 @@
 %\VignetteKeywords{flowQB}
 %\VignettePackage{flowQB}
 
-\documentclass{article}
+\documentclass[11pt]{article}
+\usepackage{times}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+\usepackage{times}
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage{subfigure}
+
+\textwidth=6.2in
+\textheight=8.5in
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rcode}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textsf{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
 
 \usepackage{amsmath}
 \usepackage{amscd}
 \usepackage[tableposition=top]{caption}
 \usepackage{ifthen}
 \usepackage[utf8]{inputenc}
-
 \usepackage{Sweave}
+
 \begin{document}
 
 \title{
-    Automated Quadratic Characterization of Flow Cytometer Instrument
+    flowQB -- Automated Quadratic Characterization of Flow Cytometer Instrument
     Sensitivity\footnote{This project was supported by the Terry Fox
-    Foundation, the Terry Fox Research Institute and by grant \#700374 from
-    the Canadian Cancer Society, Toronto.}
+    Foundation, the Terry Fox Research Institute and the Canadian Cancer 
+    Society. Josef Spidlen is an ISAC Marylou Ingram Scholar.}
 }
 
 \author{
-    Josef Spidlen, Faysal El Khettabi, Wayne Moore, \\
-    David Parks, Ryan Brinkman
-    Terry Fox Laboratory \\
-    British Columbia Cancer Agency \\
-    Vancouver, BC, Canada
+    Josef Spidlen$^1$, Wayne Moore$^2$, Faysal El Khettabi, \\
+    David Parks$^2$, Ryan Brinkman$^1$\\[12pt]
+    $^1$\textit{Terry Fox Laboratory, British Columbia Cancer Agency}\\
+    \textit{Vancouver, BC, Canada}\\[3pt]
+    $^2$\textit{Genetics Department, Stanford University School of Medicine}\\
+    \textit{Stanford, California, USA}
 }
 
 \maketitle
 
-\section{Introduction}
+\section{Abstract}
 
-We developed an automated approach to determine a cytometer's detection
-efficiency (Q) and background illumination (B) independent of a pre-defined
-bead set, based on K-means clustering and quadratic regression methods.
-We used a quadratic formulation for modelling Q and B that offers more
-physical insight about cytometry sensitivity than its truncated linear 
-version \cite{wj,CH,HW}.
+This package provides methods to calculate flow cytometer's detection efficiency
+(Q) and background illumination (B) by analyzing LED pulses and multi-level bead
+sets. The method improves on previous formulations
+\cite{wood1998, hoffman2007, chase1998} 
+by fitting a full quadratic model with appropriate weighting, and by providing
+standard errors and peak residuals as well as the fitted parameters themselves.
+K-means clustering is incorporated for automated peak detection of multi-peak
+data. Overall, this method is successful in providing good estimates of the
+Spe scales and backgrounds for all of the fluorescence channels on instruments
+with good linearity. 
+Known photoelectron scales and measurement channel backgrounds make
+it possible to estimate the precision of measurements at different signal levels
+and the effects of compensated spectral overlap on measurement quality.
 
-The code is already workingn and useable, but we don't have a proper
+\section{Note - Vignette is a Work In Progress}
+The code is already working and useable, but we don't have a proper
 vignette yet, and the documentation is still a work-in-progress. We expect to
 have this polished by the end of summer 2016.
 In the mean time, please refer to the executable examples in the
 reference manual or the unit tests included with this package.
+
+\section{Introduction}
+
+The basic measurement capabilities of a fluorescence cytometer measurement
+channel can be estimated by knowing just two values:  Q, the statistical number
+of photoelectrons (Spe) generated per unit of dye in the sample, and B, the
+background light in dye equivalents that sets the minimum variance that
+underlies all measurements.  From these the minimum detectable amount of dye
+and the precision of measurements at different signal levels can be calculated.
+Therefore, measurements of Q and B are the key to making valid comparisons
+between different instruments and among different channels on an instrument.
+
+We can achieve full specification of Q and B in two steps by evaluating
+photoelectron scales for the measurement channels of interest and relating
+those to measurements on dye reference samples.  There are problems and
+challenges in implementing each step in a way that is convenient and accurate
+in routine use. Here we address the photoelectron scale aspect by providing
+reliable automated software for obtaining the needed information from LED or
+multi-level, multi-dye bead data.
+
+When a cell or particle moves through a sensing area on a flow cytometer, a 
+focused laser beam excites fluorescent dyes that emit a pulse of light in all
+directions. The optical system collects some of this light and passes it through
+optical filters to the cathodes of one or more PMT detectors where a fraction of
+the photons generate photoelectrons. The photoelectrons are amplified through a
+series of dynodes to produce an output current pulse. The photoelectron
+production is a Poisson process, so the variance of signals at a particular
+level is proportional to the signal level itself. Since the amplification
+process through the dynodes introduces some additional variance, we introduce
+the term ``statistical photoelectrons'' or Spe to denote the effective Poisson
+number relating signal levels and their variances.
+
+Since it is difficult to measure photoelectron counts directly, the usual method
+for estimating photoelectron scales has been to measure uniform light signals
+at various levels and fit the measured means and variances to a statistical
+model involving the Poisson distribution expectations for the relation between
+them. Historically, two kinds of signal source have been used for this kind of
+evaluation: an LED light source producing very uniform pulses at adjustable
+signal levels or microspheres (also called “beads”) labeled with several
+different concentrations of a mixture of fluorescent dyes.
+The model can be expressed as a second-degree (quadratic) polynomial relating
+the observed signal means and variances to Q, B and, for microsphere samples,
+$CV_0$, a common non-statistical variability in the measurements of the
+different microsphere peaks.
+
+For measurements on a population of similar particles like one of the
+populations in a multi-level bead set, the observed variance should be the sum
+of the electronic noise, background light not associated with the particles,
+Poisson variance related to the signal levels of the particles, the variation
+in dye amount among the particles and illumination variations due to particles
+taking different flow paths through the laser beam. The electronic noise and
+background light combine into a variance contribution that is not dependent
+on the signal level. The Poisson variance is proportional to the signal level,
+and the dye and illumination variations combine to form $CV_0$ whose
+contribution to the variances goes with the square of the signal level.
+Therefore, the general equation for the observed variance and its components can
+be expressed as 
+$$V(M_I) = c_0 + c_1 M_I + c_2 M_I^2$$
+where $M_I$ is the mean signal of the population in measurement intensity units,
+and $V(M_I)$ is the observed variance of a population with mean $M_I$.
+Methods implemented in this package fit sets of mean and variance data points
+with this equation to obtain the parameters $c_0$, $c_1$ and $c_2$.
+If we scale the signal levels in Spe, 
+we can define $B_{\text{Spe}}$ as the effective background level in Spe and
+$M_{\text{Spe}}$ as the mean signal in Spe.
+Then, defining $Q_I$ as the Spe per intensity unit, as explained in our paper
+\cite{parks2016}, we can calculate
+$$B_{\text{Spe}} = c_0/c_1^2$$
+$$Q_I = 1/c_1$$
+$$CV_0^2 = c_2$$
+
+\section{Requirements}
+
+The flowQB package requires the \Rpackage{flowCore} library in order to
+read FCS files \cite{spidlen2010},
+the \Rpackage{stats} package for its model fitting and also
+K-means clustering functinality, the
+\Rpackage{extremevalues} package to determine outliers, and it also makes use
+of some basic functions and classes from the \Rpackage{methods}
+and \Rpackage{BiocGenerics} packages.
+In addition, we suggest installing the
+\Rpackage{flowQBData} package, which contains example data sets to demonstrate
+the functionality of this package.
+Alternativelly, one can use the \Rpackage{FlowRepositoryR} package in order
+to work directly with data stored in FlowRepository.
+In addition, we recommend the \Rpackage{xlsx} package in order to parse
+house-keeping information from MS Excel spreadsheets.
+Finally, we use the \Rpackage{RUnit} package in order to implement unit tests
+assuring consistency and repreducibility of the \Rpackage{flowQB} functionality
+over time.
+Let's start by loading the \Rpackage{flowQB} package as well as the
+\Rpackage{flowQBData} package with data to demonstrate the functionality.
+
+
+<<LoadPackage, echo=true, results=hide>>=
+library("flowQB")
+library("flowQBData")
+@
+
+\section{Fitting LED pulser data}
+TODO
+
+<<FitLED, echo=true, results=verbatim>>=
+## Example is based on LED data from the flowQBData package
+fcs_directory <- system.file("extdata", "SSFF_LSRII", "LED_Series", 
+    package="flowQBData")
+fcs_file_path_list <- list.files(fcs_directory, "*.fcs", full.names= TRUE)
+## We are working with these FCS files:
+basename(fcs_file_path_list)
+
+## Various house keeping information
+## 1) Which channels should be ignored, typically the non-fluorescence
+##    channels, such as the time and the scatter channels
+ignore_channels <- c("Time", 
+    "FSC-A", "FSC-W", "FSC-H", 
+    "SSC-A", "SSC-W", "SSC-H")
+## 2) Which dyes have been used in this dataset
+dyes <- c("APC", "APC-Cy7", "APC-H7", "FITC", "PE", "PE-Cy7", "PerCP", 
+    "PerCP-Cy55", "V450", "V500-C")
+## 3) What are the corresponding detectors, provide a vector of short channel 
+## names, i.e., values of the $PnN FCS keywords.
+detectors <- c("APC-A", "APC-Cy7-A", "APC-Cy7-A", "FITC-A", "PE-A", "PE-Cy7-A",
+    "PerCP-Cy5-5-A", "PerCP-Cy5-5-A", "Pacific Blue-A", "Aqua Amine-A")
+## 4) Set the minimum and maximum values, peaks with mean outsize of this range
+## will be ignored
+bounds <- list(minimum = -100, maximum = 100000)
+## 5) The signal type that you are looking at (Area, Height or Width)
+signal_type <- "Area"
+## 6) The instrument make/model
+instrument_name <- 'LSRII'
+## 7) The minimum number of usable peaks (represented by different FCS files
+## in case of an LED pulser) required in order for a fluorescence channel 
+## to be included in the fitting. Peaks with mean expression outside of the 
+## bounds specified above are omitted and therefore not considered useful
+minimum_fcs_files <- 3 # The default 3 seems to be work well in typical cases
+## 8) What is the maximum number of iterations for iterative fitting with
+## weigth adjustments
+max_iterations <- 10 # The default 10 seems to be enough in typical cases
+
+## Now, let's calculate the fitting
+led_results <- fit_led(fcs_file_path_list, ignore_channels, dyes,
+    detectors, bounds, signal_type, instrument_name, 
+    minimum_useful_peaks = minimum_fcs_files, max_iterations = max_iterations)
+@
+
+
+
+
+
+
+\section{Fitting bead data}
+TODO
+
+\section{Parsing house-keeping information from spreadsheets}
+TODO
+
+\section{Using data from FlowRepository}
+TODO
+
+%\clearpage
+\bibliographystyle{plainnat} 
+\bibliography{Refs}
 
 % 
 % 
@@ -94,7 +286,7 @@ reference manual or the unit tests included with this package.
 % \item {\bf mfiGS:} MFI associated to Gauss estimation using MASS.
 % \item {\bf mfino:} MFI associated to Gauss estimation using 'extremevalues'.
 % \item {\bf mfirSD:} Standard deviation associated to Robust Statistics.
-% \item {\bf mfiGS:} Standard deviation associated to Gauss estimation using MASS.
+% \item {\bf mfiGS:} Std deviation associated to Gauss estimation using MASS.
 % \item {\bf mfiSDno:} Standard deviation associated to Gauss estimation using
 % 'extremevalues'.
 % \item {\bf Nesno.ORD:} Number of events in each peak without outliers.
@@ -103,64 +295,64 @@ reference manual or the unit tests included with this package.
 % For each approach (StatsProcedure) and channel (MARKER), the coefficients
 % (c0,c1,c2) and (Q,B) are listed with their associated (Pvalue, Std-Error).
 
-\clearpage
-\bibliographystyle{abbrv}
-\begin{thebibliography}{}
+%\clearpage
+%\bibliographystyle{abbrv}
+%\begin{thebibliography}{}
 
-\bibitem{wj}
-J. Wood,
-{ \em Fundamental Flow Cytometer Properties Governing Sensitivity and
-Resolution}, 
-Cytometry 33, (1998), p.~ 260 - 6.
-\bibitem{HW}
-R. Hoffman and J. Wood,
-{\em  Characterization of Flow Cytometer Instrument Sensitivity},
-Current Protocols in Cytometry, Chapter 1: Unit 1.20 (2007).
-
-\bibitem{CH}
-E. Chase and R. Hoffman,
-{\em  Resolution of Dimly Fluorescent Particles: a Practical Measure of
-Fluorescence Sensitivity},
-Cytometry 33 (1998), p.~ 267-279.
-
-\bibitem{lt}
-D. R. Parks, m. Roederer, W. A. Moore,
-{\em A new "Logicle" display method avoids deceptive effects of logarithmic
-scaling for low signals and compensated data.}  Cytometry Part  (A), (2006),
-96(6), p.~541-51.
-
-\bibitem{OR}
-A. Ortyn, E. Hall, C. George, K. Frost, A. Basiji, J. Perry, A. Zimmerman,
-D. Coder, P. Morrissey,
-{\em  Sensitivity measurement and compensation in spectral imaging},
-Cytometry 69, (2006), p.~ 852 - 862.
-
-\bibitem{rs}
-{\em  Robust Statistics in BD FACSDivaTM 6.0 Software}, BD Tech Note
-$\# 23-9609-00$. (2007).
-
-
-\bibitem{r}
-R Development Core Team, 
-{\em R: A Language and Environment for Statistical Computing}, R Foundation for
-Statistical Computing, Vienna, Austria, (2011),
-
-\bibitem{BC}
-R. Ihaka  and R. Gentleman R. 
-{\em  A Language for Data Analysis and Graphics}, Journal of Computational and
-Graphical Statistics, vol. 5, No. 3, (1996), p.~299-314.
-
-
-\bibitem{mass}
-W. N. Venables and B. D. Ripley,
-{ \em Modern Applied Statistics with S}, Springer, Fourth Edition, New York,
-(2002).
-
-\bibitem{f}
-F. El Khettabi et al. 2014, 
-{\em Automated Quadratic Characterization of Flow Cytometer Instrument
-Sensitivit}, to be submitted. 
-
-\end{thebibliography}{}
+%\bibitem{wood1998}
+%J. Wood,
+%{ \em Fundamental Flow Cytometer Properties Governing Sensitivity and
+%Resolution}, 
+%Cytometry 33, (1998), p.~ 260-6.
+%
+%\bibitem{hoffman2007}
+%R. Hoffman and J. Wood,
+%{\em  Characterization of Flow Cytometer Instrument Sensitivity},
+%Current Protocols in Cytometry, Chapter 1: Unit 1.20 (2007).
+%
+%\bibitem{chase1998}
+%E. Chase and R. Hoffman,
+%{\em  Resolution of Dimly Fluorescent Particles: a Practical Measure of
+%Fluorescence Sensitivity},
+%Cytometry 33 (1998), p.~ 267-279.
+%
+%\bibitem{lt}
+%D. R. Parks, m. Roederer, W. A. Moore,
+%{\em A new "Logicle" display method avoids deceptive effects of logarithmic
+%scaling for low signals and compensated data.}  Cytometry Part  (A), (2006),
+%96(6), p.~541-51.
+%
+%\bibitem{OR}
+%A. Ortyn, E. Hall, C. George, K. Frost, A. Basiji, J. Perry, A. Zimmerman,
+%D. Coder, P. Morrissey,
+%{\em  Sensitivity measurement and compensation in spectral imaging},
+%Cytometry 69, (2006), p.~ 852 - 862.
+%
+%\bibitem{rs}
+%{\em  Robust Statistics in BD FACSDivaTM 6.0 Software}, BD Tech Note
+%$\# 23-9609-00$. (2007).
+%
+%
+%\bibitem{r}
+%R Development Core Team, 
+%{\em R: A Language and Environment for Statistical Computing}, R Foundation for
+%Statistical Computing, Vienna, Austria, (2011),
+%
+%\bibitem{BC}
+%R. Ihaka  and R. Gentleman R. 
+%{\em  A Language for Data Analysis and Graphics}, Journal of Computational and
+%Graphical Statistics, vol. 5, No. 3, (1996), p.~299-314.
+%
+%
+%\bibitem{mass}
+%W. N. Venables and B. D. Ripley,
+%{ \em Modern Applied Statistics with S}, Springer, Fourth Edition, New York,
+%(2002).
+%
+%\bibitem{f}
+%F. El Khettabi et al. 2014, 
+%{\em Automated Quadratic Characterization of Flow Cytometer Instrument
+%Sensitivit}, to be submitted. 
+%\end{thebibliography}{}
 
 \end{document}

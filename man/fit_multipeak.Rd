@@ -14,18 +14,18 @@
 \usage{
     fit_multipeak(fcs_file_path, scatter_channels, ignore_channels,
         N.peaks, dyes, detectors, bounds,
-        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-        logicle_width = 0.5, ...)
+        signal_type, instrument_name, minimum_useful_peaks = 3, 
+        max_iterations = 10, logicle_width = 0.5, ...)
     
     fit_spherotech(fcs_file_path, scatter_channels, ignore_channels,
         dyes, detectors, bounds,
-        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-        logicle_width = 0.5, ...)
+        signal_type, instrument_name, minimum_useful_peaks = 3, 
+        max_iterations = 10, logicle_width = 0.5, ...)
 
     fit_thermo_fischer(fcs_file_path, scatter_channels, ignore_channels,
         dyes, detectors, bounds,
-        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-        logicle_width = 0.5, ...)
+        signal_type, instrument_name, minimum_useful_peaks = 3, 
+        max_iterations = 10, logicle_width = 0.5, ...)
 }
 
 \arguments{
@@ -56,7 +56,7 @@
     \item{instrument_name}{
         TODO.
     }
-    \item{minimum_rows}{
+    \item{minimum_useful_peaks}{
         TODO.
     }
     \item{max_iterations}{
@@ -150,15 +150,15 @@
 
     multipeak_results <- fit_spherotech(fcs_file_path, scatter_channels, 
         ignore_channels, dyes, detectors, bounds, 
-        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-        logicle_width = 0.5)
+        signal_type, instrument_name, minimum_useful_peaks = 3, 
+        max_iterations = 10, logicle_width = 0.5)
 
     ## The above is the same as this:
     ## N.peaks <- 8
     ## multipeak_results <- fit_multipeak(fcs_file_path, scatter_channels, 
     ##     ignore_channels, N.peaks, dyes, detectors, bounds, 
-    ##     signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-    ##     logicle_width = 0.5)
+    ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
+    ##     max_iterations = 10, logicle_width = 0.5)
 
     plot(
         exprs(multipeak_results$transformed_data[,"FITC-A"]),
@@ -173,17 +173,17 @@
     fcs_file_path <- system.file("extdata", instrument_folder, folder, 
         filename, package="flowQBData")
 
-    multipeak_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels, 
+    multipeak_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels,
         ignore_channels, dyes, detectors, bounds, 
-        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-        logicle_width = 0.5)
+        signal_type, instrument_name, minimum_useful_peaks = 3, 
+        max_iterations = 10, logicle_width = 0.5)
         
     ## The above is the same as this:
     ## N.peaks <- 6
-    ## multipeak_results_tf <- fit_multipeak(fcs_file_path, scatter_channels, 
+    ## multipeak_results_tf <- fit_multipeak(fcs_file_path, scatter_channels,
     ##     ignore_channels, N.peaks, dyes, detectors, bounds, 
-    ##     signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-    ##     logicle_width = 0.5)
+    ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
+    ##     max_iterations = 10, logicle_width = 0.5)
     
     plot(
         exprs(multipeak_results_tf$transformed_data[,"FITC-A"]),

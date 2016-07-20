@@ -11,7 +11,7 @@
 
 \usage{
     fit_led(fcs_file_path_list, ignore_channels, dyes, detectors, 
-        bounds, signal_type, instrument_name, minimum_rows = 3, 
+        bounds, signal_type, instrument_name, minimum_useful_peaks = 3, 
         max_iterations = 10, ...)
 }
 
@@ -37,7 +37,7 @@
     \item{instrument_name}{
         TODO.
     }
-    \item{minimum_rows}{
+    \item{minimum_useful_peaks}{
         TODO.
     }
     \item{max_iterations}{
@@ -123,7 +123,7 @@
 
     led_results <- fit_led(fcs_file_path_list, ignore_channels, dyes,
         detectors, bounds, signal_type, instrument_name, 
-        minimum_rows = 3, max_iterations = 10)
+        minimum_useful_peaks = 3, max_iterations = 10)
 }
 
 \keyword{functions}

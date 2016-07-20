@@ -19,15 +19,15 @@ test_fit_multipeak <- function() {
     set.seed(123456)
     multipeak_results <- fit_spherotech(fcs_file_path, scatter_channels, 
         ignore_channels, dyes, detectors, bounds, 
-        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-        logicle_width = 0.5)
+        signal_type, instrument_name, minimum_useful_peaks = 3, 
+        max_iterations = 10, logicle_width = 0.5)
     
     ## This would be the same thing except it gives the option of specifying
     ## the number of peaks
     ## multipeak_results <- fit_multipeak(fcs_file_path, scatter_channels, 
     ##     ignore_channels, 8, dyes, detectors, bounds, 
-    ##     signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-    ##     logicle_width = 0.5)
+    ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
+    ##     max_iterations = 10, logicle_width = 0.5)
 
     checkTrue(
         apply(cbind(
@@ -118,19 +118,19 @@ test_fit_multipeak <- function() {
     
     multipeak_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels, 
         ignore_channels, dyes, detectors, bounds, 
-        signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-        logicle_width = 0.5)
+        signal_type, instrument_name, minimum_useful_peaks = 3,
+        max_iterations = 10, logicle_width = 0.5)
     
     ## This would be the same thing except it gives the option of specifying
     ## the number of peaks
     ## multipeak_results_tf <- fit_multipeak(fcs_file_path, scatter_channels, 
     ##     ignore_channels, 6, dyes, detectors, bounds, 
-    ##     signal_type, instrument_name, minimum_rows = 3, max_iterations = 10,
-    ##     logicle_width = 0.5)
+    ##     signal_type, instrument_name, minimum_useful_peaks = 3,
+    ##     max_iterations = 10, logicle_width = 0.5)
  
     checkTrue(
         apply(cbind(
-            sum(multipeak_results_tf$fits, na.rm=TRUE), 18654.7252994752, 1e-5), 
+            sum(multipeak_results_tf$fits, na.rm=TRUE), 18654.7252994752, 1e-5),
             1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
