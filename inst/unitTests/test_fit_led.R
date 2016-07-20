@@ -17,7 +17,7 @@ test_fit_led <- function() {
     instrument_name <- "LSRII"
 
     led_results <- fit_led(fcs_file_path_list, ignore_channels, dyes, 
-        detectors, bounds, signal_type, instrument_name, 
+        detectors, signal_type, instrument_name, bounds = bounds,
         minimum_useful_peaks = 3, max_iterations = 10)
 
     ## Fits are being checked in all details

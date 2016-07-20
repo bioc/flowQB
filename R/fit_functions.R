@@ -21,8 +21,10 @@
 ## software.
 ###############################################################################
 
-fit_led <- function(fcs_file_path_list, ignore_channels, dyes, detectors,
-    bounds, signal_type, instrument_name, minimum_useful_peaks = 3,
+fit_led <- function(fcs_file_path_list, ignore_channels, 
+    dyes, detectors, signal_type, instrument_name, 
+    bounds = list(minimum = -100, maximum = 100000),
+    minimum_useful_peaks = 3,
     max_iterations = 10, ...)
 {
     signal_type <- tolower(signal_type)

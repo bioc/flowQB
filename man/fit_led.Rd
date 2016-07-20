@@ -11,8 +11,9 @@
 
 \usage{
     fit_led(fcs_file_path_list, ignore_channels, dyes, detectors, 
-        bounds, signal_type, instrument_name, minimum_useful_peaks = 3, 
-        max_iterations = 10, ...)
+        signal_type, instrument_name, 
+        bounds = list(minimum = -100, maximum = 100000),
+        minimum_useful_peaks = 3, max_iterations = 10, ...)
 }
 
 \arguments{
@@ -28,13 +29,13 @@
     \item{detectors}{
         TODO.
     }
-    \item{bounds}{
-        TODO.
-    }
     \item{signal_type}{
         TODO.
     }
     \item{instrument_name}{
+        TODO.
+    }
+    \item{bounds}{
         TODO.
     }
     \item{minimum_useful_peaks}{
@@ -122,7 +123,7 @@
     detectors <- as.character(xlsx[detector_row,channel_cols])
 
     led_results <- fit_led(fcs_file_path_list, ignore_channels, dyes,
-        detectors, bounds, signal_type, instrument_name, 
+        detectors, signal_type, instrument_name, bounds = bounds,
         minimum_useful_peaks = 3, max_iterations = 10)
 }
 
