@@ -31,7 +31,7 @@ test_fit_multipeak <- function() {
 
     checkTrue(
         apply(cbind(
-            sum(multipeak_results$fits, na.rm=TRUE), -1695.4047318655, 1e-5), 
+            sum(multipeak_results$fits, na.rm=TRUE), 9352.36544890927, 1e-5), 
             1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -40,7 +40,7 @@ test_fit_multipeak <- function() {
     checkTrue(
         apply(cbind(
             sum(multipeak_results$dye_fits, na.rm=TRUE), 
-            10097.6439438227, 1e-5),
+            4849.85545771564, 1e-5),
             1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -49,7 +49,7 @@ test_fit_multipeak <- function() {
     checkTrue(
         apply(cbind(
             sum(multipeak_results$iterated_fits, na.rm=TRUE), 
-            -32938.2529396501, 1e-5),
+            9227.50586712488, 1e-5),
             1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -58,7 +58,7 @@ test_fit_multipeak <- function() {
     checkTrue(
         apply(cbind(
             sum(multipeak_results$iterated_dye_fits, na.rm=TRUE), 
-            9855.35358940397, 1e-5), 
+            4886.04514679602, 1e-5), 
             1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -67,7 +67,7 @@ test_fit_multipeak <- function() {
     checkTrue(
         apply(cbind(
             sum(multipeak_results$iteration_numbers, na.rm=TRUE), 
-            356, 1e-5), 
+            119, 1e-5), 
             1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -130,7 +130,7 @@ test_fit_multipeak <- function() {
  
     checkTrue(
         apply(cbind(
-            sum(multipeak_results_tf$fits, na.rm=TRUE), 18654.7252994752, 1e-5),
+            sum(multipeak_results_tf$fits, na.rm=TRUE), 16706.6395944025, 1e-5),
             1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }

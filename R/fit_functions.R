@@ -268,16 +268,18 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
         tolower(instrument_name) == "bd accuri")
     censored.list <- censor_peak_statistics(results.list, fluorescences)
 
+    #fits <- data.frame(row.names=c(
+    #    "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
+    #    "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
     fits <- data.frame(row.names=c(
-        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
-        "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
+        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P"))
 
     for (fluorescence in fluorescences)
     {
         results <- results.list[[fluorescence]]
         censored <- censored.list[[fluorescence]]
         Q.R <- vector(mode='double', length=nrow(censored))
-        L.R <- vector(mode='double', length=nrow(censored))
+        # L.R <- vector(mode='double', length=nrow(censored))
 
         ## This is not really needed, but just so that 
         ## R CMD check does not complain about undefined variable
@@ -287,17 +289,17 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
         {
             quadratic.model <- lm(formula = V ~ 1 + M + I(M^2), 
                 data = censored, weights = W)
-            linear.model <- lm(formula = V ~ 1 + M, 
-                data = censored, weights = W)
+            # linear.model <- lm(formula = V ~ 1 + M, 
+            #   data = censored, weights = W)
             q.coef <- coefficients(summary(quadratic.model))
-            l.coef <- coefficients(summary(linear.model))
+            # l.coef <- coefficients(summary(linear.model))
             
             fits[[fluorescence]] <- c(
                 q.coef[1,1], q.coef[1,2], q.coef[1,4], 
                 q.coef[2,1], q.coef[2,2], q.coef[2,4], 
-                q.coef[3,1], q.coef[3,2], q.coef[3,4],
-                l.coef[1,1], l.coef[1,2], l.coef[1,4], 
-                l.coef[2,1], l.coef[2,2], l.coef[2,4])
+                q.coef[3,1], q.coef[3,2], q.coef[3,4]) #,
+            #   l.coef[1,1], l.coef[1,2], l.coef[1,4], 
+            #   l.coef[2,1], l.coef[2,2], l.coef[2,4])
             
             r <- residuals(quadratic.model)
             for (i in 1:nrow(censored)) 
@@ -307,54 +309,56 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
                     Q.R[[i]] <- r[[row.names(censored)[[i]]]] * 
                         sqrt(censored$W[[i]])
             
-            r <- residuals(linear.model)
-            for (i in 1:nrow(censored))
-                if (censored$Omit[[i]]) 
-                    L.R[[i]] <- NA_real_
-                else
-                    L.R[[i]] <- r[[row.names(censored)[[i]]]] * 
-                        sqrt(results$W[[i]])
+            # r <- residuals(linear.model)
+            # for (i in 1:nrow(censored))
+            #     if (censored$Omit[[i]]) 
+            #         L.R[[i]] <- NA_real_
+            #     else
+            #         L.R[[i]] <- r[[row.names(censored)[[i]]]] * 
+            #             sqrt(results$W[[i]])
             
         }
         else
         {
             fits[[fluorescence]][1:nrow(fits)] <- NA_real_
             Q.R[1:length(Q.R)] <- NA_real_
-            L.R[1:length(L.R)] <- NA_real_
+            # L.R[1:length(L.R)] <- NA_real_
         }
         
         results$QR <- Q.R
-        results$LR <- L.R
+        # results$LR <- L.R
         results.list[[fluorescence]] <- results
     }
     
     dye_fits <- get_results_for_dyes(dyes, detectors, fits)
 
     # Iterated
+    # iterated_fits <- data.frame(row.names=c(
+    #     "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
+    #     "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
     iterated_fits <- data.frame(row.names=c(
-        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
-        "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
+        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P"))
 
     iteration_numbers <- data.frame()
     
     q.iterations = NA
-    l.iterations = NA
+    # l.iterations = NA
     
     for (fluorescence in fluorescences)
     {
         results <- results.list[[fluorescence]]
         censored <- censored.list[[fluorescence]]
         Q.R <- vector(mode='double', length=nrow(censored))
-        L.R <- vector(mode='double', length=nrow(censored))
+        # L.R <- vector(mode='double', length=nrow(censored))
 
         if (usable_rows(censored) >= minimum_useful_peaks)
         {
             quadratic.model <- lm(formula = V ~ 1 + M + I(M^2), 
                 data = censored, weights = W)
             q.coef <- coefficients(summary(quadratic.model))
-            linear.model <- lm(formula = V ~ 1 + M, 
-                data = censored, weights = W)
-            l.coef <- coefficients(summary(linear.model))
+            # linear.model <- lm(formula = V ~ 1 + M, 
+            #   data = censored, weights = W)
+            # l.coef <- coefficients(summary(linear.model))
 
             for (iteration in 1:max_iterations)
             {
@@ -374,29 +378,29 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
             }
             q.iterations <- iteration
             
-            for (iteration in 1:max_iterations)
-            {
-                for (i in 1:nrow(censored))
-                {
-                    V <- l.coef[1,1] + l.coef[2,1] * censored$M[[i]]
-                    censored$W[[i]] <- (censored$N[[i]] - 1)/(2 * V^2)
-                    results$W[[i]] <- censored$W[[i]]
-                }
-                linear.model <- lm(formula = V ~ 1 + M, data = censored, 
-                    weights = W)
-                lnew.coef <- coefficients(summary(linear.model))
-                change <- max(abs((lnew.coef[,1] - l.coef[,1])/l.coef[,1]))
-                l.coef <- lnew.coef
-                if (change < 5E-5) break
-            }
-            l.iterations <- iteration
+            # for (iteration in 1:max_iterations)
+            # {
+            #     for (i in 1:nrow(censored))
+            #     {
+            #         V <- l.coef[1,1] + l.coef[2,1] * censored$M[[i]]
+            #         censored$W[[i]] <- (censored$N[[i]] - 1)/(2 * V^2)
+            #         results$W[[i]] <- censored$W[[i]]
+            #     }
+            #     linear.model <- lm(formula = V ~ 1 + M, data = censored,
+            #         weights = W)
+            #     lnew.coef <- coefficients(summary(linear.model))
+            #     change <- max(abs((lnew.coef[,1] - l.coef[,1])/l.coef[,1]))
+            #     l.coef <- lnew.coef
+            #     if (change < 5E-5) break
+            # }
+            # l.iterations <- iteration
 
             iterated_fits[[fluorescence]] <- c(
                 q.coef[1,1], q.coef[1,2], q.coef[1,4], 
                 q.coef[2,1], q.coef[2,2], q.coef[2,4], 
-                q.coef[3,1], q.coef[3,2], q.coef[3,4],
-                l.coef[1,1], l.coef[1,2], l.coef[1,4], 
-                l.coef[2,1], l.coef[2,2], l.coef[2,4])
+                q.coef[3,1], q.coef[3,2], q.coef[3,4]) #,
+            #    l.coef[1,1], l.coef[1,2], l.coef[1,4], 
+            #    l.coef[2,1], l.coef[2,2], l.coef[2,4])
             
             r <- residuals(quadratic.model)
             for (i in 1:nrow(censored)) 
@@ -406,29 +410,30 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
                     Q.R[[i]] <- r[[row.names(censored)[[i]]]] * 
                         sqrt(censored$W[[i]])
             
-            r <- residuals(linear.model)
-            for (i in 1:nrow(censored))
-                if (censored$Omit[[i]]) 
-                    L.R[[i]] <- NA_real_
-                else
-                    L.R[[i]] <- r[[row.names(censored)[[i]]]] * 
-                        sqrt(results$W[[i]])
+            # r <- residuals(linear.model)
+            # for (i in 1:nrow(censored))
+            #     if (censored$Omit[[i]]) 
+            #         L.R[[i]] <- NA_real_
+            #     else
+            #         L.R[[i]] <- r[[row.names(censored)[[i]]]] * 
+            #             sqrt(results$W[[i]])
         }
         else
         {
             iterated_fits[[fluorescence]][1:nrow(iterated_fits)] <- NA_real_
             Q.R[1:length(Q.R)] <- NA_real_
-            L.R[1:length(L.R)] <- NA_real_
+            # L.R[1:length(L.R)] <- NA_real_
         }
         
         results['QR-I'] <- Q.R
-        results['LR-I'] <- L.R
+        # results['LR-I'] <- L.R
         results.list[[fluorescence]] <- results        
 
         iteration_numbers <- rbind(
             iteration_numbers, 
             data.frame(row.names = c(fluorescence), 
-                Q=q.iterations, L=l.iterations))
+                Q=q.iterations#, L=l.iterations
+            ))
     }
     
     iterated_dye_fits <- get_results_for_dyes(dyes, detectors, iterated_fits)

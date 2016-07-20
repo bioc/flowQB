@@ -248,22 +248,21 @@ different channels due to various validity checks described above.
 This argument specifies the minimal number of valid peaks required in order
 for the fitting procedure to be performed on a particular fluorescence channel.
 
-\item \Rcode{max\_iterations} -- The maximum number of iterations for iterative
-fitting with weight adjustments. In most cases, the fitting converges 
-relativelly fast. The iterating stops when either the maximum of iterations is
+\item \Rcode{max\_iterations} -- The peaks have a wide range of variances, so
+unweighted least squares fitting is not appropriate, and we need to apply
+appropriate weights in the fitting procedure. In particular, the populations
+with lower variances get more weight since having the fit miss them by any
+particular amount is worse than missing a high variance population by the
+same amount. This argument specifies the maximum number of iterations for 
+the iterative fitting approach with appropriate weight recalculations. 
+In most cases, the fitting converges relativelly fast. 
+The iterating stops when either the maximum of iterations is
 used or if none of the coefficients of the model changed more than 0.00005.
 The default maximum of 10 iterations seems to be enough in most cases. You
 can also explore your results in order to see how many iterations were actually
-done for each of the fitting.
+done for each of the all of the fitting.
 
 \end{itemize}
-
-%
-
-%To put this into a more descriptive form and describe the actual methods employed, the peaks in the multi-level bead samples and the LED data series have a wide range of variances, so unweighted least squares fitting is not appropriate, and we need to apply appropriate weights in the fitting procedure.  In particular, the populations with lower variances get more weight since having the fit miss them by any particular amount is worse than missing a high variance population by the same amount.
-
-%LED fitting includes both quadratic and linear fits.  For LED analysis, results are reported for both quadratic fitting and linear fitting (effectively fixing CV0 = 0).  Since the uniformity of LED signal outputs is likely to be better than the ability of the cytometer electronics to evaluate them, the c2 term in a quadratic fit should be very close to zero with a small standard error.  If the results of the quadratic fit are consistent with CV0 = 0, we can rely on the linear fit results whose standard errors on c1 will generally be smaller than the c1 standard errors of the quadratic fit.
-
 
 <<FitLED, echo=true, results=verbatim>>=
 ## Example is based on LED data from the flowQBData package
@@ -308,8 +307,15 @@ led_results <- fit_led(fcs_file_path_list, ignore_channels, dyes,
     minimum_useful_peaks = minimum_fcs_files, max_iterations = max_iterations)
 @
 
+The results of the \Rfunction{fit\_led} function is a list with the following
+components:
 
-
+% bg_stats
+% dye_bg_stats
+% fits
+% dye_fits
+% iterated_fits
+% iterated_dye_fits
 
 \section{Fitting bead data}
 TODO
