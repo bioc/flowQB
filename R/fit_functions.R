@@ -120,6 +120,11 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
     iterated_fits <- data.frame(row.names=c(
         "c0", "c0 SE", "c0 P", "c1", "c1 SE", "c1 P", "c2", "c2 SE", "c2 P",
         "c0'", "c0' SE", "c0' P", "c1'", "c1' SE", "c1' P"))
+    
+    iteration_numbers <- data.frame()
+    q.iterations = NA
+    l.iterations = NA
+
     for (fluorescence in fluorescences)
     {
         results <- results.list[[fluorescence]]
@@ -156,6 +161,7 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
                 q.coef <- qnew.coef
                 if (change < 5E-5) break
             }
+            q.iterations <- iteration
             
             for (iteration in 1:max_iterations)
             {
@@ -172,6 +178,7 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
                 l.coef <- lnew.coef
                 if (change < 5E-5) break
             }
+            l.iterations <- iteration
 
             iterated_fits[[fluorescence]] <- c(
                 q.coef[1,1], q.coef[1,2], q.coef[1,4], 
@@ -206,7 +213,14 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
         results['QR-I'] <- Q.R
         results['LR-I'] <- L.R
         results.list[[fluorescence]] <- results
+        
+        iteration_numbers <- rbind(
+            iteration_numbers, 
+            data.frame(row.names = c(fluorescence), 
+                Q=q.iterations, L=l.iterations
+            ))
     }
+
     iterated_dye_fits <- get_results_for_dyes(dyes, detectors, iterated_fits)
 
     list(
@@ -216,7 +230,8 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
         fits = fits,
         dye_fits = dye_fits,
         iterated_fits = iterated_fits,
-        iterated_dye_fits = iterated_dye_fits
+        iterated_dye_fits = iterated_dye_fits,
+        iteration_numbers = iteration_numbers
     )
 }
 

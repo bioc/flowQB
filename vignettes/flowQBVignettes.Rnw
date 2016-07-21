@@ -434,6 +434,20 @@ led_results$dye_fits
 led_results$iterated_dye_fits
 @
 
+\item \Rcode{iteration\_numbers} -- A data frame with rows corresponding
+to all the different channels and 2 columns, Q and L, showing the number
+of iterations used for the quadratic and linear fitting, resp.
+This data frame can be reviewed in order to make sure the fitting is
+converging fast enough and the \Rcode{max\_iterations} parameter
+is set large enough.
+
+<<ExploreIterationNumbers, echo=true, results=verbatim>>=
+## Explore iteratation numbers
+## Showing only the head in order to limit the output for the vignette
+head(led_results$iteration_numbers)
+@
+
+
 \end{itemize}
 
 \section{Fitting bead data}
