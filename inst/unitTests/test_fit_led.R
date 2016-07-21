@@ -36,7 +36,7 @@ test_fit_led <- function() {
         45.460423661618, 93.4738634025946, -10.9238534593521
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C0',]), expected_fits_c0, 1e-5), 1,
+        cbind(as.numeric(led_results$fits['c0',]), expected_fits_c0, 1e-5), 1,
         function(x) {
             if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
         })))
@@ -56,7 +56,7 @@ test_fit_led <- function() {
         10.2273084098886, 0.638469957427783, 34.9073775721497
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C0 SE',]), 
+        cbind(as.numeric(led_results$fits['c0 SE',]), 
             expected_fits_c0se, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -77,7 +77,7 @@ test_fit_led <- function() {
         0.00435240590136014, 1.88284383640527e-26, 0.769964828519711
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C0 P',]), 
+        cbind(as.numeric(led_results$fits['c0 P',]), 
             expected_fits_c0p, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -98,7 +98,7 @@ test_fit_led <- function() {
         3.05743908886104, 3.16629767102649, 5.98423533189895
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C1',]), 
+        cbind(as.numeric(led_results$fits['c1',]), 
             expected_fits_c1, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -119,7 +119,7 @@ test_fit_led <- function() {
         0.0228362853500499, 0.0309975648690772, 0.0892005731686066
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C1 SE',]), 
+        cbind(as.numeric(led_results$fits['c1 SE',]), 
             expected_fits_c1se, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -140,7 +140,7 @@ test_fit_led <- function() {
         1.17092243392637e-11, 5.93531671783713e-24, 2.95763210666151e-07
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C1 P',]), 
+        cbind(as.numeric(led_results$fits['c1 P',]), 
             expected_fits_c1p, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -161,7 +161,7 @@ test_fit_led <- function() {
         -4.5249758187983e-06, 1.18477093218695e-05, 1.49445120598109e-05
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C2',]), 
+        cbind(as.numeric(led_results$fits['c2',]), 
               expected_fits_c2, 1e-5), 1, function(x) {
                   if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
               }
@@ -182,7 +182,7 @@ test_fit_led <- function() {
         1.30737035211899e-06, 1.06734179171585e-05, 1.52578404670833e-05
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C2 SE',]), 
+        cbind(as.numeric(led_results$fits['c2 SE',]), 
             expected_fits_c2se, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -203,7 +203,7 @@ test_fit_led <- function() {
         0.013448739043939, 0.283394993006936, 0.382808167402508
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C2 P',]), 
+        cbind(as.numeric(led_results$fits['c2 P',]), 
             expected_fits_c2p, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -224,7 +224,7 @@ test_fit_led <- function() {
         63.678082615809, 93.3702132968109, -33.1675381938747
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C0\'',]), 
+        cbind(as.numeric(led_results$fits['c0\'',]), 
             expected_fits_c0f, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -245,7 +245,7 @@ test_fit_led <- function() {
         14.0534540234955, 0.635902673975112, 26.4019923092473
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C0\' SE',]), 
+        cbind(as.numeric(led_results$fits['c0\' SE',]), 
               expected_fits_c0fse, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -266,7 +266,7 @@ test_fit_led <- function() {
         0.00269605956378686, 7.95226740062607e-28, 0.264524581856477
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C0\' P',]), 
+        cbind(as.numeric(led_results$fits['c0\' P',]), 
             expected_fits_c0fp, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -287,7 +287,7 @@ test_fit_led <- function() {
         2.99827763288564, 3.18937108129532, 6.05730795445998
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C1\'',]), 
+        cbind(as.numeric(led_results$fits['c1\'',]), 
             expected_fits_c1f, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -308,7 +308,7 @@ test_fit_led <- function() {
         0.0242695025488801, 0.0231515017483945, 0.0486975109886425
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C1\' SE',]), 
+        cbind(as.numeric(led_results$fits['c1\' SE',]), 
             expected_fits_c1fse, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
@@ -329,7 +329,7 @@ test_fit_led <- function() {
         6.00452775770219e-13, 2.34896782022452e-27, 6.36998945918586e-10
     )
     checkTrue(all(apply(
-        cbind(as.numeric(led_results$fits['C1\' P',]), 
+        cbind(as.numeric(led_results$fits['c1\' P',]), 
             expected_fits_c1fp, 1e-5), 1, function(x) {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }

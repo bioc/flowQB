@@ -58,8 +58,8 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
         results.list, fluorescences)
     
     fits <- data.frame(row.names=c(
-        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
-        "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
+        "c0", "c0 SE", "c0 P", "c1", "c1 SE", "c1 P", "c2", "c2 SE", "c2 P",
+        "c0'", "c0' SE", "c0' P", "c1'", "c1' SE", "c1' P"))
     for (fluorescence in fluorescences)
     {
         results <- results.list[[fluorescence]]
@@ -118,8 +118,8 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
 
     # Iterated
     iterated_fits <- data.frame(row.names=c(
-        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
-        "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
+        "c0", "c0 SE", "c0 P", "c1", "c1 SE", "c1 P", "c2", "c2 SE", "c2 P",
+        "c0'", "c0' SE", "c0' P", "c1'", "c1' SE", "c1' P"))
     for (fluorescence in fluorescences)
     {
         results <- results.list[[fluorescence]]
@@ -272,7 +272,7 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
     #    "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
     #    "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
     fits <- data.frame(row.names=c(
-        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P"))
+        "c0", "c0 SE", "c0 P", "c1", "c1 SE", "c1 P", "c2", "c2 SE", "c2 P"))
 
     for (fluorescence in fluorescences)
     {
@@ -337,7 +337,7 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
     #     "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P",
     #     "C0'", "C0' SE", "C0' P", "C1'", "C1' SE", "C1' P"))
     iterated_fits <- data.frame(row.names=c(
-        "C0", "C0 SE", "C0 P", "C1", "C1 SE", "C1 P", "C2", "C2 SE", "C2 P"))
+        "c0", "c0 SE", "c0 P", "c1", "c1 SE", "c1 P", "c2", "c2 SE", "c2 P"))
 
     iteration_numbers <- data.frame()
     

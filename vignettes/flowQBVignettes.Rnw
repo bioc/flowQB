@@ -353,7 +353,7 @@ are the following rows:
 \item \Rcode{dye\_bg\_stats} -- A data frame with background stats for each 
 ``dye''. These are the same stats as \Rcode{bg\_stats} described above, but
 the columns will only be restricted to the detectors/dyes that were listed
-as arguments of the \Rfunction{fit\_led} call. The column headings converted
+as arguments of the \Rfunction{fit\_led} call. The column headings are converted
 from channel names (detectors) to ``dyes'' as per the mapping supplied by
 the detectors and dyes arguments. The rows of the data frame are the same
 as with the \Rcode{bg\_stats} described above.
@@ -366,13 +366,63 @@ led_results$bg_stats
 led_results$dye_bg_stats
 @
 
-\item \Rcode{fits} -- A data frame with background stats for each
+\item \Rcode{fits} -- For the LED analysis, results are reported for both 
+quadratic fitting and linear fitting (effectively fixing $CV_0 = 0$).
+Since the uniformity of LED signal outputs is likely to be better than the 
+ability of the cytometer electronics to evaluate them, the $c_2$ term in a 
+quadratic fit should be very close to zero with a small standard error.
+If the results of the quadratic fit are consistent with $CV_0 = 0$, 
+we can rely on the linear fit results whose standard errors on $c_1$ will 
+generally be smaller than the $c_1$ standard errors of the quadratic fit.
 
-\item \Rcode{dye\_fits} -- A data frame with background stats for each 
+The \Rcode{fits} item contains a data frame with fits for each of the channels.
+The columns of the data frame correspond to the different channels.
+The rows of the data frame capture the coefficients of both, quadratic fitting
+and linear fitting as follows:
 
-\item \Rcode{iterated\_fits} -- A data frame with background stats for each
+\begin{itemize}
+\item \Rcode{c0}: value of the $c_0$ coefficient of the quadratic fitting
+\item \Rcode{c0 SE}: standard error of the $c_0$ coefficient of the quadratic
+fitting
+\item \Rcode{c0 P}: the P-value for the $c_0$ coefficient of the quadratic
+fitting.
+\item \Rcode{c1}: value of the $c_1$ coefficient of the quadratic fitting
+\item \Rcode{c1 SE}: standard error of the $c_1$ coefficient of the quadratic
+fitting
+\item \Rcode{c1 P}: the P-value for the $c_1$ coefficient of the quadratic
+fitting.
+\item \Rcode{c2}: value of the $c_2$ coefficient of the quadratic fitting
+\item \Rcode{c2 SE}: standard error of the $c_2$ coefficient of the quadratic
+fitting
+\item \Rcode{c2 P}: the P-value for the $c_2$ coefficient of the quadratic
+fitting.
+\item \Rcode{c0'}: value of the $c_0$ coefficient of the linear fitting
+\item \Rcode{c0' SE}: standard error of the $c_0$ coefficient of the linear
+fitting
+\item \Rcode{c0' P}: the P-value for the $c_0$ coefficient of the linear
+fitting.
+\item \Rcode{c1'}: value of the $c_1$ coefficient of the linear fitting
+\item \Rcode{c1' SE}: standard error of the $c_1$ coefficient of the linear
+fitting
+\item \Rcode{c1' P}: the P-value for the $c_1$ coefficient of the linear
+fitting.
+\end{itemize}
 
-\item \Rcode{iterated\_dye\_fits} -- A data frame with background stats for each
+\item \Rcode{dye\_fits} -- A data frame with fits for each 
+``dye''. These are the same stats as \Rcode{fits} described above, but
+the columns will only be restricted to the detectors/dyes that were listed
+as arguments of the \Rfunction{fit\_led} call. The column headings are converted
+from channel names (detectors) to ``dyes'' as per the mapping supplied by
+the detectors and dyes arguments. The rows of the data frame are the same
+as with the \Rcode{fits} described above.
+
+\item \Rcode{iterated\_fits} -- A data frame with fits for each of the channels
+in the same way as for the \Rcode{fits} described above, but based on iterative
+fitting with weights adjustments.
+
+\item \Rcode{iterated\_dye\_fits} -- A data frame with fits for each of the 
+``dyes'' in the same way as for the \Rcode{dye\_fits} described above, 
+ut based on iterative fitting with weights adjustments.
 
 <<ExploreFits, echo=true, results=verbatim>>=
 ## Explore dye_fits
