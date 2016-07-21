@@ -310,12 +310,69 @@ led_results <- fit_led(fcs_file_path_list, ignore_channels, dyes,
 The results of the \Rfunction{fit\_led} function is a list with the following
 components:
 
-% bg_stats
-% dye_bg_stats
+\begin{itemize}
+\item \Rcode{peak\_stats} -- A list with summary stats for each of the
+channels for all the different peaks (represented by different FCS files).
+For each of the channels, peak stats are captured by a data frame with
+rows corresponding to the different peaks (FCS files) and the following
+columns:
+\begin{itemize}
+\item \Rcode{N}: the number of events in the peak
+\item \Rcode{M}: the mean expression value for that peak
+\item \Rcode{SD}: the standard deviation for that peak
+\item \Rcode{V}: the variance for that peak (square of standard deviation)
+\item \Rcode{W}: the weight of that peak
+\item \Rcode{Omit}: was the peak omitted from the fitting? (TRUE or FALSE)
+\item \Rcode{QR}: the residuals of the quadratic fitting
+\item \Rcode{LR}: the residuals of the linear fitting
+\item \Rcode{QR-I}: the residuals of the iterative quadratic fitting
+\item \Rcode{LR-I}: the residuals of the iterative linear fitting
+\end{itemize}
+The values of \Rcode{W}, \Rcode{QR}, \Rcode{LR}, \Rcode{QR-I} and \Rcode{LR-I}
+will ne \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
+
+<<ExploreLEDPeakStats, echo=true, results=verbatim>>=
+## We have stats for these channels
+names(led_results$peak_stats)
+
+## Explore the peak stats for a randomly chosen channel (PE-Cy7-A)
+## Showing only the head in order to limit the output for the vignette
+head(led_results$peak_stats$`PE-Cy7-A`)
+@
+
+\item \Rcode{bg\_stats} -- A data frame with background stats for each channel.
+These stats are a convenience way to look at peak stats of the lowest peak.
+The columns of the data frame correspond to the different channels, and there
+are the following rows:
+\begin{itemize}
+\item \Rcode{N}: the number of events in the lowest peak
+\item \Rcode{M}: the mean expression value for the lowest peak
+\item \Rcode{SD}: the standard deviation for the lowest peak
+\end{itemize}
+
+\item \Rcode{dye\_bg\_stats} -- A data frame with background stats for each 
+``dye''. These are the same stats as \Rcode{bg\_stats} described above, but
+the columns will only be restricted to the detectors/dyes that were listed
+as arguments of the \Rfunction{fit\_led} call. The column headings converted
+from channel names (detectors) to ``dyes'' as per the mapping supplied by
+the detectors and dyes arguments. The rows of the data frame are the same
+as with the \Rcode{bg\_stats} described above.
+
+<<ExploreBGStats, echo=true, results=verbatim>>=
+## Explore bg_stats
+led_results$bg_stats
+
+## Explore dye_bg_stats
+led_results$dye_bg_stats
+@
+
+
 % fits
 % dye_fits
 % iterated_fits
 % iterated_dye_fits
+
+\end{itemize}
 
 \section{Fitting bead data}
 TODO

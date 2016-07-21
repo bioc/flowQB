@@ -45,7 +45,7 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
         basename(fcs_file_path_list), fluorescences, bounds, 
         signal_type == "height", instrument_name == "bd accuri", ...)
 
-    bg.result <- data.frame(row.names=c("total", "mean", "sd"))
+    bg.result <- data.frame(row.names=c("N", "M", "SD"))
     for (fluorescence in fluorescences)
     {
         peak.results <- results.list[[fluorescence]]
