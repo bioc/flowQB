@@ -366,11 +366,23 @@ led_results$bg_stats
 led_results$dye_bg_stats
 @
 
+\item \Rcode{fits} -- A data frame with background stats for each
 
-% fits
-% dye_fits
-% iterated_fits
-% iterated_dye_fits
+\item \Rcode{dye\_fits} -- A data frame with background stats for each 
+
+\item \Rcode{iterated\_fits} -- A data frame with background stats for each
+
+\item \Rcode{iterated\_dye\_fits} -- A data frame with background stats for each
+
+<<ExploreFits, echo=true, results=verbatim>>=
+## Explore dye_fits
+## fits are the same rows but columns corresponding to all channels
+led_results$dye_fits
+
+## Explore iterated_dye_fits
+## iterated_fits are the same rows but columns corresponding to all channels
+led_results$iterated_dye_fits
+@
 
 \end{itemize}
 
