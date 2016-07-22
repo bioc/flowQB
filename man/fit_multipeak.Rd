@@ -13,7 +13,7 @@
 
 \usage{
     fit_multipeak(fcs_file_path, scatter_channels, ignore_channels,
-        N.peaks, dyes, detectors, bounds,
+        N_peaks, dyes, detectors, bounds,
         signal_type, instrument_name, minimum_useful_peaks = 3, 
         max_iterations = 10, logicle_width = 0.5, ...)
     
@@ -38,7 +38,7 @@
     \item{ignore_channels}{
         TODO.
     }
-    \item{N.peaks}{
+    \item{N_peaks}{
         TODO.
     }
     \item{dyes}{
@@ -154,9 +154,9 @@
         max_iterations = 10, logicle_width = 0.5)
 
     ## The above is the same as this:
-    ## N.peaks <- 8
+    ## N_peaks <- 8
     ## multipeak_results <- fit_multipeak(fcs_file_path, scatter_channels, 
-    ##     ignore_channels, N.peaks, dyes, detectors, bounds, 
+    ##     ignore_channels, N_peaks, dyes, detectors, bounds, 
     ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
     ##     max_iterations = 10, logicle_width = 0.5)
 
@@ -179,9 +179,9 @@
         max_iterations = 10, logicle_width = 0.5)
         
     ## The above is the same as this:
-    ## N.peaks <- 6
+    ## N_peaks <- 6
     ## multipeak_results_tf <- fit_multipeak(fcs_file_path, scatter_channels,
-    ##     ignore_channels, N.peaks, dyes, detectors, bounds, 
+    ##     ignore_channels, N_peaks, dyes, detectors, bounds, 
     ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
     ##     max_iterations = 10, logicle_width = 0.5)
     

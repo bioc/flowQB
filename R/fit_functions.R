@@ -236,7 +236,7 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
 }
 
 fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
-    N.peaks, dyes, detectors, bounds,
+    N_peaks, dyes, detectors, bounds,
     signal_type, instrument_name,
     minimum_useful_peaks = 3, max_iterations = 10,
     logicle_width = 0.5, ...) {
@@ -266,19 +266,19 @@ fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
     ## This seems to result in some warnings that
     ## "Quick-TRANSfer stage steps exceeded maximum (= 3762700)"
     ## but the results seem OK. 
-    km <- kmeans(data.frame(y), N.peaks, 500, 500)
+    km <- kmeans(data.frame(y), N_peaks, 500, 500)
     ## I tried rounding up the data a bit as suggested in the kmeans
     ## documentation, but it does not seem to help.
-    # km <- kmeans(data.frame(round(y, digits = 3)), N.peaks, 500, 500)
+    # km <- kmeans(data.frame(round(y, digits = 3)), N_peaks, 500, 500)
     ## I also tried a different implementation ("Lloyd"), but that comes
     ## with it's own problems and seems to take 5 times as long
-    # km <- kmeans(data.frame(y), N.peaks, 500, 500, algorithm="Lloyd")
-    for (i in 1:N.peaks)
+    # km <- kmeans(data.frame(y), N_peaks, 500, 500, algorithm="Lloyd")
+    for (i in 1:N_peaks)
     {
         peak.list[[i]] <- peak <- fluorescence.data[km$cluster==i]
     }
     
-    results.list <- get_peak_statistics(peak.list, 1:N.peaks, fluorescences, 
+    results.list <- get_peak_statistics(peak.list, 1:N_peaks, fluorescences, 
         bounds, tolower(signal_type) == "height", 
         tolower(instrument_name) == "bd accuri")
     censored.list <- censor_peak_statistics(results.list, fluorescences)
