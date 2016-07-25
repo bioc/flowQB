@@ -224,3 +224,29 @@ usable_rows <- function(results)
     for (i in 1:nrow(results)) if (!is.na(results$M[[i]])) count <- count + 1
     count
 }
+
+qb_from_fits <- function(fits) {
+    if (length(rownames(fits)) >= 7 && 
+        (all(rownames(fits)[c(1,4,7)] == c("c0", "c1", "c2")))) {
+        sapply(fits, function(x) { 
+            if(length(x) >= 15) {
+                list(
+                    'q_QI'    = 1 / x[4],        # QI    = 1/c1
+                    'q_BSpe'  = x[1] / (x[4]^2), # BSpe  = c0/c1^2
+                    'q_CV0sq' = x[7],            # CV0^2 = c2
+                    'l_QI'    = 1 / x[13],
+                    'l_BSpe'  = x[10] / (x[13]^2)
+                )
+            } else {
+                list(
+                    'q_QI'    = 1 / x[4],        # QI    = 1/c1
+                    'q_BSpe'  = x[1] / (x[4]^2), # BSpe  = c0/c1^2
+                    'q_CV0sq' = x[7]             # CV0^2 = c2
+                )
+            }
+        })
+    } else {
+        stop(paste("Incompatible fits (the provided fits are not compatible",
+            "with the return values of the fit_led or fit_multipeak functions"))
+    }
+}

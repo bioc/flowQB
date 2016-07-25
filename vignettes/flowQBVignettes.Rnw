@@ -434,6 +434,11 @@ led_results$dye_fits
 led_results$iterated_dye_fits
 @
 
+The Q, B and intrinsic $CV_0$ can be extracted from the fits using the
+equations shown in the introduction.
+
+
+
 \item \Rcode{iteration\_numbers} -- A data frame with rows corresponding
 to all the different channels and 2 columns, Q and L, showing the number
 of iterations used for the quadratic and linear fitting, resp.
