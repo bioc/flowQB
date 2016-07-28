@@ -2,7 +2,7 @@ Package:    flowQB
 Type:       Package
 Title:      Automated Quadratic Characterization of Flow Cytometer Instrument
             Sensitivity: Q, B and CV instrinsic calculations
-Version:    1.21.20
+Version:    1.22.1
 Author:     Josef Spidlen, Faysal El Khettabi, Wayne Moore, David Parks, 
             Ryan Brinkman
 Maintainer: Josef Spidlen <jspidlen@bccrc.ca>
