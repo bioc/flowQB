@@ -33,7 +33,7 @@
 
 \seealso{
     \code{\link{fit_led}},
-    \code{\link{fit_multipeak}},
+    \code{\link{fit_beads}},
     \code{\link{fit_spherotech}},
     \code{\link{fit_thermo_fischer}}
 }

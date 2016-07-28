@@ -63,7 +63,7 @@
 }
 
 \seealso{
-    \code{\link{fit_multipeak}}
+    \code{\link{fit_beads}}
 }
 
 \examples{

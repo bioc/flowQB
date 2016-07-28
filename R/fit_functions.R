@@ -235,7 +235,7 @@ fit_led <- function(fcs_file_path_list, ignore_channels,
     )
 }
 
-fit_multipeak <- function(fcs_file_path, scatter_channels, ignore_channels,
+fit_beads <- function(fcs_file_path, scatter_channels, ignore_channels,
     N_peaks, dyes, detectors, bounds,
     signal_type, instrument_name,
     minimum_useful_peaks = 3, max_iterations = 10,
@@ -470,7 +470,7 @@ fit_spherotech <- function(fcs_file_path, scatter_channels, ignore_channels,
     dyes, detectors, bounds, signal_type, instrument_name, 
     minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
 {
-    fit_multipeak(fcs_file_path, scatter_channels, ignore_channels,
+    fit_beads(fcs_file_path, scatter_channels, ignore_channels,
         8, dyes, detectors, bounds, signal_type, instrument_name, 
         minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
 }
@@ -479,7 +479,7 @@ fit_thermo_fischer <- function(fcs_file_path, scatter_channels, ignore_channels,
     dyes, detectors, bounds, signal_type, instrument_name, 
     minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
 {
-    fit_multipeak(fcs_file_path, scatter_channels, ignore_channels,
+    fit_beads(fcs_file_path, scatter_channels, ignore_channels,
     6, dyes, detectors, bounds, signal_type, instrument_name, 
     minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
 }

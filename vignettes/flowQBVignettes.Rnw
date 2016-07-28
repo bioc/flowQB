@@ -247,6 +247,10 @@ be ignored for that particular channel.
 different channels due to various validity checks described above. 
 This argument specifies the minimal number of valid peaks required in order
 for the fitting procedure to be performed on a particular fluorescence channel.
+Generally, fitting the three quadratic parameters requires three valid points
+to obtain a fit at all, and 4 or more points are needed to obtain error
+estimates. Requiring higher values would exclude some of your data
+but likely produce better results.
 
 \item \Rcode{max\_iterations} -- The peaks have a wide range of variances, so
 unweighted least squares fitting is not appropriate, and we need to apply
@@ -295,8 +299,10 @@ bounds <- list(minimum = -100, maximum = 100000)
 ## - The minimum number of usable peaks (represented by different FCS files
 ## in case of an LED pulser) required in order for a fluorescence channel 
 ## to be included in the fitting. Peaks with mean expression outside of the 
-## bounds specified above are omitted and therefore not considered useful
-minimum_fcs_files <- 3 # The default 3 seems to be work well in typical cases
+## bounds specified above are omitted and therefore not considered useful.
+## Fitting the three quadratic parameters requires three valid points to obtain
+## a fit at all, and 4 or more points are needed to obtain error estimates. 
+minimum_fcs_files <- 3
 ## - What is the maximum number of iterations for iterative fitting with
 ## weight adjustments
 max_iterations <- 10 # The default 10 seems to be enough in typical cases
@@ -437,6 +443,7 @@ led_results$iterated_dye_fits
 The Q, B and intrinsic $CV_0$ can be extracted from the fits using the
 equations shown in the introduction.
 
+%The quadratic fit results include the c0, c1 and c2 parameters and their Standard Errors.  The LED quadratic fit includes a c2 P-value line.  In this example, the P values are all non-significant except for a 0.001 for FITC and a 0.002 for PE, but the corresponding c2 values which represent CV02 are both negative and cannot represent a real positive CV0.  Therefore, we rely on the linear fit results for the LED data noting that the LED linear values for “c1 Relative StdErr (%)” in the lower section are all smaller than the LED quadratic values except for FITC and PE, and, even for these the fitted c1 values differ by no more than 2%.
 
 
 \item \Rcode{iteration\_numbers} -- A data frame with rows corresponding
@@ -571,7 +578,7 @@ spherotech_results <- fit_spherotech(fcs_file_path, scatter_channels,
     signal_type, instrument_name, minimum_useful_peaks = 3,
     max_iterations = max_iterations, logicle_width = 0.5)
 ## This is the same as if we were running
-## fit_multipeak(fcs_file_path, scatter_channels, 
+## fit_beads(fcs_file_path, scatter_channels, 
 ##     ignore_channels, 8, dyes, detectors, bounds, 
 ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
 ##     max_iterations = max_iterations, logicle_width = 0.5)

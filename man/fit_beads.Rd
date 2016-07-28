@@ -1,5 +1,5 @@
-\name{fit_multipeak}
-\alias{fit_multipeak}
+\name{fit_beads}
+\alias{fit_beads}
 \alias{fit_spherotech}
 \alias{fit_thermo_fischer}
 
@@ -12,7 +12,7 @@
 }
 
 \usage{
-    fit_multipeak(fcs_file_path, scatter_channels, ignore_channels,
+    fit_beads(fcs_file_path, scatter_channels, ignore_channels,
         N_peaks, dyes, detectors, bounds,
         signal_type, instrument_name, minimum_useful_peaks = 3, 
         max_iterations = 10, logicle_width = 0.5, ...)
@@ -155,7 +155,7 @@
 
     ## The above is the same as this:
     ## N_peaks <- 8
-    ## multipeak_results <- fit_multipeak(fcs_file_path, scatter_channels, 
+    ## multipeak_results <- fit_beads(fcs_file_path, scatter_channels, 
     ##     ignore_channels, N_peaks, dyes, detectors, bounds, 
     ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
     ##     max_iterations = 10, logicle_width = 0.5)
@@ -173,22 +173,22 @@
     fcs_file_path <- system.file("extdata", instrument_folder, folder, 
         filename, package="flowQBData")
 
-    multipeak_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels,
+    beads_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels,
         ignore_channels, dyes, detectors, bounds, 
         signal_type, instrument_name, minimum_useful_peaks = 3, 
         max_iterations = 10, logicle_width = 0.5)
         
     ## The above is the same as this:
     ## N_peaks <- 6
-    ## multipeak_results_tf <- fit_multipeak(fcs_file_path, scatter_channels,
+    ## beads_results_tf <- fit_beads(fcs_file_path, scatter_channels,
     ##     ignore_channels, N_peaks, dyes, detectors, bounds, 
     ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
     ##     max_iterations = 10, logicle_width = 0.5)
     
     plot(
-        exprs(multipeak_results_tf$transformed_data[,"FITC-A"]),
-        exprs(multipeak_results_tf$transformed_data[,"Pacific Blue-A"]),
-        col=multipeak_results_tf$peak_clusters$cluster, pch='.')
+        exprs(beads_results_tf$transformed_data[,"FITC-A"]),
+        exprs(beads_results_tf$transformed_data[,"Pacific Blue-A"]),
+        col=beads_results_tf$peak_clusters$cluster, pch='.')
 
 }
 
