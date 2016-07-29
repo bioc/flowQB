@@ -15,17 +15,17 @@
     fit_beads(fcs_file_path, scatter_channels, ignore_channels,
         N_peaks, dyes, detectors, bounds,
         signal_type, instrument_name, minimum_useful_peaks = 3, 
-        max_iterations = 10, logicle_width = 0.5, ...)
+        max_iterations = 10, logicle_width = 1.0, ...)
     
     fit_spherotech(fcs_file_path, scatter_channels, ignore_channels,
         dyes, detectors, bounds,
         signal_type, instrument_name, minimum_useful_peaks = 3, 
-        max_iterations = 10, logicle_width = 0.5, ...)
+        max_iterations = 10, logicle_width = 1.0, ...)
 
     fit_thermo_fischer(fcs_file_path, scatter_channels, ignore_channels,
         dyes, detectors, bounds,
         signal_type, instrument_name, minimum_useful_peaks = 3, 
-        max_iterations = 10, logicle_width = 0.5, ...)
+        max_iterations = 10, logicle_width = 1.0, ...)
 }
 
 \arguments{
@@ -151,14 +151,14 @@
     multipeak_results <- fit_spherotech(fcs_file_path, scatter_channels, 
         ignore_channels, dyes, detectors, bounds, 
         signal_type, instrument_name, minimum_useful_peaks = 3, 
-        max_iterations = 10, logicle_width = 0.5)
+        max_iterations = 10, logicle_width = 1.0)
 
     ## The above is the same as this:
     ## N_peaks <- 8
     ## multipeak_results <- fit_beads(fcs_file_path, scatter_channels, 
     ##     ignore_channels, N_peaks, dyes, detectors, bounds, 
     ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
-    ##     max_iterations = 10, logicle_width = 0.5)
+    ##     max_iterations = 10, logicle_width = 1.0)
 
     plot(
         exprs(multipeak_results$transformed_data[,"FITC-A"]),
@@ -176,14 +176,14 @@
     beads_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels,
         ignore_channels, dyes, detectors, bounds, 
         signal_type, instrument_name, minimum_useful_peaks = 3, 
-        max_iterations = 10, logicle_width = 0.5)
+        max_iterations = 10, logicle_width = 1.0)
         
     ## The above is the same as this:
     ## N_peaks <- 6
     ## beads_results_tf <- fit_beads(fcs_file_path, scatter_channels,
     ##     ignore_channels, N_peaks, dyes, detectors, bounds, 
     ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
-    ##     max_iterations = 10, logicle_width = 0.5)
+    ##     max_iterations = 10, logicle_width = 1.0)
     
     plot(
         exprs(beads_results_tf$transformed_data[,"FITC-A"]),

@@ -239,7 +239,7 @@ fit_beads <- function(fcs_file_path, scatter_channels, ignore_channels,
     N_peaks, dyes, detectors, bounds,
     signal_type, instrument_name,
     minimum_useful_peaks = 3, max_iterations = 10,
-    logicle_width = 0.5, ...) {
+    logicle_width = 1.0, ...) {
     if (!file.exists(fcs_file_path)) return()
 
     signal_type <- tolower(signal_type)
@@ -468,18 +468,22 @@ fit_beads <- function(fcs_file_path, scatter_channels, ignore_channels,
 
 fit_spherotech <- function(fcs_file_path, scatter_channels, ignore_channels,
     dyes, detectors, bounds, signal_type, instrument_name, 
-    minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
+    minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 1.0, ...)
 {
     fit_beads(fcs_file_path, scatter_channels, ignore_channels,
         8, dyes, detectors, bounds, signal_type, instrument_name, 
-        minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
+        minimum_useful_peaks = minimum_useful_peaks,
+        max_iterations = max_iterations, 
+        logicle_width = logicle_width, ...)
 }
 
 fit_thermo_fischer <- function(fcs_file_path, scatter_channels, ignore_channels,
     dyes, detectors, bounds, signal_type, instrument_name, 
-    minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
+    minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 1.0, ...)
 {
     fit_beads(fcs_file_path, scatter_channels, ignore_channels,
-    6, dyes, detectors, bounds, signal_type, instrument_name, 
-    minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 0.5, ...)
+        6, dyes, detectors, bounds, signal_type, instrument_name, 
+        minimum_useful_peaks = minimum_useful_peaks, 
+        max_iterations = max_iterations, 
+        logicle_width = logicle_width, ...)
 }

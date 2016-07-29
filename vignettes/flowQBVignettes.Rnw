@@ -492,8 +492,9 @@ provided by the user in the form of the \Rcode{N\_peaks} argument
 in case of the \Rfunction{fit\_beads} function.
 This clustering is performed on data transformed with the Logicle
 transformation \cite{Parks2006, Moore2012}.
-Generally, the Logicle \textit{width} ($w$ parameter) of 0.5 has been working
-well, but users can change the default by providing a different 
+Generally, the Logicle \textit{width} ($w$ parameter) of 1.0 has been working
+well for all our data, 
+but users can change the default by providing a different 
 \Rcode{logicle\_width} value.
 The rest of the arguments is the same as with LED fitting; the complete list
 of arguments is a follows:
@@ -576,12 +577,12 @@ scatter_channels <- c("FSC-A", "SSC-A")
 spherotech_results <- fit_spherotech(fcs_file_path, scatter_channels, 
     ignore_channels, dyes, detectors, bounds, 
     signal_type, instrument_name, minimum_useful_peaks = 3,
-    max_iterations = max_iterations, logicle_width = 0.5)
+    max_iterations = max_iterations, logicle_width = 1.0)
 ## This is the same as if we were running
 ## fit_beads(fcs_file_path, scatter_channels, 
 ##     ignore_channels, 8, dyes, detectors, bounds, 
 ##     signal_type, instrument_name, minimum_useful_peaks = 3, 
-##     max_iterations = max_iterations, logicle_width = 0.5)
+##     max_iterations = max_iterations, logicle_width = 1.0)
 @
 
 Next, let's explore the results of this function.
