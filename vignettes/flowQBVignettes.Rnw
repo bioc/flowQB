@@ -755,10 +755,31 @@ qb_from_fits(led_results$iterated_dye_fits)
 qb_from_fits(spherotech_results$iterated_dye_fits)
 @
 
-TODO: Explain the results
+The result of this function is a matrix with columns corresponding to
+the names of the fits used (\textit{e.g.} dyes or detectors).
+In case of LED fits, the rows will contain the following items:
+\begin{itemize}
+\item \Rcode{q\_QI} The calculated $Q_I$ value of the quadratic fitting.
+\item \Rcode{q\_BSpe} The calculated $B_{Spe}$ value of the quadratic fitting.
+\item \Rcode{q\_CV0sq} The calculated $CV_0^2$ value of the quadratic fitting.
+\item \Rcode{l\_QI} The calculated $Q_I$ value of the linear fitting.
+\item \Rcode{l\_BSpe} The calculated $B_{Spe}$ value of the linear fitting.
+\end{itemize}
 
 As expected, you can see that the estimated $CV_0^2$ values for the LED data
 are very close to 0 and therefore, the linear model may be preferable.
+Note that the estimated value can also be small negative since; this is OK
+since those are just estimates from our model. The true $CV_0^2$ should be
+very close to $0$ unless there is something wrong with the instrument or LED
+data collection.
+
+In case of bead data fits, the rows will contain the following items:
+
+\begin{itemize}
+\item \Rcode{q\_QI} The calculated $Q_I$ value of the quadratic fitting.
+\item \Rcode{q\_BSpe} The calculated $B_{Spe}$ value of the quadratic fitting.
+\item \Rcode{q\_CV0sq} The calculated $CV_0^2$ value of the quadratic fitting.
+\end{itemize}
 
 \section{Parsing house-keeping information from spreadsheets}
 TODO
