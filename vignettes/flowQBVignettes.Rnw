@@ -12,8 +12,8 @@
 \usepackage[authoryear,round]{natbib}
 \usepackage{times}
 \usepackage{comment}
-\usepackage{graphicx}
-\usepackage{subfigure}
+%\usepackage{graphicx}
+%\usepackage{subfigure}
 
 \textwidth=6.2in
 \textheight=8.5in
@@ -391,27 +391,27 @@ and linear fitting as follows:
 \item \Rcode{c0 SE}: standard error of the $c_0$ coefficient of the quadratic
 fitting
 \item \Rcode{c0 P}: the P-value for the $c_0$ coefficient of the quadratic
-fitting.
+fitting
 \item \Rcode{c1}: value of the $c_1$ coefficient of the quadratic fitting
 \item \Rcode{c1 SE}: standard error of the $c_1$ coefficient of the quadratic
 fitting
 \item \Rcode{c1 P}: the P-value for the $c_1$ coefficient of the quadratic
-fitting.
+fitting
 \item \Rcode{c2}: value of the $c_2$ coefficient of the quadratic fitting
 \item \Rcode{c2 SE}: standard error of the $c_2$ coefficient of the quadratic
 fitting
 \item \Rcode{c2 P}: the P-value for the $c_2$ coefficient of the quadratic
-fitting.
+fitting
 \item \Rcode{c0'}: value of the $c_0$ coefficient of the linear fitting
 \item \Rcode{c0' SE}: standard error of the $c_0$ coefficient of the linear
 fitting
 \item \Rcode{c0' P}: the P-value for the $c_0$ coefficient of the linear
-fitting.
+fitting
 \item \Rcode{c1'}: value of the $c_1$ coefficient of the linear fitting
 \item \Rcode{c1' SE}: standard error of the $c_1$ coefficient of the linear
 fitting
 \item \Rcode{c1' P}: the P-value for the $c_1$ coefficient of the linear
-fitting.
+fitting
 \end{itemize}
 
 \item \Rcode{dye\_fits} -- A data frame with fits for each 
@@ -442,9 +442,8 @@ led_results$iterated_dye_fits
 
 The Q, B and intrinsic $CV_0$ can be extracted from the fits using the
 equations shown in the introduction.
-
-%The quadratic fit results include the c0, c1 and c2 parameters and their Standard Errors.  The LED quadratic fit includes a c2 P-value line.  In this example, the P values are all non-significant except for a 0.001 for FITC and a 0.002 for PE, but the corresponding c2 values which represent CV02 are both negative and cannot represent a real positive CV0.  Therefore, we rely on the linear fit results for the LED data noting that the LED linear values for “c1 Relative StdErr (%)” in the lower section are all smaller than the LED quadratic values except for FITC and PE, and, even for these the fitted c1 values differ by no more than 2%.
-
+For your convenience, this is implemented in the \Rcode{qb\_from\_fits}
+function as shown below in this vignette.
 
 \item \Rcode{iteration\_numbers} -- A data frame with rows corresponding
 to all the different channels and 2 columns, Q and L, showing the number
@@ -595,8 +594,171 @@ This is because linear fitting does not account for the intrinsic $CV_0$ of the
 beads and is not appropriate for bead data, which always has a significant
 non-linear component.
 
-%Warning message:
-%Quick-TRANSfer stage steps exceeded maximum (= 3762700)
+The results of the \Rfunction{fit\_beads} (and \Rfunction{fit\_spherotech}, 
+Rfunction{fit\_thermo\_fischer}) functions is a list with the following
+components:
+
+\begin{itemize}
+
+\item \Rcode{transformed\_data} -- A flowCore's \Rclass{flowFrame} object
+capturing the data from the input FCS file after the Logicle transformation.
+This may be reviewed if one wanted to check that the Logicle transformation
+was appropriate for the input FCS file.
+
+\item \Rcode{peaks} -- A list of flowCore's \Rclass{flowFrame} objects
+capturing the different peaks identified in the input FCS file by the
+K-means clustering algorithm. This may be reviewed if one wanted to 
+check that the clustering algorithm identified the peaks correctly.
+
+\item \Rcode{peak\_clusters} -- The result of the \Rcode{kmeans} call.
+This shows the assignment of cluster numbers to input data points and 
+also provides additional details about the clustering; see the documentation
+for the kmeans function for additional details.
+
+Note that you may see a warning message saying that
+\Rcode{Warning message:}\\
+\Rcode{Quick-TRANSfer stage steps exceeded maximum (= 3762700)}\\
+According to kmeans documentation, in some cases, when some of the points 
+(rows of ‘x’) are extremely close, the algorithm may not converge in the
+“Quick-Transfer” stage, signalling a warning.
+Based on our experience, this has not negatively affected the result of the
+clustering. By default, we use the Hartigan and Wong algorithm.
+We tried other algorithms as well, but those were significantly slower.
+We also tried to round up the data as advised in the kmeans documentation,
+but that has not resolved the warning.
+Below, we demonstrate one way of a simple visual inspection of the clustering
+results.
+
+<<VisualizeKmeans, echo=TRUE, results=verbatim>>=
+library("flowCore")
+plot(
+    exprs(spherotech_results$transformed_data[,"FITC-A"]),
+    exprs(spherotech_results$transformed_data[,"Pacific Blue-A"]),
+    col=spherotech_results$peak_clusters$cluster, pch='.')
+@
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.6\textwidth]{kmeans.png}
+\end{center}
+\caption{\textbf{Result of K-means clustering on bead data.}}
+\label{fig:kmeans}
+\end{figure}
+
+
+\item \Rcode{peak\_stats} -- A list with summary stats for each of the
+channels for all the different peaks identified by the K-means clustering 
+algorithm.
+For each of the channels, peak stats are captured by a data frame with
+rows corresponding to the different peaks and the following
+columns:
+\begin{itemize}
+\item \Rcode{N}: the number of events in the peak
+\item \Rcode{M}: the mean expression value for that peak
+\item \Rcode{SD}: the standard deviation for that peak
+\item \Rcode{V}: the variance for that peak (square of standard deviation)
+\item \Rcode{W}: the weight of that peak
+\item \Rcode{Omit}: was the peak omitted from the fitting? (TRUE or FALSE)
+\item \Rcode{QR}: the residuals of the quadratic fitting
+\item \Rcode{QR-I}: the residuals of the iterative quadratic fitting
+\end{itemize}
+The values of \Rcode{W}, \Rcode{QR}, and \Rcode{QR-I}
+will ne \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
+
+<<ExploreBeadPeakStats, echo=true, results=verbatim>>=
+## We have stats for these channels
+names(spherotech_results$peak_stats)
+
+## Explore the peak stats for a randomly chosen channel (PE-Cy7-A)
+spherotech_results$peak_stats$`PE-Cy7-A`
+@
+
+\item \Rcode{fits} -- A a data frame with fits for each of the channels.
+The columns of the data frame correspond to the different channels.
+The rows of the data frame capture the coefficients of the quadratic fitting
+as follows:
+
+\begin{itemize}
+\item \Rcode{c0}: value of the $c_0$ coefficient
+\item \Rcode{c0 SE}: standard error of the $c_0$ coefficient
+\item \Rcode{c0 P}: the P-value for the $c_0$ coefficient
+\item \Rcode{c1}: value of the $c_1$ coefficient
+\item \Rcode{c1 SE}: standard error of the $c_1$ coefficient
+\item \Rcode{c1 P}: the P-value for the $c_1$ coefficient
+\item \Rcode{c2}: value of the $c_2$ coefficient
+\item \Rcode{c2 SE}: standard error of the $c_2$ coefficient
+\item \Rcode{c2 P}: the P-value for the $c_2$ coefficient
+\end{itemize}
+
+\item \Rcode{dye\_fits} -- A data frame with fits for each 
+``dye''. These are the same stats as \Rcode{fits} described above, but
+the columns will only be restricted to the detectors/dyes that were listed
+as arguments of the 
+\Rfunction{fit\_beads} (or \Rfunction{fit\_spherotech} or 
+Rfunction{fit\_thermo\_fischer}) call. 
+The column headings are converted
+from channel names (detectors) to ``dyes'' as per the mapping supplied by
+the detectors and dyes arguments. The rows of the data frame are the same
+as with the \Rcode{fits} described above.
+
+\item \Rcode{iterated\_fits} -- A data frame with fits for each of the channels
+in the same way as for the \Rcode{fits} described above, but based on iterative
+fitting with weights adjustments.
+
+\item \Rcode{iterated\_dye\_fits} -- A data frame with fits for each of the 
+``dyes'' in the same way as for the \Rcode{dye\_fits} described above, 
+ut based on iterative fitting with weights adjustments.
+
+<<ExploreFits2, echo=true, results=verbatim>>=
+## Explore fits
+## Selecting just a few columns to limit the output for the vignette
+spherotech_results$fits[,c(1,3,5,7)]
+
+## Explore iterated_fits
+spherotech_results$iterated_fits[,c(1,3,5,7)]
+@
+
+The Q, B and intrinsic $CV_0$ can be extracted from the fits using the
+equations shown in the introduction.
+For your convenience, this is implemented in the \Rcode{qb\_from\_fits}
+function as shown below in this vignette.
+
+\item \Rcode{iteration\_numbers} -- A data frame with rows corresponding
+to all the different channels and a column, Q, showing the number
+of iterations used for the quadratic fitting.
+This data frame can be reviewed in order to make sure the fitting is
+converging fast enough and the \Rcode{max\_iterations} parameter
+is set large enough.
+
+<<ExploreIterationNumbers2, echo=true, results=verbatim>>=
+## Explore iteratation numbers
+## Showing only the head in order to limit the output for the vignette
+head(spherotech_results$iteration_numbers)
+@
+
+\end{itemize}
+
+\section{Calculating Q and B from fits}
+The \Rcode{qb\_from\_fits} function can be used to calculate Q and B
+using the equations shown in the introduction.
+As arguments, the \Rcode{qb\_from\_fits} function can take
+results from both, LED data fitting (\Rfunction{fit\_led} function) and 
+bead data fitting (\Rfunction{fit\_beads}, \Rfunction{fit\_spherotech} function
+and \Rfunction{fit\_thermo\_fischer} functions). You can calculate
+based on any of the fits (\Rcode{fits}, \Rcode{dye\_fits}, 
+\Rcode{iterated\_fits} and \Rcode{iterated\_dye\_fits}).
+
+<<QBFromFits, echo=true, results=verbatim>>=
+## 1 QB from both quadratic and linear fits of LED data
+qb_from_fits(led_results$iterated_dye_fits)
+## 2 QB from quadratic fitting of bead data
+qb_from_fits(spherotech_results$iterated_dye_fits)
+@
+
+TODO: Explain the results
+
+As expected, you can see that the estimated $CV_0^2$ values for the LED data
+are very close to 0 and therefore, the linear model may be preferable.
 
 \section{Parsing house-keeping information from spreadsheets}
 TODO
