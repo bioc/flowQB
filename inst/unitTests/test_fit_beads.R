@@ -136,8 +136,43 @@ test_fit_beads <- function() {
             }
         ))
     
-    ## TODO
-    ## Add more checks for the Thermo-Fisher results
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(beads_results$iterated_dye_fits))),
+            624.505385861861,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(beads_results$dye_fits))),
+            611.787410298806,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
 
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(beads_results$iterated_fits))),
+            1064.56472334922,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(beads_results$fits))),
+            1058.67952214706,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    ## TODO 
+    ## Consider adding more checks for the Thermo-Fisher results?
 
 }

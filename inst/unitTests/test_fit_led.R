@@ -474,6 +474,40 @@ test_fit_led <- function() {
             }
         ))
     
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(led_results$iterated_dye_fits))),
+            630.780755321259,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
 
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(led_results$iterated_fits))),
+            1700.66866141411,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(led_results$dye_fits))),
+            630.999235064801,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
+    
+    checkTrue(
+        apply(cbind(
+            sum(unlist(qb_from_fits(led_results$fits))),
+            1699.77719217736,
+            1e-5), 1, function(x) {
+                if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
+            }
+        ))
     
 }

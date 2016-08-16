@@ -335,7 +335,7 @@ columns:
 \item \Rcode{LR-I}: the residuals of the iterative linear fitting
 \end{itemize}
 The values of \Rcode{W}, \Rcode{QR}, \Rcode{LR}, \Rcode{QR-I} and \Rcode{LR-I}
-will ne \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
+will be \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
 
 <<ExploreLEDPeakStats, echo=true, results=verbatim>>=
 ## We have stats for these channels
@@ -663,7 +663,7 @@ columns:
 \item \Rcode{QR-I}: the residuals of the iterative quadratic fitting
 \end{itemize}
 The values of \Rcode{W}, \Rcode{QR}, and \Rcode{QR-I}
-will ne \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
+will be \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
 
 <<ExploreBeadPeakStats, echo=true, results=verbatim>>=
 ## We have stats for these channels
