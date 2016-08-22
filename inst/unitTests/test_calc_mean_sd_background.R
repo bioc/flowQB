@@ -1,4 +1,4 @@
-calc_mean_sd_background <- function() {
+test_calc_mean_sd_background <- function() {
     library(flowCore)
     library(xlsx)
     library(flowQBData)
