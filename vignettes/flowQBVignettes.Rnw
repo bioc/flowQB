@@ -885,8 +885,158 @@ thermo_fischer_results$iterated_dye_fits
 qb_from_fits(thermo_fischer_results$iterated_dye_fits)
 @
 
-%\section{Using data from FlowRepository}
-%TODO
+\section{Using data from FlowRepository}
+We have collected over 900 FCS files from running multi-level beads and LED
+generated data on over 30 different instruments. This dataset 
+has been uploaded to FlowRepository, it has the public identifier 
+\texttt{FR-FCM-ZZTF} and it will be released along with the publication
+of a paper describing this work. MS Excel spredsheets with all the
+required metadata to perform the calculations of Q, B and related
+characteristics are included with that data set. Here, we will demonstrate
+how to access the data directly from within R in order to perform such
+calculations.
+<<FlowRepositoryRExample, echo=TRUE, eval=FALSE, results=hide>>=
+library("FlowRepositoryR")
+## 1) Specify your credentials to work with FlowRepository, this will not
+##    be required once the data is publicly available; see the 
+##    FlowRepositoryR vignette for further details.
+setFlowRepositoryCredentials(email="your@email.com", password="password")
+
+## 2) Get the dataset from FlowRepository
+##    Note that this does not download the data. You could download all
+##    data by running 
+##    qbDataset <- download(flowRep.get("FR-FCM-ZZTF"))
+##    but note that this will download about 3 GB of data
+qbDataset <- flowRep.get("FR-FCM-ZZTF")
+
+summary(qbDataset)
+## A flowRepData object (FlowRepository dataset) Asilomar Instrument 
+## Standardization
+## 911 FCS files, 36 attachments, NOT downloaded
+
+## 3) See which of the files are MS Excell spredsheets
+spreadsheet_indexes <- which(unlist(lapply(qbDataset@attachments, 
+    function(a) { endsWith(a@name, ".xlsx") })))
+
+## 4) Download a random spreadsheet, say the 5th spreadsheet
+## This is a bit ugly at this point since the data is not public
+## plus we don't want to download everythink, just one of the files
+library(RCurl)
+h <- getCurlHandle(cookiefile="")
+FlowRepositoryR:::flowRep.login(h)
+## Once the data is public, only this line and without the curlHandle
+## argument will be needed:
+qbDataset@attachments[[spreadsheet_indexes[5]]] <- xslx5 <- download(
+  qbDataset@attachments[[spreadsheet_indexes[5]]], curlHandle=h)
+## File 140126_InstEval_NIH_Aria_B2.xlsx downloaded.
+
+## 5) Read the spreadsheet
+library(xlsx)
+xlsx <- read.xlsx(xslx5@localpath, 1, headers=FALSE, stringsAsFactors=FALSE)
+
+## 6) Which FCS file contains the Spherotech data?
+##    This is based on how we create the Excel spreadsheets and 
+##    the FCS file names.
+instrument_row <- 9
+instrument_col <- 2
+instrument_name <- xlsx[[instrument_folder_col]][[instrument_folder_row]]
+fol_col <- 16
+fol_row <- 14
+fol_name <- xlsx[[fol_col]][[fol_row]]
+fcsFilename <- paste(instrument_name, fol_name, 
+  xlsx[[fol_col]][[fol_row+1]], sep="_")
+fcsFilename
+## [1] "NIH Aria_B 140127_Other Tests_BEADS_Spherotech Rainbow1X_012.fcs"
+
+## 7) Let's locate the file in our dataset and let's download it
+##    Again, the curlHandle is only needed since the file is not public yet
+fcsFileIndex = which(unlist(lapply(qbDataset@fcs.files, function(f) { 
+  f@name == fcsFilename })))
+qbDataset@fcs.files[[fcsFileIndex]] <- fcsFile <- download(
+  qbDataset@fcs.files[[fcsFileIndex]], curlHandle=h)
+# File NIH Aria_B 140127_Other Tests_BEADS_Spherotech Rainbow1X_012.fcs 
+# downloaded.
+
+## 8) Read in some more metadata from the spreadsheet
+scatter_channels <- c(
+  xlsx[[fol_col]][[fol_row+2]], 
+  xlsx[[fol_col]][[fol_row+3]])
+
+ignore_channels_row <- 9
+ignore_channels <- vector()
+i <- 1
+while(!is.na(xlsx[[i+4]][[ignore_channels_row]])) {
+  ignore_channels[[i]] <- xlsx[[i+4]][[ignore_channels_row]]
+  i <- i + 1
+}
+
+bounds_min_col <- 6
+bounds_min_row <- 7
+bounds_max_col <- 7
+bounds_max_row <- 7
+bounds <- list()
+if (is.na(xlsx[[bounds_min_col]][[bounds_min_row]])) {
+  bounds$minimum <- -100
+} else {
+  bounds$minimum <- as.numeric(xlsx[[bounds_min_col]][[bounds_min_row]])
+}
+if (is.na(xlsx[[bounds_max_col]][[bounds_max_row]])) {
+  bounds$maximum <- 100000
+} else {
+  bounds$maximum <- as.numeric(xlsx[[bounds_max_col]][[bounds_max_row]])
+}
+signal_type_col <- 3
+signal_type_row <- 19
+signal_type <- xlsx[[signal_type_col]][[signal_type_row]]
+
+channel_cols <- 3:12
+dye_row <- 11
+detector_row <- 13
+dyes <- as.character(xlsx[dye_row,channel_cols])
+detectors <- as.character(xlsx[detector_row,channel_cols])
+
+## 9) Let's calculate the fits
+multipeak_results <- fit_spherotech(fcsFile@localpath, scatter_channels, 
+    ignore_channels, dyes, detectors, bounds, 
+    signal_type, instrument_name)
+
+## 10) And same as before, we can extract Q, B and CV0 from the fits
+qb_from_fits(multipeak_results$iterated_dye_fits)
+#         APC          APC-Cy7      APC-H7       FITC        PE         
+# q_QI    0.2406655    0.1291517    0.1291517    0.2034718   0.9014326  
+# q_BSpe  34.33642     21.47796     21.47796     21.57055    812.5968   
+# q_CV0sq 0.0006431427 0.0004931863 0.0004931863 0.001599552 0.001065658
+#         PE-Cy7      PerCP       PerCP-Cy55  V450        V500-C     
+# q_QI    0.2754679   0.08987149  0.08987149  0.07051216  0.192678   
+# q_BSpe  11.15762    8.167175    8.167175    24.81647    63.4188    
+# q_CV0sq 0.001286111 0.001622208 0.001622208 0.005127177 0.004315592
+@
+
+The example shown above processes the Spherotech beads. In order to process
+the Thermo Fisher beads, one would need to change \texttt{fol\_col} to 17 in 
+order to determine the proper filename with Thermo Fisher beads results.
+This is due to how the MS Excel spreadsheet templeta is created. Then,
+one would use the \Rfunction{fit\_thermo\_fischer} instead of the 
+\Rfunction{fit\_spherotech} function.
+
+If one wanted to process the LED data described by this spredsheet, one 
+would look at columns 3 to 12 to extact the \texttt{fol\_name} from row
+14 and the last part of the filename from row 15. Same as shown in the 
+example above, the instrument name, \texttt{fol\_name} and the last part of the
+file name would need to be appended to obtain the complete file name that can
+be looked up among FCS files in the QB dataset. Specifically, one could
+lookup the LED FCS files referenced by the spreadsheet as follows:
+
+<<LEDFCSFileIndexesExample, echo=TRUE, eval=FALSE, results=hide>>=
+LEDfcsFileIndexes <- which(unlist(lapply(qbDataset@fcs.files, function(f) 
+{ 
+  f@name %in% paste(instrument_name, xlsx[14, 3:12], xlsx[15, 3:12], sep="_") 
+})))
+# [1] 173 174 175 176 177 178 179 180 181 182
+@
+
+These can than be downloaded and processed analogically to what has been shown
+above.
 
 \section{Package version}
 The \Rpackage{flowQB} package and its functionality have been changed
