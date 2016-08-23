@@ -176,3 +176,22 @@ test_fit_beads <- function() {
     ## Consider adding more checks for the Thermo-Fisher results?
 
 }
+
+test_fit_beads_na <- function() {
+    checkTrue(is.null(
+        fit_beads(
+            fcs_file_path = "nonExistantFile.xxx", 
+            scatter_channels = NA, 
+            ignore_channels = NA,
+            N_peaks = 10,
+            dyes = NA,
+            detectors = NA, 
+            bounds = NA,
+            signal_type = "area", 
+            instrument_name = "aria",
+            minimum_useful_peaks = 3, 
+            max_iterations = 10,
+            logicle_width = 1.0
+        )
+    ))
+}
