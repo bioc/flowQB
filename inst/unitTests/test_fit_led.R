@@ -509,5 +509,14 @@ test_fit_led <- function() {
                 if (abs(x[[1]] - x[[2]]) < x[[3]]) TRUE else FALSE
             }
         ))
-    
+}
+
+test_qb_from_fits_error <- function() {
+    checkTrue(tryCatch(
+        {
+            qb_from_fits(c(1,2,3));
+        },
+        interrupt = function(ex) { "interrupt"; },
+        error = function(ex) { "error"; }
+    ) == "error")
 }
