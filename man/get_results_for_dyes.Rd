@@ -2,11 +2,14 @@
 \alias{get_results_for_dyes}
 
 \title{ 
-    TODO
+    Extract dye results from a data frame with detector results.
 }
 
 \description{
-    TODO
+    This function takes a data frame where columns are named based on
+    detectors and extracts a subset of the data frame it by selecting only
+    specified detectors. In addition, the columns will be renamed based on the
+    specified dyes argument.
 }
 
 \usage{
@@ -15,22 +18,34 @@
 
 \arguments{
     \item{dyes}{
-        TODO
+        A vector of n dye names which shall correspond to the dyes
+        specified in the dyes argument. These will be the column names
+        of the resulting data frame. The detector-dye mapping is done
+        based on the order of values in the two vectors, i.e., the
+        first dye shall correspond to the first detector, etc.
     }
     \item{detectors}{
-        TODO
+        A vector of n detector names which shall correspond to the dyes
+        specified in the dyes argument. These shall correspond to the
+        column names in the input data frame. The detector-dye mapping is done
+        based on the order of values in the two vectors, i.e., the
+        first dye shall correspond to the first detector, etc.
     }
     \item{results}{
-        TODO
+        An input data frame that shall contain columns corresponding to all
+        the different values specified by the detectors vector.
     }
 }
 
 \details{
-    TODO
+    This function is used to select a subset of columns from a data frame
+    by specifying the columns of interest (detectors). In addition, the
+    columns will be renamed to dyes corresponding to those detectors.
 }
 
 \value{
-    TODO
+    A data frame with n columns, column names corresponding to the specified
+    dyes and rows/values extracted from the input data frame.
 }
 
 \author{
@@ -38,7 +53,7 @@
 }
 
 \seealso{
-    \code{\link{fitted_ellipse_gate}}
+    \code{\link{calc_mean_sd_duke}}
 }
 
 \examples{
