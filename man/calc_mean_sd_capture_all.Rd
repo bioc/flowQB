@@ -2,11 +2,18 @@
 \alias{calc_mean_sd_capture_all}
 
 \title{ 
-    TODO
+    Calculate the mean and the standard deviation 
+    for the stained and unstained population
+    of specified channels in specified FCS files.
 }
 
 \description{
-    TODO.
+    This methods performs the \code{calc_mean_sd_capture} function
+    on a list of FCS files, list of scatter channel pairs, list of detectors
+    and a list of dyes, and collates the results. The order of the arguments
+    in the input lists matters, i.e., the first FCS file will be matched
+    with the first pair of FSC/SSC channel names, the first detector
+    name and the first dye name.
 }
 
 \usage{
@@ -16,25 +23,37 @@
 
 \arguments{
     \item{fcs_file_path_list}{
-        TODO.
+        A list of n FCS files, one for each detector.
     }
     \item{scatter_channels_list}{
-        TODO.
+        A list of n pairs of forward and side scatter channel names.
     }
     \item{detector_list}{
-        TODO.
+        A list of n detector names; those shall correspond to specific
+        detector in the n specified FCS files.
     }
     \item{dye_list}{
-        TODO.
+        A list of n dye names; those will be used to name the columns of the
+        resulting data frame.
     }
 }
 
 \details{
-    TODO.
+    This method assumes that each of the FCS files have useful data 
+    only in the specified channel. Therefore, we perform the 
+    \code{calc_mean_sd_capture} on all these FCS files separatelly and
+    then put the results together into a single data frame.
 }
 
 \value{
-    TODO.
+    The result is a data frame with n columns, the headings of the
+    columns correspond to the values in the list provided by the dye_list 
+    argument. The rows include the
+    total number of events,  the number of events in the FSC/SSC ellipse gate,
+    the number of events in the high peak gate and low peak gate, the stained
+    mean and stained standard deviation (based on the high peak gate), and
+    finally the unstained mean and unstained standard deviation (based on
+    the low peak gate).
 }
 
 \author{
