@@ -562,7 +562,14 @@ This argument specifies the minimal number of valid peaks required in order
 for the fitting procedure to be performed on a particular fluorescence channel.
 
 \item \Rcode{max\_iterations} -- The maximum number of iterations for 
-the iterative fitting approach with appropriate weight recalculations. 
+the iterative fitting approach with appropriate weight recalculations.
+
+\item \Rcode{logicle\_width} -- The data clustering part is performed
+on data transformed with the Logicle
+transformation \cite{Parks2006, Moore2012}.
+Generally, the Logicle \textit{width} ($w$ parameter) of 1.0 has been working
+well for all our data, 
+but users can change the default by providing a different value.
 
 \end{itemize}
 
