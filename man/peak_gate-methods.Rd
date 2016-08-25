@@ -7,10 +7,14 @@
 \alias{peak_gate,flowFrame,ANY-method}
 \alias{peak_gate,flowFrame-method}
 
-\title{TODO}
+\title{Gate a 1D density peak in the provided object}
 
 \description{
-    TODO
+    This method finds a density peak in the provided object (which shall be
+    either a matrix or flowCore's flowFrame object) and returns a vector of
+    TRUE/FALSE depending on whether each of the events (rows) are in the
+    density peak. An FCS channel shall be specified if a flowFrame object
+    with multiple channels in provided on the input.
 }
 
 \usage{
@@ -26,15 +30,17 @@
     TODO
 
     \describe{
-        \item{\code{channel}}{The path to the directory where to 
-            download the files. By default, the files will be downloaded to a 
-            folder named based on the dataset identifier (FR-FCM-xxxx) 
-            that will be created in your working directory.}
+        \item{\code{channel}}{Which FCS channel shall be used in order to
+        look for the density peak? This is applicable if a flowFrame
+        object with several channels is used on the input.}
+        \item{\code{R}}{The radius to be used when finding the peak; R=1 by
+        default.}
     }
 }
 
 \value{
-    TODO
+    A vector of TRUE/FALSE values depending on whether each of the events 
+    (rows) are located in the identified density peak.
 }
 
 \author{
@@ -51,6 +57,8 @@
     myFlowFrame <- read.FCS(fcsFilePath)
     r1 <- peak_gate(myFlowFrame, 'FSC-H')
     r2 <- peak_gate(exprs(myFlowFrame[,'SSC-H']))
+    ## r3 will have more events than r2
+    r3 <- peak_gate(exprs(myFlowFrame[,'SSC-H']), R=1.5)
 }
 
 \keyword{methods}
