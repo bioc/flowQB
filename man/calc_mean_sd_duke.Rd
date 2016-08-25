@@ -2,11 +2,12 @@
 \alias{calc_mean_sd_duke}
 
 \title{ 
-    TODO
+    Calculate the mean and the standard deviation of calibration beads 
+    from Duke.
 }
 
 \description{
-    TODO.
+    Currently, this is the same calculation as \code{calc_mean_sd_197}.
 }
 
 \usage{
@@ -15,22 +16,34 @@
 
 \arguments{
     \item{fcs_file_path}{
-        TODO.
+A character string specifying the file path
+to the FCS file with the acquired bead data.    
     }
     \item{scatter_channels}{
-        TODO.
+A vector of 2 short channel names (values of
+the $PnN keywords) specifying the 2 channels that should not be used to gate
+the main bead population. The first channel should be a forward scatter
+channel, the second one should be a side scatter channel.
     }
     \item{ignore_channels}{
-        TODO.
+A vector of short channel names (values of
+the $PnN keywords) specifying channels that should not be considered for
+the fitting procedure. Normally, those should be all non-fluorescence channels,
+such as the time and the (forward and side) scatter channels.
     }
 }
 
 \details{
-    TODO.
+    Currently, this is the same calculation as \code{calc_mean_sd_197}.
 }
 
 \value{
-    TODO.
+    The result is a data frame with columns corresponding to short channel
+    names of channels from the input FCS file except those specified by the
+    ignore_channels parameter. The rows include the total number of events,
+    the number of events in the FSC/SSC ellipse gate, the number of 
+    events in the peak gate (which can vary slighly among the different 
+    channels), the mean and the standard deviation.
 }
 
 \author{
@@ -38,7 +51,8 @@
 }
 
 \seealso{
-    \code{\link{fitted_ellipse_gate}}
+    \code{\link{fitted_ellipse_gate}},
+    \code{\link{calc_mean_sd_197}}
 }
 
 \examples{

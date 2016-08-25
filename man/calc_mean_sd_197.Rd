@@ -71,7 +71,10 @@ fluorescence channels.
 }
 
 \seealso{
-    \code{\link{fitted_ellipse_gate}}
+    \code{\link{fitted_ellipse_gate}},
+    \code{\link{calc_mean_sd_duke}},
+}
+
 }
 
 \examples{
