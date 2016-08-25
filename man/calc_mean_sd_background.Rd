@@ -2,11 +2,13 @@
 \alias{calc_mean_sd_background}
 
 \title{ 
-    TODO
+    Calculate the mean and the standard deviation.
 }
 
 \description{
-    TODO.
+    This method looks at all channels except those specified in the
+    ignore_channel list and calculated the mean and the standard deviation for
+    those channels.
 }
 
 \usage{
@@ -15,19 +17,29 @@
 
 \arguments{
     \item{fcs_file_path}{
-        TODO.
+A character string specifying the file path
+to the FCS file with the acquired bead data.    
     }
     \item{ignore_channels}{
-        TODO.
+A vector of short channel names (values of
+the $PnN keywords) specifying channels that should not be considered for
+the fitting procedure. Normally, those should be all non-fluorescence channels,
+such as the time and the (forward and side) scatter channels.
     }
 }
 
 \details{
-    TODO.
+    The getOutliers method from the extremevalues package is used to
+    calculate the mean and the standard deviation values for
+    all the FCS channels in the file except those specified in the
+    ignore channels list.
 }
 
 \value{
-    TODO.
+    The result is a data frame with columns corresponding to short channel
+    names of channels from the input FCS file except those specified by the
+    ignore_channels parameter. The rows include the total number of events,
+    the mean and the standard deviation.
 }
 
 \author{

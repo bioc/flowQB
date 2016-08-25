@@ -75,8 +75,6 @@ fluorescence channels.
     \code{\link{calc_mean_sd_duke}},
 }
 
-}
-
 \examples{
     library(flowCore)
     library(xlsx)
