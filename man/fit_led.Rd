@@ -124,7 +124,7 @@ needed for optimal results in the fitting procedure.
 }
 
 \value{
-  \code{fit_led} returns a list, see the vignette for a detailed description.
+    \code{fit_led} returns a list, see the vignette for a detailed description.
 }
 
 \author{

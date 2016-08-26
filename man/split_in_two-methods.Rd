@@ -7,10 +7,19 @@
 \alias{split_in_two,flowFrame,ANY-method}
 \alias{split_in_two,flowFrame-method}
 
-\title{TODO}
+\title{Split an object in a low density region}
 
 \description{
-    TODO
+    This method finds a split in the low density region of the provided object
+    (which shall be either a matrix or flowCore's flowFrame object) and 
+    returns a vector of TRUE/FALSE depending on whether each of the events
+    (rows) are left or righ (i.e, lower or higher) than 
+    density peak. An FCS channel shall be specified if a flowFrame object
+    with multiple channels in provided on the input. If matrix is the input
+    then it shall contain one column only. This method is designed to work
+    well for 2 level beads, such as stained and unstained, but will not
+    provide meaningful results for multi-level beads or other data in
+    general.
 }
 
 \usage{
@@ -23,18 +32,17 @@
 }
 
 \details{
-    TODO
-
+    Additional parameter of the method:
     \describe{
-        \item{\code{channel}}{The path to the directory where to 
-            download the files. By default, the files will be downloaded to a 
-            folder named based on the dataset identifier (FR-FCM-xxxx) 
-            that will be created in your working directory.}
+        \item{\code{channel}}{Which FCS channel shall be used in order to
+        look for the split in the data? This is applicable if a flowFrame
+        object with several channels is used on the input.}
     }
 }
 
 \value{
-    TODO
+    A vector of TRUE/FALSE values depending on whether each of the events 
+    (rows) are below or above the identified split value.
 }
 
 \author{
@@ -47,6 +55,8 @@
     fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
         "933745.fcs", package="flowQBData")
     myFlowFrame <- read.FCS(fcsFilePath)
+    ## Note that this is just to demonstrate the syntax, but doing this on the
+    ## FSC and SSC channels of this particular FCS file is not very meaningful
     r1 <- split_in_two(myFlowFrame, 'FSC-H')
     r2 <- split_in_two(exprs(myFlowFrame[,'SSC-H']))
 }

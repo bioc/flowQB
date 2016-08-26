@@ -27,8 +27,7 @@
 }
 
 \details{
-    TODO
-
+    Additional parameters of the method:
     \describe{
         \item{\code{channel}}{Which FCS channel shall be used in order to
         look for the density peak? This is applicable if a flowFrame

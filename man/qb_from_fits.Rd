@@ -2,11 +2,25 @@
 \alias{qb_from_fits}
 
 \title{ 
-    Extract Q and B and the intrinsic $CV_0$ from fitting results
+    Extract Q, B and the intrinsic CV0 from fitting results
 }
 
 \description{
-    TODO
+    This function can be used to compute 
+    (1) flow cytometer's detection efficiency (i.e., Q, the statistical number 
+    of single photoelectrons (Spe) generated per unit of dye in the sample),
+    (2) background illumination (i.e., B, the background light in dye 
+    equivalents that sets the minimum variance that underlies all 
+    measurements), and 
+    (3) the intrinsic CV0 (i.e, variance in the signal produced by the
+    variation in dye amount of beads containing a "fixed" level of dye plus the
+    illumination variations due to particles taking different flow paths
+    through the laser beam)
+    from fitting results produced by either LED data fitting (\code{fit_led} 
+    function) or bead data fitting (\code{fit_beads}, \code{fit_spherotech}
+    or \code{fit_thermo_fischer} functions). One can calculate based on any
+    of the fits (i.e, the \code{fits}, \code{dye_fits}, \code{iterated_fits}
+    or \code{iterated_dye_fits} items from the result list).
 }
 
 \usage{
@@ -15,16 +29,38 @@
 
 \arguments{
     \item{fits}{
-        TODO
+Fitting results as produced by either LED data fitting (\code{fit_led} 
+function) or bead data fitting (\code{fit_beads}, \code{fit_spherotech}
+or \code{fit_thermo_fischer} functions). One can calculate based on any
+of the fits provided as part of the results of these functions, namely
+the \code{fits}, \code{dye_fits}, \code{iterated_fits} or 
+\code{iterated_dye_fits} items from the result list.
     }
 }
 
 \details{
-    TODO
+    As explained in our paper, 
+    this method calculats QI as 1/c1, BSpe  = c0/c1^2 and CV0^2 = c2
+    from the results of quadratic fit for the measured means and variances 
+    to a statistical model involving the Poisson distribution expectations 
+    for the relation between them.
+    For fitting results containing both, a quadratic and a linear fit
+    coeficients, (i.e, results of LED fitting), this method also includes
+    QI and BSpe from the linear model.
 }
 
 \value{
-    TODO
+    The value is a matrix with columns corresponding to the columns of the
+    input data frame (i.e., the names of the dyes). The rows are as follows:
+    q_QI as the QI from the fits of the quadratic model,
+    q_BSpe as the BSpe from the fits of the quadratic model,
+    q_CV0sq as the CV0^2 from the fits of the quadratic model,
+    l_QI as the QI from the fits of the linear model (provided only if linear
+    fit coefficients are also present in the input data frame, i.e., for LED
+    fits only), and
+    l_BSpe as the BSpe from the fits of the linear model (again, provided only
+    if linear fit coefficients are also present in the input data frame, 
+    i.e., for LED fits only)
 }
 
 \author{

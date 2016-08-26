@@ -4,10 +4,11 @@
 \alias{pick_parameters,flowFrame,ANY-method}
 \alias{pick_parameters,flowFrame-method}
 
-\title{TODO}
+\title{Pick channel names}
 
 \description{
-    TODO
+Extract all channel names from a flowFrame object or column names from 
+a matrix except those specified in a provided ignore list.
 }
 
 \usage{
@@ -16,22 +17,20 @@
 
 \arguments{
     \item{object}{Object of class \code{\linkS4class{flowFrame}} or a matrix.}
-    \item{ignore}{TODO.}
+    \item{ignore}{A vector of channel names that we want to ignore}
 }
 
 \details{
-    TODO
-
-    \describe{
-        \item{\code{channel}}{The path to the directory where to 
-            download the files. By default, the files will be downloaded to a 
-            folder named based on the dataset identifier (FR-FCM-xxxx) 
-            that will be created in your working directory.}
-    }
+    This method simply looks at all channel names in the provided
+    flowFrame object or all column names of a matrix, then subtracts those
+    specified in the ignore list and returns the resulting vector of
+    channel/column names.
 }
 
 \value{
-    TODO
+    A vector of character strings containing channel names of channels
+    that were in the input flowFrame object (or columns of the input matrix)
+    but were not included in the provided ignore list.
 }
 
 \author{

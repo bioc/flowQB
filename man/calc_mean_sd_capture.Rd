@@ -43,8 +43,8 @@ A character string specifying the desired column heading of the result.
 
 \details{
     This function first fits an ellipse gate on the 2 specified scatter
-    channels. This scatter gated population is then split to 2 (low=unstained and
-    high=stained) in each of the fluorescence channels, and a peak 
+    channels. This scatter gated population is then split to 2 (low=unstained
+    and high=stained) in each of the fluorescence channels, and a peak
     gate is applied in order to isolate the high and the low peaks.
     Finally, the
     getOutliers method from the extremevalues package is used in order to

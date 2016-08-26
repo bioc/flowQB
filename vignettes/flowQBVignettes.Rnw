@@ -934,7 +934,7 @@ FlowRepositoryR:::flowRep.login(h)
 ## Once the data is public, only this line and without the curlHandle
 ## argument will be needed:
 qbDataset@attachments[[spreadsheet_indexes[5]]] <- xslx5 <- download(
-  qbDataset@attachments[[spreadsheet_indexes[5]]], curlHandle=h)
+    qbDataset@attachments[[spreadsheet_indexes[5]]], curlHandle=h)
 ## File 140126_InstEval_NIH_Aria_B2.xlsx downloaded.
 ##
 ## 5) Read the spreadsheet
@@ -951,29 +951,29 @@ fol_col <- 16
 fol_row <- 14
 fol_name <- xlsx[[fol_col]][[fol_row]]
 fcsFilename <- paste(instrument_name, fol_name, 
-  xlsx[[fol_col]][[fol_row+1]], sep="_")
+    xlsx[[fol_col]][[fol_row+1]], sep="_")
 fcsFilename
 ## [1] "NIH Aria_B 140127_Other Tests_BEADS_Spherotech Rainbow1X_012.fcs"
 ##
 ## 7) Let's locate the file in our dataset and let's download it
 ##    Again, the curlHandle is only needed since the file is not public yet
 fcsFileIndex = which(unlist(lapply(qbDataset@fcs.files, function(f) { 
-  f@name == fcsFilename })))
+    f@name == fcsFilename })))
 qbDataset@fcs.files[[fcsFileIndex]] <- fcsFile <- download(
-  qbDataset@fcs.files[[fcsFileIndex]], curlHandle=h)
+    qbDataset@fcs.files[[fcsFileIndex]], curlHandle=h)
 # File NIH Aria_B 140127_Other Tests_BEADS_Spherotech Rainbow1X_012.fcs 
 # downloaded.
 ##
 ## 8) Read in some more metadata from the spreadsheet
 scatter_channels <- c(
-  xlsx[[fol_col]][[fol_row+2]], 
-  xlsx[[fol_col]][[fol_row+3]])
+    xlsx[[fol_col]][[fol_row+2]], 
+    xlsx[[fol_col]][[fol_row+3]])
 ignore_channels_row <- 9
 ignore_channels <- vector()
 i <- 1
 while(!is.na(xlsx[[i+4]][[ignore_channels_row]])) {
-  ignore_channels[[i]] <- xlsx[[i+4]][[ignore_channels_row]]
-  i <- i + 1
+    ignore_channels[[i]] <- xlsx[[i+4]][[ignore_channels_row]]
+    i <- i + 1
 }
 bounds_min_col <- 6
 bounds_min_row <- 7
@@ -981,14 +981,14 @@ bounds_max_col <- 7
 bounds_max_row <- 7
 bounds <- list()
 if (is.na(xlsx[[bounds_min_col]][[bounds_min_row]])) {
-  bounds$minimum <- -100
+    bounds$minimum <- -100
 } else {
-  bounds$minimum <- as.numeric(xlsx[[bounds_min_col]][[bounds_min_row]])
+    bounds$minimum <- as.numeric(xlsx[[bounds_min_col]][[bounds_min_row]])
 }
 if (is.na(xlsx[[bounds_max_col]][[bounds_max_row]])) {
-  bounds$maximum <- 100000
+    bounds$maximum <- 100000
 } else {
-  bounds$maximum <- as.numeric(xlsx[[bounds_max_col]][[bounds_max_row]])
+    bounds$maximum <- as.numeric(xlsx[[bounds_max_col]][[bounds_max_row]])
 }
 signal_type_col <- 3
 signal_type_row <- 19
@@ -1017,7 +1017,7 @@ qb_from_fits(multipeak_results$iterated_dye_fits)
 @
 
 The example shown above processes the Spherotech beads. In order to process
-the Thermo Fisher beads, one would need to change \texttt{fol\_col} to 17 in 
+the Thermo Fisher beads, one would need to change \texttt{fol\_col} to 17 in
 order to determine the proper filename with Thermo Fisher beads results.
 This is due to how the MS Excel spreadsheet templeta is created. Then,
 one would use the \Rfunction{fit\_thermo\_fischer} instead of the 
@@ -1034,7 +1034,7 @@ lookup the LED FCS files referenced by the spreadsheet as follows:
 <<LEDFCSFileIndexesExample, echo=TRUE, eval=FALSE, results=hide>>=
 LEDfcsFileIndexes <- which(unlist(lapply(qbDataset@fcs.files, function(f) 
 { 
-  f@name %in% paste(instrument_name, xlsx[14, 3:12], xlsx[15, 3:12], sep="_") 
+    f@name %in% paste(instrument_name, xlsx[14, 3:12], xlsx[15, 3:12], sep="_")
 })))
 # [1] 173 174 175 176 177 178 179 180 181 182
 @
@@ -1046,7 +1046,8 @@ dir <- tempdir()
 cwd <- getwd()
 setwd(dir)
 lapply(LEDfcsFileIndexes, function(i) {
-    qbDataset@fcs.files[[i]] <- download(qbDataset@fcs.files[[i]], curlHandle=h)
+    qbDataset@fcs.files[[i]] <- download(qbDataset@fcs.files[[i]], 
+        curlHandle=h)
 })
 setwd(cwd)
 fcs_file_path_list <- list.files(dir, "*.fcs", full.names= TRUE)
