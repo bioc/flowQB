@@ -21,39 +21,38 @@
 ## software.
 ###############################################################################
 
-export("find_peak")
-export("get_results_for_dyes")
-export("calc_mean_sd_197")
-export("calc_mean_sd_duke")
-export("calc_mean_sd_capture")
-export("calc_mean_sd_capture_all")
-export("calc_mean_sd_background")
-export("fit_led")
-export("fit_beads")
-export("fit_spherotech")
-export("fit_thermo_fischer")
-export("qb_from_fits")
-
-exportMethods(
-    "split_in_two", 
-    "peak_gate", 
+setGeneric(
     "pick_parameters",
-    "fitted_ellipse_gate"
+    def=function(object, ignore) standardGeneric("pick_parameters"),
+    useAsDefault=function(object, ignore)
+    {
+        stop(paste(
+            "The pick_parameters method is not supported on object type:",
+            class(object)))
+    }
 )
 
-importMethodsFrom("flowCore",
-    "exprs",
-    "description",
-    "description<-",
-    "colnames",
-    "parameters"
+## TODO: originally called get_fluorescences
+## This is applicable to picking any channels from a flowFrame, so it has been
+## renamed, but the rest of the code still## needs to be refactored accordingly
+setMethod(
+    "pick_parameters",
+    signature=signature(object="flowFrame"),
+    definition=function(object, ignore)
+    {
+        ## Bellow is the original code, which I am replacing with a setdiff
+        # pars <- colnames(object);
+        # picked <- vector(mode='logical', length=length(pars))
+        # for (j in 1:length(pars))
+        # {
+        #     picked[j] <- TRUE
+        #     for (k in 1:length(ignore)) {
+        #         if (pars[j] == ignore[k]) picked[j] <- FALSE
+        #     }
+        # }
+        # pars[picked]
+        
+        ## New code:
+        setdiff(colnames(object),ignore)
+    }
 )
-
-importFrom("extremevalues", "getOutliers")
-importFrom("flowCore", "read.FCS", "logicleTransform")
-importFrom("stats", "lm", "coefficients", "residuals", "kmeans")
-importFrom("methods", "new")
-
-importClassesFrom("methods", "list", "numeric", "vector")
-importClassesFrom("flowCore", "flowFrame")
-

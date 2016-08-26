@@ -1,14 +1,23 @@
-Package: flowQB
-Type: Package
-Title: Automated Quadratic Characterization of Flow Cytometer Instrument Sensitivity: Q, B and CV instrinsic calculations.
-Version: 1.18.1
-Date: 2011-11-15
-Author: Faysal El Khettabi, Wayne Moore, David Parks, Josef Spidlen, Ryan Brinkman
-Maintainer: Faysal El Khettabi <faysal.el.khettabi@gmail.com>
-Description: flowQB is a fully automated R Bioconductor package to calculate automatically the detector efficiency (Q), optical background (B) and intrinsic CV of the beads. 
-Imports: Biobase, graphics,methods, flowCore,stats,MASS
-License: Artistic-2.0
-Suggests: MASS, flowCore
-biocViews: FlowCytometry
-LazyLoad: yes
-Packaged: 2014-05-26 14:45:47 UTC; fkhettabi
+Package:    flowQB
+Type:       Package
+Title:      Automated Quadratic Characterization of Flow Cytometer Instrument
+            Sensitivity: Q, B and CV instrinsic calculations
+Version:    1.18.2
+Author:     Josef Spidlen, Faysal El Khettabi, Wayne Moore, David Parks, 
+            Ryan Brinkman
+Maintainer: Josef Spidlen <jspidlen@bccrc.ca>
+Description:flowQB is a fully automated R Bioconductor package to calculate
+            automatically the detector efficiency (Q), optical background (B)
+            and intrinsic CV of the beads.
+Imports:    methods, flowCore (>= 1.32.0), stats, extremevalues
+License:    Artistic-2.0
+Suggests:   flowQBData, FlowRepositoryR, xlsx, RUnit, BiocGenerics
+biocViews:  FlowCytometry, Regression, PeakDetection, QualityControl, MultiChannel, OneChannel
+LazyLoad:   yes
+Collate:    helper_functions.R
+            fitted_ellipse_gate.R
+            split_in_two.R
+            peak_gate.R
+            pick_parameters.R
+            calc_mean_sd_functions.R
+            fit_functions.R

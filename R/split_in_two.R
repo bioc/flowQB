@@ -21,39 +21,51 @@
 ## software.
 ###############################################################################
 
-export("find_peak")
-export("get_results_for_dyes")
-export("calc_mean_sd_197")
-export("calc_mean_sd_duke")
-export("calc_mean_sd_capture")
-export("calc_mean_sd_capture_all")
-export("calc_mean_sd_background")
-export("fit_led")
-export("fit_beads")
-export("fit_spherotech")
-export("fit_thermo_fischer")
-export("qb_from_fits")
-
-exportMethods(
-    "split_in_two", 
-    "peak_gate", 
-    "pick_parameters",
-    "fitted_ellipse_gate"
+setGeneric(
+    "split_in_two",
+    def=function(object, ...) standardGeneric("split_in_two"),
+    useAsDefault=function(object, ...)
+    {
+        stop(paste("The split_in_two method is not supported on object type:",
+            class(object)))
+    }
 )
 
-importMethodsFrom("flowCore",
-    "exprs",
-    "description",
-    "description<-",
-    "colnames",
-    "parameters"
+setMethod(
+    "split_in_two",
+    signature=signature(object="matrix"),
+    definition=function(object, ...)
+    {
+        x <- sort(object)
+        N <- length(x)
+        M <- ceiling(N/10)
+        M2 <- floor((M + 1)/2)
+        m <- i <- floor((N + 1)/2)
+        dx <- x[m+M2] - x[m-M2];
+        for (j in 1:ceiling(N/4))
+        {
+            d <- x[m+j+M2] - x[m+j-M2];
+            if (d > dx)
+            {
+                dx <- d
+                i <- m + j
+            }
+            d <- x[m-j+M2] - x[m-j-M2];
+            if (d > dx)
+            {
+                dx <- d
+                i <- m - j
+            }
+        }
+        object >= x[i]
+    }
 )
 
-importFrom("extremevalues", "getOutliers")
-importFrom("flowCore", "read.FCS", "logicleTransform")
-importFrom("stats", "lm", "coefficients", "residuals", "kmeans")
-importFrom("methods", "new")
-
-importClassesFrom("methods", "list", "numeric", "vector")
-importClassesFrom("flowCore", "flowFrame")
-
+setMethod(
+    "split_in_two",
+    signature=signature(object="flowFrame"),
+    definition=function(object, channel, ...)
+    {
+        split_in_two(exprs(object[,channel]))
+    }
+)

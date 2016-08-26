@@ -21,39 +21,34 @@
 ## software.
 ###############################################################################
 
-export("find_peak")
-export("get_results_for_dyes")
-export("calc_mean_sd_197")
-export("calc_mean_sd_duke")
-export("calc_mean_sd_capture")
-export("calc_mean_sd_capture_all")
-export("calc_mean_sd_background")
-export("fit_led")
-export("fit_beads")
-export("fit_spherotech")
-export("fit_thermo_fischer")
-export("qb_from_fits")
-
-exportMethods(
-    "split_in_two", 
-    "peak_gate", 
-    "pick_parameters",
-    "fitted_ellipse_gate"
+setGeneric(
+    "peak_gate",
+    def=function(object, ...) standardGeneric("peak_gate"),
+    useAsDefault=function(object, ...)
+    {
+        stop(paste("The peak_gate method is not supported on object type:",
+            class(object)))
+    }
 )
 
-importMethodsFrom("flowCore",
-    "exprs",
-    "description",
-    "description<-",
-    "colnames",
-    "parameters"
+setMethod(
+    "peak_gate",
+    signature=signature(object="flowFrame"),
+    definition=function(object, channel, R=1, ...)
+    {
+        peak_gate(exprs(object[,channel]), R=R)
+    }
 )
 
-importFrom("extremevalues", "getOutliers")
-importFrom("flowCore", "read.FCS", "logicleTransform")
-importFrom("stats", "lm", "coefficients", "residuals", "kmeans")
-importFrom("methods", "new")
-
-importClassesFrom("methods", "list", "numeric", "vector")
-importClassesFrom("flowCore", "flowFrame")
-
+setMethod(
+    "peak_gate",
+    signature=signature(object="matrix"),
+    definition=function(object, R=1, ...)
+    {
+        fwhm <- find_peak( object )
+        center <- (fwhm$hi + fwhm$lo)/2
+        radius <- (fwhm$hi - fwhm$lo)/2
+        abs(object - center) <= R * radius
+        
+    }
+)
