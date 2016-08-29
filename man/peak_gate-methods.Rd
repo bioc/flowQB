@@ -48,16 +48,18 @@
 
 \examples{
     library('flowCore')
-    library('flowQBData')
-    
-    fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
-        "933745.fcs", package="flowQBData")
+    ## library(flowQBData)
+    ## flowQBData is available since BioConductor 3.4, please install it
+    ## manually in order to be able to these examples
 
-    myFlowFrame <- read.FCS(fcsFilePath)
-    r1 <- peak_gate(myFlowFrame, 'FSC-H')
-    r2 <- peak_gate(exprs(myFlowFrame[,'SSC-H']))
-    ## r3 will have more events than r2
-    r3 <- peak_gate(exprs(myFlowFrame[,'SSC-H']), R=1.5)
+#   fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
+#       "933745.fcs", package="flowQBData")
+#
+#   myFlowFrame <- read.FCS(fcsFilePath)
+#   r1 <- peak_gate(myFlowFrame, 'FSC-H')
+#   r2 <- peak_gate(exprs(myFlowFrame[,'SSC-H']))
+#   ## r3 will have more events than r2
+#   r3 <- peak_gate(exprs(myFlowFrame[,'SSC-H']), R=1.5)
 }
 
 \keyword{methods}

@@ -72,12 +72,17 @@ Known photoelectron scales and measurement channel backgrounds make
 it possible to estimate the precision of measurements at different signal levels
 and the effects of compensated spectral overlap on measurement quality.
 
-%\section{Note - Vignette is a Work In Progress}
-%The code is already working and useable, but we don't have a proper
-%vignette yet, and the documentation is still a work-in-progress. We expect to
-%have this polished by the end of summer 2016.
-%In the mean time, please refer to the executable examples in the
-%reference manual or the unit tests included with this package.
+\section{Get the Latest Version}
+Examples in this vignette, documentation and unit tests are mostly
+dependent on data that is available in the flowQBData library. This
+library is available as of BioConductor 3.4. You are looking at 
+a vignetter based on BioConductor 3.3. 
+Therefore, we had to comment out most executable examples in order for
+this to compile. Please install flowQBData manually if you want to run
+those examples. Or even better, please use the latest devel version of flowQB,
+which is available from 
+\url{http://bioconductor.org/packages/devel/bioc/html/flowQB.html}.
+That way, all the examples etc. will work properly.
 
 \section{Introduction}
 
@@ -175,7 +180,9 @@ of this package.
 
 <<LoadPackage, echo=true, results=hide>>=
 library("flowQB")
-library("flowQBData")
+## library("flowQBData")
+## flowQBData is available since BioConductor 3.4, please install it
+## manually in order to be able to run examples in this vignette
 @
 
 \section{Fitting LED pulser data}
@@ -268,7 +275,7 @@ done for each of the all of the fitting.
 
 \end{itemize}
 
-<<FitLED, echo=true, results=verbatim>>=
+<<FitLED, echo=true, eval=FALSE, results=hide>>=
 ## Example is based on LED data from the flowQBData package
 fcs_directory <- system.file("extdata", "SSFF_LSRII", "LED_Series", 
     package="flowQBData")
@@ -337,7 +344,7 @@ columns:
 The values of \Rcode{W}, \Rcode{QR}, \Rcode{LR}, \Rcode{QR-I} and \Rcode{LR-I}
 will be \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
 
-<<ExploreLEDPeakStats, echo=true, results=verbatim>>=
+<<ExploreLEDPeakStats, echo=true, eval=FALSE, results=hide>>=
 ## We have stats for these channels
 names(led_results$peak_stats)
 
@@ -364,7 +371,7 @@ from channel names (detectors) to ``dyes'' as per the mapping supplied by
 the detectors and dyes arguments. The rows of the data frame are the same
 as with the \Rcode{bg\_stats} described above.
 
-<<ExploreBGStats, echo=true, results=verbatim>>=
+<<ExploreBGStats, echo=true, eval=FALSE, results=hide>>=
 ## Explore bg_stats
 led_results$bg_stats
 
@@ -430,7 +437,7 @@ fitting with weights adjustments.
 ``dyes'' in the same way as for the \Rcode{dye\_fits} described above, 
 ut based on iterative fitting with weights adjustments.
 
-<<ExploreFits, echo=true, results=verbatim>>=
+<<ExploreFits, echo=true, eval=FALSE, results=hide>>=
 ## Explore dye_fits
 ## fits are the same rows but columns corresponding to all channels
 led_results$dye_fits
@@ -452,7 +459,7 @@ This data frame can be reviewed in order to make sure the fitting is
 converging fast enough and the \Rcode{max\_iterations} parameter
 is set large enough.
 
-<<ExploreIterationNumbers, echo=true, results=verbatim>>=
+<<ExploreIterationNumbers, echo=true, eval=FALSE, results=hide>>=
 ## Explore iteration numbers
 ## Showing only the head in order to limit the output for the vignette
 head(led_results$iteration_numbers)
@@ -573,7 +580,7 @@ but users can change the default by providing a different value.
 
 \end{itemize}
 
-<<FitSpherotechExample, echo=true, results=verbatim>>=
+<<FitSpherotechExample, echo=true, eval=FALSE, results=hide>>=
 ## Example of fitting bead data based on Sph8 particle sets from Spherotech
 fcs_file_path <- system.file("extdata", "SSFF_LSRII", "Other_Tests", 
     "933745.fcs", package="flowQBData")
@@ -636,7 +643,7 @@ but that has not resolved the warning.
 Below, we demonstrate one way of a simple visual inspection of the clustering
 results.
 
-<<VisualizeKmeans, echo=TRUE, results=verbatim>>=
+<<VisualizeKmeans, echo=TRUE, eval=FALSE, results=hide>>=
 library("flowCore")
 plot(
     exprs(spherotech_results$transformed_data[,"FITC-A"]),
@@ -672,7 +679,7 @@ columns:
 The values of \Rcode{W}, \Rcode{QR}, and \Rcode{QR-I}
 will be \Rcode{NA} if \Rcode{Omit} is \Rcode{TRUE}.
 
-<<ExploreBeadPeakStats, echo=true, results=verbatim>>=
+<<ExploreBeadPeakStats, echo=true, eval=FALSE, results=hide>>=
 ## We have stats for these channels
 names(spherotech_results$peak_stats)
 
@@ -716,7 +723,7 @@ fitting with weights adjustments.
 ``dyes'' in the same way as for the \Rcode{dye\_fits} described above, 
 ut based on iterative fitting with weights adjustments.
 
-<<ExploreFits2, echo=true, results=verbatim>>=
+<<ExploreFits2, echo=true, eval=FALSE, results=hide>>=
 ## Explore fits
 ## Selecting just a few columns to limit the output for the vignette
 spherotech_results$fits[,c(1,3,5,7)]
@@ -737,7 +744,7 @@ This data frame can be reviewed in order to make sure the fitting is
 converging fast enough and the \Rcode{max\_iterations} parameter
 is set large enough.
 
-<<ExploreIterationNumbers2, echo=true, results=verbatim>>=
+<<ExploreIterationNumbers2, echo=true, eval=FALSE, results=hide>>=
 ## Explore iteration numbers
 ## Showing only the head in order to limit the output for the vignette
 head(spherotech_results$iteration_numbers)
@@ -755,7 +762,7 @@ and \Rfunction{fit\_thermo\_fischer} functions). You can calculate
 based on any of the fits (\Rcode{fits}, \Rcode{dye\_fits}, 
 \Rcode{iterated\_fits} and \Rcode{iterated\_dye\_fits}).
 
-<<QBFromFits, echo=true, results=verbatim>>=
+<<QBFromFits, echo=true, eval=FALSE, results=hide>>=
 ## 1 QB from both quadratic and linear fits of LED data
 qb_from_fits(led_results$iterated_dye_fits)
 ## 2 QB from quadratic fitting of bead data
@@ -802,7 +809,7 @@ Below, we show an example of how the \Rpackage{xlsx} package can be used
 in order to process metadata from the spreadsheet and perform the fitting
 based on that.
 
-<<XSLTExample, echo=true, results=verbatim>>=
+<<XSLTExample, echo=true, eval=FALSE, results=hide>>=
 ## Example of fitting based on house-keeping information in a spreadsheet
 library(xlsx)
 

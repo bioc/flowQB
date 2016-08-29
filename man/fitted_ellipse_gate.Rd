@@ -60,12 +60,14 @@
 
 \examples{
     library('flowCore')
-    library('flowQBData')
-    
-    fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
-        "933745.fcs", package="flowQBData")
-    myFlowFrame <- read.FCS(fcsFilePath)
-    gatedFlowFrame <- fitted_ellipse_gate(myFlowFrame, c('FSC-H', 'SSC-H'))
+    ## library(flowQBData)
+    ## flowQBData is available since BioConductor 3.4, please install it
+    ## manually in order to be able to these examples
+
+#   fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
+#       "933745.fcs", package="flowQBData")
+#   myFlowFrame <- read.FCS(fcsFilePath)
+#   gatedFlowFrame <- fitted_ellipse_gate(myFlowFrame, c('FSC-H', 'SSC-H'))
 }
 
 \keyword{functions}

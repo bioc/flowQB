@@ -78,17 +78,19 @@ A character string specifying the desired column heading of the result.
 
 \examples{
     library(flowCore)
-    library(flowQBData)
+    ## library(flowQBData)
+    ## flowQBData is available since BioConductor 3.4, please install it
+    ## manually in order to be able to these examples
 
-    fcs_file_path <- system.file("extdata", "SSFF_LSRII", "SU_2B",
-        "933723.fcs", package="flowQBData")
-
-    scatter_channels <- c("FSC-A", "SSC-A")
-    detector <- "APC-A"
-    dye <- "APC"
-    
-    results <- calc_mean_sd_capture(
-        fcs_file_path, scatter_channels, detector, dye)
+#   fcs_file_path <- system.file("extdata", "SSFF_LSRII", "SU_2B",
+#       "933723.fcs", package="flowQBData")
+#
+#   scatter_channels <- c("FSC-A", "SSC-A")
+#   detector <- "APC-A"
+#   dye <- "APC"
+#    
+#   results <- calc_mean_sd_capture(
+#       fcs_file_path, scatter_channels, detector, dye)
 }
 
 \keyword{functions}

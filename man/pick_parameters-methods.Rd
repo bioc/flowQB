@@ -39,12 +39,15 @@ a matrix except those specified in a provided ignore list.
 
 \examples{
     library('flowCore')
-    library('flowQBData')
-    fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
-        "933745.fcs", package="flowQBData")
-    myFlowFrame <- read.FCS(fcsFilePath)
-    ignore <- c("Time", "FSC-H", "FSC-A", "FSC-W", "SSC-H", "SSC-A", "SSC-W")
-    fluorescences <- pick_parameters(myFlowFrame, ignore)
+    ## library(flowQBData)
+    ## flowQBData is available since BioConductor 3.4, please install it
+    ## manually in order to be able to these examples
+
+#   fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
+#       "933745.fcs", package="flowQBData")
+#   myFlowFrame <- read.FCS(fcsFilePath)
+#   ignore <- c("Time", "FSC-H", "FSC-A", "FSC-W", "SSC-H", "SSC-A", "SSC-W")
+#   fluorescences <- pick_parameters(myFlowFrame, ignore)
 }
 
 \keyword{methods}

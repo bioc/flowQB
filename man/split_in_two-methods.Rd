@@ -51,14 +51,17 @@
 
 \examples{
     library('flowCore')
-    library('flowQBData')
-    fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
-        "933745.fcs", package="flowQBData")
-    myFlowFrame <- read.FCS(fcsFilePath)
-    ## Note that this is just to demonstrate the syntax, but doing this on the
-    ## FSC and SSC channels of this particular FCS file is not very meaningful
-    r1 <- split_in_two(myFlowFrame, 'FSC-H')
-    r2 <- split_in_two(exprs(myFlowFrame[,'SSC-H']))
+    ## library(flowQBData)
+    ## flowQBData is available since BioConductor 3.4, please install it
+    ## manually in order to be able to these examples
+
+#   fcsFilePath <- system.file("extdata", "SSFF_LSRII", "Other_Tests",
+#       "933745.fcs", package="flowQBData")
+#   myFlowFrame <- read.FCS(fcsFilePath)
+#   ## Note that this is just to demonstrate the syntax, but doing this on the
+#   ## FSC and SSC channels of this particular FCS file is not very meaningful
+#   r1 <- split_in_two(myFlowFrame, 'FSC-H')
+#   r2 <- split_in_two(exprs(myFlowFrame[,'SSC-H']))
 }
 
 \keyword{methods}
