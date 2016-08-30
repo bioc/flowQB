@@ -477,7 +477,7 @@ fit_spherotech <- function(fcs_file_path, scatter_channels, ignore_channels,
         logicle_width = logicle_width, ...)
 }
 
-fit_thermo_fischer <- function(fcs_file_path, scatter_channels, ignore_channels,
+fit_thermo_fisher <- function(fcs_file_path, scatter_channels, ignore_channels,
     dyes, detectors, bounds, signal_type, instrument_name, 
     minimum_useful_peaks = 3, max_iterations = 10, logicle_width = 1.0, ...)
 {
