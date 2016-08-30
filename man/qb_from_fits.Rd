@@ -18,7 +18,7 @@
     through the laser beam)
     from fitting results produced by either LED data fitting (\code{fit_led} 
     function) or bead data fitting (\code{fit_beads}, \code{fit_spherotech}
-    or \code{fit_thermo_fischer} functions). One can calculate based on any
+    or \code{fit_thermo_fisher} functions). One can calculate based on any
     of the fits (i.e, the \code{fits}, \code{dye_fits}, \code{iterated_fits}
     or \code{iterated_dye_fits} items from the result list).
 }
@@ -31,7 +31,7 @@
     \item{fits}{
 Fitting results as produced by either LED data fitting (\code{fit_led} 
 function) or bead data fitting (\code{fit_beads}, \code{fit_spherotech}
-or \code{fit_thermo_fischer} functions). One can calculate based on any
+or \code{fit_thermo_fisher} functions). One can calculate based on any
 of the fits provided as part of the results of these functions, namely
 the \code{fits}, \code{dye_fits}, \code{iterated_fits} or 
 \code{iterated_dye_fits} items from the result list.
@@ -71,7 +71,7 @@ the \code{fits}, \code{dye_fits}, \code{iterated_fits} or
     \code{\link{fit_led}},
     \code{\link{fit_beads}},
     \code{\link{fit_spherotech}},
-    \code{\link{fit_thermo_fischer}}
+    \code{\link{fit_thermo_fisher}}
 }
 
 \examples{

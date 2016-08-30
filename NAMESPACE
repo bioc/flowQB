@@ -31,7 +31,7 @@ export("calc_mean_sd_background")
 export("fit_led")
 export("fit_beads")
 export("fit_spherotech")
-export("fit_thermo_fischer")
+export("fit_thermo_fisher")
 export("qb_from_fits")
 
 exportMethods(

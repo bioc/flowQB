@@ -116,7 +116,7 @@ test_fit_beads <- function() {
     fcs_file_path <- system.file("extdata", "SSFF_LSRII", "Other_Tests", 
         "933747.fcs", package="flowQBData")
     
-    beads_results_tf <- fit_thermo_fischer(fcs_file_path, scatter_channels, 
+    beads_results_tf <- fit_thermo_fisher(fcs_file_path, scatter_channels, 
         ignore_channels, dyes, detectors, bounds, 
         signal_type, instrument_name, minimum_useful_peaks = 3,
         max_iterations = 10, logicle_width = 0.5)
