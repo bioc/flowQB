@@ -95,7 +95,7 @@ dyes <- c("APC", "APC-Cy7", "APC-H7", "FITC", "PE", "PE-Cy7", "PerCP",
 ## names, i.e., values of the $PnN FCS keywords.
 detectors <- c("APC-A", "APC-Cy7-A", "APC-Cy7-A", "FITC-A", "PE-A", "PE-Cy7-A",
     "PerCP-Cy5-5-A", "PerCP-Cy5-5-A", "Pacific Blue-A", "Aqua Amine-A")
-## - The signal type that you are looking at (Area, Height or Width)
+## - The signal type that you are looking at (Area or Height)
 signal_type <- "Area"
 ## - The instrument make/model
 instrument_name <- 'LSRII'

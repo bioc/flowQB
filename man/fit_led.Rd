@@ -47,11 +47,11 @@ A vector of short channel names (values of
 the $PnN keywords) specifying channels matching to the dyes specified above.
 The length of this vector shall correspond to the length of the dyes vector.
 These channels should be all of the same type as specified by the 
-signal_type below, i.e., area, height or width of the measured signal.
+signal_type below, i.e., area or height of the measured signal.
     }
     \item{signal_type}{
-The type of the signal specified as the ``area'',
-``height'' or ``width''. This should match to the signal type that is being
+The type of the signal specified as the ``area''
+or ``height''. This should match to the signal type that is being
 captured by the channels specified in the detectors argument. The signal type is
 being used in order to trigger type-specific peak validity checks. Currently,
 if signal type equals to ``height'' then peaks with a mean value lower than
