@@ -2,7 +2,7 @@ Package:    flowQB
 Type:       Package
 Title:      Automated Quadratic Characterization of Flow Cytometer Instrument
             Sensitivity: Q, B and CV instrinsic calculations
-Version: 2.11.0
+Version: 2.11.1
 Author:     Josef Spidlen, Faysal El Khettabi, Wayne Moore, David Parks, 
             Ryan Brinkman
 Maintainer: Josef Spidlen <jspidlen@gmail.com>
@@ -12,7 +12,7 @@ Description:flowQB is a fully automated R Bioconductor package to calculate
 Imports:    methods, flowCore (>= 1.32.0), stats, extremevalues
 License:    Artistic-2.0
 Suggests:   flowQBData, FlowRepositoryR, xlsx, RUnit, BiocGenerics
-biocViews:  FlowCytometry, Regression, PeakDetection, QualityControl, MultiChannel, OneChannel
+biocViews: ImmunoOncology, FlowCytometry, Regression, PeakDetection, QualityControl, MultiChannel, OneChannel
 LazyLoad:   yes
 Collate:    helper_functions.R
             fitted_ellipse_gate.R
